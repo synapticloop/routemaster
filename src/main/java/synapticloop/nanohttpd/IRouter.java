@@ -4,5 +4,5 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public interface IRouter {
-	public Response serve(IHTTPSession session);
+	public Response serve(IHTTPSession httpSession);
 }

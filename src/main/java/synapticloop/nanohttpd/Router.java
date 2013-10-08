@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import synapticloop.nanohttpd.logger.Logger;
+import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 
 public class Router {
 	private HashMap<String, Router> ROUTER = new HashMap<String, Router>();
@@ -41,6 +42,18 @@ public class Router {
 				Logger.logFatal("Could not instantiate the default route for '" + route + "'.", ex);
 			}
 		}
+	}
+
+	public IRouter route(IHTTPSession httpSession, StringTokenizer stringTokenizer) {
+		if(stringTokenizer.hasMoreTokens()) {
+			
+		} else {
+			// do we have a default rout?
+			if(null != defaultRoute) {
+				
+			}
+		}
+		return(null);
 	}
 
 	public void printRoutes() {

@@ -5,12 +5,13 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public class RouteMaster {
-	//	private static HashMap<String, Router> ROUTER = new HashMap<String, Router>();
+	private static ConcurrentHashMap<String, IRouter> ROUTER_CACHE = new ConcurrentHashMap<String, IRouter>();
 	private static Router router = null;
 	static {
 		// find the route.properties file
@@ -47,6 +48,21 @@ public class RouteMaster {
 	}
 
 	public static Response route(IHTTPSession httpSession) {
-		return(null);
+		if(null != router) {
+			// try and find the route
+			String uri = httpSession.getUri();
+			// do we have a cached version of this?
+			if(ROUTER_CACHE.containsKey(uri)) {
+				return(ROUTER_CACHE.get(uri).serve(httpSession));
+			} else {
+				StringTokenizer stringTokenizer = new StringTokenizer("/");
+				IRouter iRouter = router.route(httpSession, stringTokenizer);
+				ROUTER_CACHE.put(uri, iRouter);
+				return(iRouter.serve(httpSession));
+			}
+		} else {
+			// @TODO this should actually be a 404 perhaps...
+			return(null);
+		}
 	}
 }
