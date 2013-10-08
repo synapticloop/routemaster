@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="routemaster" default="help">
+	<property name="build.dir" value="build" />
+	<property name="dist.dir" value="dist" />
+
+	<property name="src.dir" value="src/main/java" />
+
+	<target name="download-dependencies">
+		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/LICENSE.md" dest="./NanoHttpd-LICENSE.md" />
+		<mkdir dir="src/main/java/fi/iki/elonen/" />
+		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/core/src/main/java/fi/iki/elonen/NanoHTTPD.java" dest="src/main/java/fi/iki/elonen/" />
+
+		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/InternalRewrite.java" dest="src/main/java/fi/iki/elonen/" />
+		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/ServerRunner.java" dest="src/main/java/fi/iki/elonen/" />
+		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/SimpleWebServer.java" dest="src/main/java/fi/iki/elonen/" />
+		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/WebServerPlugin.java" dest="src/main/java/fi/iki/elonen/" />
+		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/WebServerPluginInfo.java" dest="src/main/java/fi/iki/elonen/" />
+	</target>
+
+	<target name="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${dist.dir}" />
+	</target>
+
+	<target name="dist" depends="init">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" />
+
+		<jar destfile="${dist.dir}/${ant.project.name}.jar">
+			<fileset dir="${build.dir}">
+				<include name="**/RouteMaster.class"/>
+			</fileset>
+
+		</jar>
+	</target>
+
+	<target name="help" description="hopefully helpful help">
+		<echo>
+type:
+	ant -p
+to see a complete list of ant targets
+	</echo>
+	</target>
+</project>
