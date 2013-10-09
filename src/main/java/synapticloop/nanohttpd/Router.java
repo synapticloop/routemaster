@@ -46,14 +46,26 @@ public class Router {
 
 	public Routable route(IHTTPSession httpSession, StringTokenizer stringTokenizer) {
 		if(stringTokenizer.hasMoreTokens()) {
-			
+			String token = stringTokenizer.nextToken();
+			if(ROUTER.containsKey(token)) {
+				return(ROUTER.get(token).route(httpSession, stringTokenizer));
+			} else {
+				// do we have a wildcard route at this point?
+				if(null != wildcardRoute) {
+					return(wildcardRoute);
+				} else {
+					return(null);
+				}
+			}
 		} else {
 			// do we have a default rout?
 			if(null != defaultRoute) {
-				
+				return(defaultRoute);
+			} else {
+				// return 404 perhaps
+				return(null);
 			}
 		}
-		return(null);
 	}
 
 	public void printRoutes() {

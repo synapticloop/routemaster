@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
+import synapticloop.nanohttpd.logger.Logger;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
@@ -44,7 +45,7 @@ public class RouteMaster {
 	}
 
 	private static void logRouteMasterError() {
-		System.out.println("Could not load the 'routemaster.properties' file, ignoring...");
+		Logger.logFatal("Could not load the 'routemaster.properties' file, ignoring...");
 	}
 
 	public static Response route(IHTTPSession httpSession) {
@@ -56,9 +57,14 @@ public class RouteMaster {
 				return(ROUTER_CACHE.get(uri).serve(httpSession));
 			} else {
 				StringTokenizer stringTokenizer = new StringTokenizer("/");
-				Routable iRouter = router.route(httpSession, stringTokenizer);
-				ROUTER_CACHE.put(uri, iRouter);
-				return(iRouter.serve(httpSession));
+				Routable routable = router.route(httpSession, stringTokenizer);
+				if(null != routable) {
+					ROUTER_CACHE.put(uri, routable);
+					return(routable.serve(httpSession));
+				} else {
+					// return 404 perhaps
+					return(null);
+				}
 			}
 		} else {
 			// @TODO this should actually be a 404 perhaps...
