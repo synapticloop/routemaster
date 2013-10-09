@@ -11,7 +11,7 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public class RouteMaster {
-	private static ConcurrentHashMap<String, IRouter> ROUTER_CACHE = new ConcurrentHashMap<String, IRouter>();
+	private static ConcurrentHashMap<String, Routable> ROUTER_CACHE = new ConcurrentHashMap<String, Routable>();
 	private static Router router = null;
 	static {
 		// find the route.properties file
@@ -56,7 +56,7 @@ public class RouteMaster {
 				return(ROUTER_CACHE.get(uri).serve(httpSession));
 			} else {
 				StringTokenizer stringTokenizer = new StringTokenizer("/");
-				IRouter iRouter = router.route(httpSession, stringTokenizer);
+				Routable iRouter = router.route(httpSession, stringTokenizer);
 				ROUTER_CACHE.put(uri, iRouter);
 				return(iRouter.serve(httpSession));
 			}

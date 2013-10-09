@@ -9,8 +9,8 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 
 public class Router {
 	private HashMap<String, Router> ROUTER = new HashMap<String, Router>();
-	private IRouter wildcardRoute = null;
-	private IRouter defaultRoute = null;
+	private Routable wildcardRoute = null;
+	private Routable defaultRoute = null;
 	private String route = null;
 
 	public Router(String route, StringTokenizer stringTokenizer, String routerClass) {
@@ -22,7 +22,7 @@ public class Router {
 			String token = stringTokenizer.nextToken();
 			if(token.equals("*")) {
 				try {
-					wildcardRoute = (IRouter) IRouter.class.getClassLoader().loadClass(routerClass).newInstance();
+					wildcardRoute = (Routable) Routable.class.getClassLoader().loadClass(routerClass).newInstance();
 					this.route = route.substring(0, route.length() -1);
 				} catch (Exception ex) {
 					Logger.logFatal("Could not instantiate the default route for '" + route + "'.", ex);
@@ -36,7 +36,7 @@ public class Router {
 			}
 		} else {
 			try {
-				defaultRoute = (IRouter) IRouter.class.getClassLoader().loadClass(routerClass).newInstance();
+				defaultRoute = (Routable) Routable.class.getClassLoader().loadClass(routerClass).newInstance();
 				this.route = route;
 			} catch (Exception ex) {
 				Logger.logFatal("Could not instantiate the default route for '" + route + "'.", ex);
@@ -44,7 +44,7 @@ public class Router {
 		}
 	}
 
-	public IRouter route(IHTTPSession httpSession, StringTokenizer stringTokenizer) {
+	public Routable route(IHTTPSession httpSession, StringTokenizer stringTokenizer) {
 		if(stringTokenizer.hasMoreTokens()) {
 			
 		} else {
