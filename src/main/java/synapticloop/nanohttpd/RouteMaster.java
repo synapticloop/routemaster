@@ -1,5 +1,6 @@
 package synapticloop.nanohttpd;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -7,7 +8,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
-import synapticloop.nanohttpd.logger.Logger;
+import synapticloop.nanohttpd.logger.SimpleLogger;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
@@ -33,10 +34,10 @@ public class RouteMaster {
 					}
 				}
 			} else {
-				logRouteMasterError();
+				SimpleLogger.logFatal("Could not load the 'routemaster.properties' file, ignoring...");
 			}
 		} catch (IOException ioex) {
-			logRouteMasterError();
+			SimpleLogger.logFatal("Could not load the 'routemaster.properties' file, ignoring...", ioex);
 		}
 
 		if(null != router) {
@@ -44,23 +45,19 @@ public class RouteMaster {
 		}
 	}
 
-	private static void logRouteMasterError() {
-		Logger.logFatal("Could not load the 'routemaster.properties' file, ignoring...");
-	}
-
-	public static Response route(IHTTPSession httpSession) {
+	public static Response route(File rootDir, IHTTPSession httpSession) {
 		if(null != router) {
 			// try and find the route
 			String uri = httpSession.getUri();
 			// do we have a cached version of this?
 			if(ROUTER_CACHE.containsKey(uri)) {
-				return(ROUTER_CACHE.get(uri).serve(httpSession));
+				return(ROUTER_CACHE.get(uri).serve(rootDir, httpSession));
 			} else {
 				StringTokenizer stringTokenizer = new StringTokenizer("/");
 				Routable routable = router.route(httpSession, stringTokenizer);
 				if(null != routable) {
 					ROUTER_CACHE.put(uri, routable);
-					return(routable.serve(httpSession));
+					return(routable.serve(rootDir, httpSession));
 				} else {
 					// return 404 perhaps
 					return(null);

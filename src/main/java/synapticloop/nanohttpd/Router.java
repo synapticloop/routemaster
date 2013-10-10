@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-import synapticloop.nanohttpd.logger.Logger;
+import synapticloop.nanohttpd.logger.SimpleLogger;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 
 public class Router {
@@ -25,7 +25,7 @@ public class Router {
 					wildcardRoute = (Routable) Routable.class.getClassLoader().loadClass(routerClass).newInstance();
 					this.route = route.substring(0, route.length() -1);
 				} catch (Exception ex) {
-					Logger.logFatal("Could not instantiate the default route for '" + route + "'.", ex);
+					SimpleLogger.logFatal("Could not instantiate the default route for '" + route + "'.", ex);
 				}
 			} else {
 				if(ROUTER.containsKey(token)) {
@@ -39,7 +39,7 @@ public class Router {
 				defaultRoute = (Routable) Routable.class.getClassLoader().loadClass(routerClass).newInstance();
 				this.route = route;
 			} catch (Exception ex) {
-				Logger.logFatal("Could not instantiate the default route for '" + route + "'.", ex);
+				SimpleLogger.logFatal("Could not instantiate the default route for '" + route + "'.", ex);
 			}
 		}
 	}
@@ -70,10 +70,10 @@ public class Router {
 
 	public void printRoutes() {
 		if(null != defaultRoute) {
-			Logger.logInfo("/ Route: " + route + " => " + defaultRoute.getClass().getCanonicalName());
+			SimpleLogger.logInfo("/ Route: " + route + " => " + defaultRoute.getClass().getCanonicalName());
 		}
 		if(null != wildcardRoute) {
-			Logger.logInfo("* Route: " + route + " => " + wildcardRoute.getClass().getCanonicalName());
+			SimpleLogger.logInfo("* Route: " + route + " => " + wildcardRoute.getClass().getCanonicalName());
 		}
 
 		// go through and print all of the other routes

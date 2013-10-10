@@ -1,6 +1,6 @@
 package synapticloop.nanohttpd.logger;
 
-public class Logger {
+public class SimpleLogger {
 	private static final String INFO = "INFO";
 	private static final String ERROR = "ERROR";
 	private static final String FATAL = "FATAL";
