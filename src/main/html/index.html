@@ -4,10 +4,35 @@
 	<title>RouteMaster</title>
 	<link rel="stylesheet" href="/static/css/reset.css" />
 	<link rel="stylesheet" href="/static/css/style.css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 </head>
 <body>
 <div id="main">
 	<h1>RouteMaster <em>(nanoHTTPD edition)</em></h1>
+
+	<h2>Routes</h2>
+	<div id="routes">
+	</div>
+
+	<h2>Cache</h2>
+	<div id="cache">
+	</div>
 </div>
+<script>
+	$(document).ready(function() {
+		$.ajax({
+			url: "/rest/routes/"
+		}).done(function(data) {
+			$("#routes").append(data);
+		});
+
+		$.ajax({
+			url: "/rest/cache/"
+		}).done(function(data) {
+			$("#cache").append(data);
+		});
+
+	});
+</script>
 </body>
 </html>

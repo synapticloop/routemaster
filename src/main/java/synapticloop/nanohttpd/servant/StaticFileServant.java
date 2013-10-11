@@ -12,12 +12,17 @@ import java.util.Properties;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
-import synapticloop.nanohttpd.logger.SimpleLogger;
 import synapticloop.nanohttpd.router.Routable;
 import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.utils.HttpUtils;
+import synapticloop.nanohttpd.utils.SimpleLogger;
 
-public class StaticFileServant implements Routable {
+public class StaticFileServant extends Routable {
+
+	public StaticFileServant(String routeContext) {
+		super(routeContext);
+	}
+
 	private static HashMap<String, String> MIME_TYPES = new HashMap<String, String>();
 	static {
 		Properties properties = new Properties();

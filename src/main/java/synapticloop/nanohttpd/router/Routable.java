@@ -5,6 +5,13 @@ import java.io.File;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
-public interface Routable {
-	public Response serve(File rootDir, IHTTPSession httpSession);
+public abstract class Routable {
+	// the route that this routable is bound to
+	protected String routeContext = null;
+
+	protected Routable(String routeContext) {
+		this.routeContext = routeContext;
+	}
+
+	public abstract Response serve(File rootDir, IHTTPSession httpSession);
 }
