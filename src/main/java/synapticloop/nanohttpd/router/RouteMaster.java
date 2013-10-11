@@ -22,8 +22,6 @@ public class RouteMaster {
 	private static HashSet<String> indexFiles = new HashSet<String>();
 	private static ConcurrentHashMap<String, String> ERROR_PAGE_CACHE = new ConcurrentHashMap<String, String>();
 
-	private static boolean logRequests = false;
-
 	static {
 		// find the route.properties file
 		Properties properties = new Properties();
@@ -138,7 +136,7 @@ public class RouteMaster {
 			String subKey = key.substring("option.error.".length());
 			ERROR_PAGE_CACHE.put(subKey, properties.getProperty(key));
 		} else if(key.equals("option.log")) {
-			logRequests = properties.getProperty("option.log").equalsIgnoreCase("true");
+//			logRequests = properties.getProperty("option.log").equalsIgnoreCase("true");
 		}
 	}
 
@@ -156,7 +154,7 @@ public class RouteMaster {
 
 	public static Response route(File rootDir, IHTTPSession httpSession) {
 		Response routeInternalResponse = routeInternal(rootDir, httpSession);
-		if(null == routeInternalResponse) {
+		if(null != routeInternalResponse) {
 			return(routeInternalResponse);
 		} 
 		return(get500Response(rootDir, httpSession));
@@ -190,7 +188,7 @@ public class RouteMaster {
 		}
 	}
 
-	private static Response getErrorRespons(File rootDir, IHTTPSession httpSession, String errorCode, String message) {
+	private static Response getErrorResponse(File rootDir, IHTTPSession httpSession, String errorCode, String message) {
 		if(ERROR_PAGE_CACHE.containsKey(errorCode)) {
 			ModifiableSession modifiedSession = new ModifiableSession(httpSession);
 			modifiedSession.setUri(ERROR_PAGE_CACHE.get(errorCode));
@@ -203,11 +201,11 @@ public class RouteMaster {
 	}
 
 	private static Response get404Response(File rootDir, IHTTPSession httpSession) {
-		return(getErrorRespons(rootDir, httpSession, "404", "not found"));
+		return(getErrorResponse(rootDir, httpSession, "404", "not found"));
 	}
 
 	private static Response get500Response(File rootDir, IHTTPSession httpSession) {
-		return(getErrorRespons(rootDir, httpSession, "500", "internal server error"));
+		return(getErrorResponse(rootDir, httpSession, "500", "internal server error"));
 	}
 
 	public static Router getRouter() { return router; }
