@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import synapticloop.nanohttpd.router.RouteMaster;
+import synapticloop.nanohttpd.utils.SimpleLogger;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
@@ -15,11 +16,10 @@ import fi.iki.elonen.ServerRunner;
 
 public class RouteMasterServer extends NanoHTTPD {
 	private final File rootDir;
-	private final boolean quiet;
 
 	public RouteMasterServer(String host, int port, File rootDir, boolean quiet) {
 		super(host, port);
-		this.quiet = quiet;
+		SimpleLogger.setShouldLog(!quiet);
 		this.rootDir = rootDir;
 	}
 

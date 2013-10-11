@@ -5,15 +5,18 @@ public class SimpleLogger {
 	private static final String ERROR = "ERROR";
 	private static final String FATAL = "FATAL";
 	private static final String WARN = "WARN";
+	private static boolean shouldLog = true;
 
 	private static void log(String type, String... messages) {
-		System.out.print(type);
-		System.out.print(": ");
-		for (int i = 0; i < messages.length; i++) {
-			if(i != 0) { System.out.print(" "); }
-			System.out.print(messages[i]);
+		if(shouldLog) {
+			System.out.print(type);
+			System.out.print(": ");
+			for (int i = 0; i < messages.length; i++) {
+				if(i != 0) { System.out.print(" "); }
+				System.out.print(messages[i]);
+			}
+			System.out.println();
 		}
-		System.out.println();
 	}
 
 	public static void logFatal(String message) {
@@ -48,4 +51,7 @@ public class SimpleLogger {
 	public static void logInfo(String message, Exception exception) {
 		log(INFO, message, "Exception[", exception.getClass().getCanonicalName(), "] message was:", exception.getMessage());
 	}
+
+	public static boolean getShouldLog() { return shouldLog; }
+	public static void setShouldLog(boolean shouldLog) { SimpleLogger.shouldLog = shouldLog; }
 }
