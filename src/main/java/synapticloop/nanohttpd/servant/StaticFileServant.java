@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 
@@ -46,13 +47,23 @@ public class StaticFileServant extends Routable {
 		File file = new File(rootDir.getAbsolutePath() + uri);
 		if(!file.exists()) {
 			// 404
+			File indexFile = getIndexFile(rootDir, uri);
+			if(null != indexFile) {
+				file = indexFile;
+			}
 		}
+
 		if(!file.canRead()) {
 			// return 403 - or should we just ignore
 		}
 		if(file.isDirectory()) {
 			// do we want to serve directory files???
+			File indexFile = getIndexFile(rootDir, uri);
+			if(null != indexFile) {
+				file = indexFile;
+			}
 		} else {
+			// is a file - 
 		}
 
 		String absolutePath = file.getAbsolutePath();
@@ -67,6 +78,19 @@ public class StaticFileServant extends Routable {
 		}
 
 		return(HttpUtils.okResponse(NanoHTTPD.MIME_PLAINTEXT, absolutePath));
+	}
+
+	private File getIndexFile(File rootDir, String uri) {
+		// time to check the indexFiles
+		HashSet<String> indexFiles = RouteMaster.getIndexFiles();
+		for (String indexFile : indexFiles) {
+			File file = new File(rootDir.getAbsolutePath() + uri + "/" + indexFile);
+			if(file.exists()) {
+				return(file);
+			}
+		}
+
+		return(null);
 	}
 
 	private Response serveFile(File file, Map<String, String> header, String extension) {

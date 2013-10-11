@@ -2,7 +2,17 @@ RouteMaster
 ===========
 Handy routing controller for the truly excellent [nanohttpd](https://github.com/NanoHttpd/nanohttpd) tiny, easily embeddable HTTP Java server.
 
-## How do I use RouteMaster?
+## How do I run RouteMaster?
+
+The quickest way to get it up and running is to download ```dist/routemaster.jar``` and run
+
+```
+java -jar routemaster.jar
+```
+
+This will get it up and running on port 5474, although this won't actually do too much
+
+## How do I build RouteMaster?
 
 you will need the following:
 
@@ -23,6 +33,6 @@ You will need to create a ```routemaster.properties``` file which is required to
 
 ## As an aside
 
-The name ```RouteMaster``` pays homage to the original London buses [wikipedia](http://en.wikipedia.org/wiki/Routemaster) which would take you wherever you would like to go.
+The name ```RouteMaster``` pays homage to the original London buses [see the wikipedia entry](http://en.wikipedia.org/wiki/Routemaster) which would take you wherever you would like to go.
 
 The favicon is also related, showing a depiction of the back top window of a routemaster bus.

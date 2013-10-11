@@ -23,8 +23,6 @@ public class RouteMasterServer extends NanoHTTPD {
 		this.rootDir = rootDir;
 	}
 
-
-	
 	public Response serve(IHTTPSession httpSession) {
 		return(RouteMaster.route(rootDir, httpSession));
 	}
