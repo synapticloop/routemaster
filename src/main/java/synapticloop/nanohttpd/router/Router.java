@@ -14,18 +14,16 @@ public class Router {
 	private Routable wildcardRoute = null;
 	private Routable defaultRoute = null;
 	private String route = null;
-	private HashSet<String> indexFiles = null;
 
-	public Router(String route, StringTokenizer stringTokenizer, String routerClass, HashSet<String> indexFiles) {
-		addRoute(route, stringTokenizer, routerClass, indexFiles);
+	public Router(String route, StringTokenizer stringTokenizer, String routerClass) {
+		addRoute(route, stringTokenizer, routerClass);
 	}
 
 	public Router(String route, StringTokenizer stringTokenizer, String routerClass, ArrayList<String> params) {
 		addRestRoute(route, stringTokenizer, routerClass, params);
 	}
 
-	public void addRoute(String route, StringTokenizer stringTokenizer, String routerClass, HashSet<String> indexFiles) {
-		this.indexFiles = indexFiles;
+	public void addRoute(String route, StringTokenizer stringTokenizer, String routerClass) {
 
 		if(stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
@@ -45,9 +43,9 @@ public class Router {
 				}
 			} else {
 				if(routerMap.containsKey(token)) {
-					routerMap.get(token).addRoute(route, stringTokenizer, routerClass, indexFiles);
+					routerMap.get(token).addRoute(route, stringTokenizer, routerClass);
 				} else {
-					routerMap.put(token, new Router(route, stringTokenizer, routerClass, indexFiles));
+					routerMap.put(token, new Router(route, stringTokenizer, routerClass));
 				}
 			}
 		} else {
@@ -107,14 +105,6 @@ public class Router {
 			if(routerMap.containsKey(token)) {
 				return(routerMap.get(token).route(httpSession, stringTokenizer));
 			} else {
-//				// need to check for index files ...
-//				for (String indexFile : indexFiles) {
-//					if(token.equals(indexFile)) {
-//						if(null != defaultRoute) {
-//							return(defaultRoute);
-//						}
-//					}
-//				}
 
 				// do we have a wildcard route at this point?
 				if(null != wildcardRoute) {

@@ -39,9 +39,9 @@ public class RouteMaster {
 						String subKey = key.substring("route.".length());
 						StringTokenizer stringTokenizer = new StringTokenizer(subKey, "/", false);
 						if(null == router) {
-							router = new Router(subKey, stringTokenizer, routerClass, indexFiles);
+							router = new Router(subKey, stringTokenizer, routerClass);
 						} else {
-							router.addRoute(subKey, stringTokenizer, routerClass, indexFiles);
+							router.addRoute(subKey, stringTokenizer, routerClass);
 						}
 					} else if(key.startsWith("rest.")) {
 						// time to bind a rest route
