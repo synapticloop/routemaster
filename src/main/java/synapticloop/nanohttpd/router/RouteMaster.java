@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import synapticloop.nanohttpd.utils.HttpUtils;
 import synapticloop.nanohttpd.utils.ModifiableSession;
-import synapticloop.nanohttpd.utils.RequestLogger;
 import synapticloop.nanohttpd.utils.SimpleLogger;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
@@ -24,7 +23,6 @@ public class RouteMaster {
 	private static ConcurrentHashMap<String, String> ERROR_PAGE_CACHE = new ConcurrentHashMap<String, String>();
 
 	private static boolean logRequests = false;
-	private static RequestLogger requestLogger = new RequestLogger();
 
 	static {
 		// find the route.properties file
@@ -157,7 +155,14 @@ public class RouteMaster {
 	}
 
 	public static Response route(File rootDir, IHTTPSession httpSession) {
-		requestLogger.logRequest(httpSession);
+		Response routeInternalResponse = routeInternal(rootDir, httpSession);
+		if(null == routeInternalResponse) {
+			return(routeInternalResponse);
+		} 
+		return(get500Response(rootDir, httpSession));
+	}
+
+	private static Response routeInternal(File rootDir, IHTTPSession httpSession) {
 		if(null != router) {
 			// try and find the route
 			String uri = httpSession.getUri();
@@ -173,28 +178,36 @@ public class RouteMaster {
 					if(null != serve) {
 						return(serve);
 					} else {
-						return(getNotFoundResponse(rootDir, httpSession));
+						return(get404Response(rootDir, httpSession));
 					}
 				} else {
 					// have a null route-able return 404 perhaps
-					return(getNotFoundResponse(rootDir, httpSession));
+					return(get404Response(rootDir, httpSession));
 				}
 			}
 		} else {
-			return(getNotFoundResponse(rootDir, httpSession));
+			return(get404Response(rootDir, httpSession));
 		}
 	}
 
-	private static Response getNotFoundResponse(File rootDir, IHTTPSession httpSession) {
-		if(ERROR_PAGE_CACHE.containsKey("404")) {
+	private static Response getErrorRespons(File rootDir, IHTTPSession httpSession, String errorCode, String message) {
+		if(ERROR_PAGE_CACHE.containsKey(errorCode)) {
 			ModifiableSession modifiedSession = new ModifiableSession(httpSession);
-			modifiedSession.setUri(ERROR_PAGE_CACHE.get("404"));
+			modifiedSession.setUri(ERROR_PAGE_CACHE.get(errorCode));
 			Response response = route(rootDir, modifiedSession);
 			if(null != response) {
 				return(response);
 			}
 		}
-		return(HttpUtils.notFoundResponseHtml("not found; additionally, an over-ride 404 response was not found."));
+		return(HttpUtils.notFoundResponseHtml(message + "; additionally, an over-ride " + errorCode + " error page was not found."));
+	}
+
+	private static Response get404Response(File rootDir, IHTTPSession httpSession) {
+		return(getErrorRespons(rootDir, httpSession, "404", "not found"));
+	}
+
+	private static Response get500Response(File rootDir, IHTTPSession httpSession) {
+		return(getErrorRespons(rootDir, httpSession, "500", "internal server error"));
 	}
 
 	public static Router getRouter() { return router; }
