@@ -48,5 +48,4 @@ public class SimpleRestServant extends RestRoutable {
 	public Response doHead(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams) {
 		return(doMethod("HEAD", restParams));
 	}
-
 }

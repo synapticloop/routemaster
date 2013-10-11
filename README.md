@@ -33,6 +33,6 @@ You will need to create a ```routemaster.properties``` file which is required to
 
 ## As an aside
 
-The name ```RouteMaster``` pays homage to the original London buses [see the wikipedia entry](http://en.wikipedia.org/wiki/Routemaster) which would take you wherever you would like to go.
+The name ```RouteMaster``` pays homage to the original London buses [(see the wikipedia entry)](http://en.wikipedia.org/wiki/Routemaster) which would take you wherever you would like to go.
 
 The favicon is also related, showing a depiction of the back top window of a routemaster bus.

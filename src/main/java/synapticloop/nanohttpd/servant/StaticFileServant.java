@@ -56,6 +56,7 @@ public class StaticFileServant extends Routable {
 		if(!file.canRead()) {
 			// return 403 - or should we just ignore
 		}
+
 		if(file.isDirectory()) {
 			// do we want to serve directory files???
 			File indexFile = getIndexFile(rootDir, uri);
@@ -77,7 +78,7 @@ public class StaticFileServant extends Routable {
 			}
 		}
 
-		return(HttpUtils.okResponse(NanoHTTPD.MIME_PLAINTEXT, absolutePath));
+		return(null);
 	}
 
 	private File getIndexFile(File rootDir, String uri) {

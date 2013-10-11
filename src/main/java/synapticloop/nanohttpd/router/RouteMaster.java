@@ -11,6 +11,8 @@ import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
 import synapticloop.nanohttpd.utils.HttpUtils;
+import synapticloop.nanohttpd.utils.ModifiableSession;
+import synapticloop.nanohttpd.utils.RequestLogger;
 import synapticloop.nanohttpd.utils.SimpleLogger;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
@@ -19,6 +21,10 @@ public class RouteMaster {
 	private static ConcurrentHashMap<String, Routable> ROUTER_CACHE = new ConcurrentHashMap<String, Routable>();
 	private static Router router = null;
 	private static HashSet<String> indexFiles = new HashSet<String>();
+	private static ConcurrentHashMap<String, String> ERROR_PAGE_CACHE = new ConcurrentHashMap<String, String>();
+
+	private static boolean logRequests = false;
+	private static RequestLogger requestLogger = new RequestLogger();
 
 	static {
 		// find the route.properties file
@@ -107,6 +113,13 @@ public class RouteMaster {
 		for (String welcomeFile : indexFiles) {
 			SimpleLogger.logInfo("Index file: => " + welcomeFile);
 		}
+
+		// now print out the error pages
+		Enumeration<String> keys = ERROR_PAGE_CACHE.keys();
+		while (keys.hasMoreElements()) {
+			String key = (String) keys.nextElement();
+			SimpleLogger.logInfo("Error page: " + key + " => " + ERROR_PAGE_CACHE.get(key));
+		}
 	}
 
 	/**
@@ -123,6 +136,11 @@ public class RouteMaster {
 				String split = splits[i].trim();
 				indexFiles.add(split);
 			}
+		} else if(key.startsWith("option.error.")) {
+			String subKey = key.substring("option.error.".length());
+			ERROR_PAGE_CACHE.put(subKey, properties.getProperty(key));
+		} else if(key.equals("option.log")) {
+			logRequests = properties.getProperty("option.log").equalsIgnoreCase("true");
 		}
 	}
 
@@ -139,6 +157,7 @@ public class RouteMaster {
 	}
 
 	public static Response route(File rootDir, IHTTPSession httpSession) {
+		requestLogger.logRequest(httpSession);
 		if(null != router) {
 			// try and find the route
 			String uri = httpSession.getUri();
@@ -150,16 +169,32 @@ public class RouteMaster {
 				Routable routable = router.route(httpSession, stringTokenizer);
 				if(null != routable) {
 					ROUTER_CACHE.put(uri, routable);
-					return(routable.serve(rootDir, httpSession));
+					Response serve = routable.serve(rootDir, httpSession);
+					if(null != serve) {
+						return(serve);
+					} else {
+						return(getNotFoundResponse(rootDir, httpSession));
+					}
 				} else {
-					// return 404 perhaps
-					return(HttpUtils.notFoundResponseHtml("Not Found"));
+					// have a null route-able return 404 perhaps
+					return(getNotFoundResponse(rootDir, httpSession));
 				}
 			}
 		} else {
-			// @TODO this should actually be a 404 perhaps...
-			return(HttpUtils.notFoundResponseHtml("Not Found"));
+			return(getNotFoundResponse(rootDir, httpSession));
 		}
+	}
+
+	private static Response getNotFoundResponse(File rootDir, IHTTPSession httpSession) {
+		if(ERROR_PAGE_CACHE.containsKey("404")) {
+			ModifiableSession modifiedSession = new ModifiableSession(httpSession);
+			modifiedSession.setUri(ERROR_PAGE_CACHE.get("404"));
+			Response response = route(rootDir, modifiedSession);
+			if(null != response) {
+				return(response);
+			}
+		}
+		return(HttpUtils.notFoundResponseHtml("not found; additionally, an over-ride 404 response was not found."));
 	}
 
 	public static Router getRouter() { return router; }

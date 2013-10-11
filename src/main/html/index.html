@@ -11,6 +11,12 @@
 <div id="main">
 	<h1>RouteMaster <em>(nanoHTTPD edition)</em></h1>
 
+	<p><strong>Congratulations!!</strong> - The Route Master Server is up and running!</p>
+
+	<p>Below is an example of the rest routing in action with the routing being bound to <span class="code">/rest/%action%/</span></p>
+
+	<p>The first section is a call to <span class="code">/rest/routes/</span>, whilst the second section is a call to <span class="code">/rest/cache/</span></p>
+
 	<h2>Routes</h2>
 	<div id="routes">
 	</div>
@@ -19,6 +25,7 @@
 	<div id="cache">
 	</div>
 </div>
+
 <script>
 	$(document).ready(function() {
 		$.ajax({

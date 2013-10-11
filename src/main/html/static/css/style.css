@@ -30,10 +30,18 @@ h2 {
 	border-bottom: 1px solid #adadad;
 }
 
+p {
+	margin-bottom: 7px;
+}
 em {
 	font-style: italic;
 }
 
 strong {
 	font-weight: bold;
+}
+
+.code {
+	color: #999900;
+	border-bottom: 1px solid #999900;
 }
