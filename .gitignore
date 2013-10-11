@@ -4,3 +4,5 @@ src/test/java/
 NanoHttpd-LICENSE.md
 src/main/java/routemaster.properties
 *~
+build/
+dist/

@@ -55,13 +55,13 @@ public class RouteMasterRestServant extends RestRoutable {
 
 		Routable defaultRoute = router.getDefaultRoute();
 		if(null != defaultRoute) {
-			printRoutable(content, router, defaultRoute);
+			printRoutable(content, router, defaultRoute, false);
 		}
 		
 			
 		Routable wildcardRoute = router.getWildcardRoute();
 		if(null != wildcardRoute) {
-			printRoutable(content, router, wildcardRoute);
+			printRoutable(content, router, wildcardRoute, true);
 		}
 
 		HashMap<String,Router> routerMap = router.getRouterMap();
@@ -72,7 +72,7 @@ public class RouteMasterRestServant extends RestRoutable {
 		}
 	}
 
-	private void printRoutable(StringBuilder content, Router router, Routable routable) {
+	private void printRoutable(StringBuilder content, Router router, Routable routable, boolean isWildcard) {
 		content.append("<p>");
 		if(routable instanceof RestRoutable) {
 			content.append("REST:");
@@ -81,6 +81,9 @@ public class RouteMasterRestServant extends RestRoutable {
 		}
 		content.append(" <strong>");
 		content.append(router.getRoute());
+		if(isWildcard) {
+			content.append("*");
+		}
 		content.append("</strong> =&gt; ");
 
 		content.append(routable.getClass().getCanonicalName());

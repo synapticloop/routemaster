@@ -12,11 +12,17 @@ you will need the following:
 then run
 
 ```
-ant download-depandencies build 
+ant download-depandencies dist 
 ```
 
-whicch will download all of the nanohttpd components and build the RouteMaster
+which will download all of the nanohttpd components and build the RouteMaster, and place it
 
-You will need to create a ```routemaster.properties``` file which is required to be in the root of your classpath (e.g. src/main/java).  See ```routemaster.example.properties``` file for more information.
+You will need to create a ```routemaster.properties``` file which is required to be in the root of your classpath (e.g. src/main/java).  See ```routemaster.properties``` file for more information.
 
 # This is a work in progress at the moment
+
+## As an aside
+
+The name ```RouteMaster``` pays homage to the original London buses [wikipedia](http://en.wikipedia.org/wiki/Routemaster) which would take you wherever you would like to go.
+
+The favicon is also related, showing a depiction of the back top window of a routemaster bus.
