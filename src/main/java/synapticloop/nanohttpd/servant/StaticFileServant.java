@@ -12,9 +12,9 @@ import java.util.Properties;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
-import synapticloop.nanohttpd.Routable;
-import synapticloop.nanohttpd.RouteMaster;
 import synapticloop.nanohttpd.logger.SimpleLogger;
+import synapticloop.nanohttpd.router.Routable;
+import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.utils.HttpUtils;
 
 public class StaticFileServant implements Routable {

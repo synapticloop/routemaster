@@ -1,4 +1,4 @@
-package synapticloop.nanohttpd;
+package synapticloop.nanohttpd.router;
 
 import java.util.HashMap;
 import java.util.Iterator;
