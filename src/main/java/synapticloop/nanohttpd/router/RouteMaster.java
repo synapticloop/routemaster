@@ -15,12 +15,13 @@ import synapticloop.nanohttpd.utils.ModifiableSession;
 import synapticloop.nanohttpd.utils.SimpleLogger;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
+import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public class RouteMaster {
 	private static ConcurrentHashMap<String, Routable> ROUTER_CACHE = new ConcurrentHashMap<String, Routable>();
 	private static Router router = null;
 	private static HashSet<String> indexFiles = new HashSet<String>();
-	private static ConcurrentHashMap<String, String> ERROR_PAGE_CACHE = new ConcurrentHashMap<String, String>();
+	private static ConcurrentHashMap<Integer, String> ERROR_PAGE_CACHE = new ConcurrentHashMap<Integer, String>();
 
 	static {
 		// find the route.properties file
@@ -111,9 +112,9 @@ public class RouteMaster {
 		}
 
 		// now print out the error pages
-		Enumeration<String> keys = ERROR_PAGE_CACHE.keys();
+		Enumeration<Integer> keys = ERROR_PAGE_CACHE.keys();
 		while (keys.hasMoreElements()) {
-			String key = (String) keys.nextElement();
+			Integer key = (Integer) keys.nextElement();
 			SimpleLogger.logInfo("Error page: " + key + " => " + ERROR_PAGE_CACHE.get(key));
 		}
 	}
@@ -134,7 +135,12 @@ public class RouteMaster {
 			}
 		} else if(key.startsWith("option.error.")) {
 			String subKey = key.substring("option.error.".length());
-			ERROR_PAGE_CACHE.put(subKey, properties.getProperty(key));
+			try {
+				int parseInt = Integer.parseInt(subKey);
+				ERROR_PAGE_CACHE.put(parseInt, properties.getProperty(key));
+			} catch(NumberFormatException nfex) {
+				SimpleLogger.logFatal("Could not parse error key '" + subKey + "'.", nfex);
+			}
 		} else if(key.equals("option.log")) {
 //			logRequests = properties.getProperty("option.log").equalsIgnoreCase("true");
 		}
@@ -193,24 +199,28 @@ public class RouteMaster {
 		}
 	}
 
-	private static Response getErrorResponse(File rootDir, IHTTPSession httpSession, String errorCode, String message) {
-		if(ERROR_PAGE_CACHE.containsKey(errorCode)) {
+	private static Response getErrorResponse(File rootDir, IHTTPSession httpSession, Status status, String message) {
+		
+		int requestStatus = status.getRequestStatus();
+		String uri = ERROR_PAGE_CACHE.get(requestStatus);
+		if(ERROR_PAGE_CACHE.containsKey(requestStatus)) {
 			ModifiableSession modifiedSession = new ModifiableSession(httpSession);
-			modifiedSession.setUri(ERROR_PAGE_CACHE.get(errorCode));
+			modifiedSession.setUri(uri);
 			Response response = route(rootDir, modifiedSession);
+			response.setStatus(status);
 			if(null != response) {
 				return(response);
 			}
 		}
-		return(HttpUtils.notFoundResponseHtml(message + "; additionally, an over-ride " + errorCode + " error page was not found."));
+		return(HttpUtils.notFoundResponseHtml(message + "; additionally, an over-ride " + status.toString() + " error page was not found."));
 	}
 
 	private static Response get404Response(File rootDir, IHTTPSession httpSession) {
-		return(getErrorResponse(rootDir, httpSession, "404", "not found"));
+		return(getErrorResponse(rootDir, httpSession, Response.Status.NOT_FOUND, "not found"));
 	}
 
 	private static Response get500Response(File rootDir, IHTTPSession httpSession) {
-		return(getErrorResponse(rootDir, httpSession, "500", "internal server error"));
+		return(getErrorResponse(rootDir, httpSession, Response.Status.INTERNAL_ERROR, "internal server error"));
 	}
 
 	public static Router getRouter() { return router; }
