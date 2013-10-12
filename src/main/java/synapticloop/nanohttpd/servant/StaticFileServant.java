@@ -10,13 +10,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 
-import fi.iki.elonen.NanoHTTPD;
-import fi.iki.elonen.NanoHTTPD.IHTTPSession;
-import fi.iki.elonen.NanoHTTPD.Response;
 import synapticloop.nanohttpd.router.Routable;
 import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.utils.HttpUtils;
 import synapticloop.nanohttpd.utils.SimpleLogger;
+import fi.iki.elonen.NanoHTTPD;
+import fi.iki.elonen.NanoHTTPD.IHTTPSession;
+import fi.iki.elonen.NanoHTTPD.Response;
 
 public class StaticFileServant extends Routable {
 
@@ -95,7 +95,7 @@ public class StaticFileServant extends Routable {
 	}
 
 	private Response serveFile(File file, Map<String, String> header, String extension) {
-		String mimeType = NanoHTTPD.MIME_PLAINTEXT;
+		String mimeType = NanoHTTPD.MIME_HTML;
 		Response res = null;
 
 		if(MIME_TYPES.containsKey(extension)) {

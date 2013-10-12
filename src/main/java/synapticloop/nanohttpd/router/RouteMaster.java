@@ -166,7 +166,12 @@ public class RouteMaster {
 			String uri = httpSession.getUri();
 			// do we have a cached version of this?
 			if(ROUTER_CACHE.containsKey(uri)) {
-				return(ROUTER_CACHE.get(uri).serve(rootDir, httpSession));
+				Response serve = ROUTER_CACHE.get(uri).serve(rootDir, httpSession);
+				if(serve == null) {
+					return(get404Response(rootDir, httpSession));
+				} else {
+					return(serve);
+				}
 			} else {
 				StringTokenizer stringTokenizer = new StringTokenizer(uri, "/", false);
 				Routable routable = router.route(httpSession, stringTokenizer);
