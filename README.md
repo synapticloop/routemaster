@@ -14,33 +14,12 @@ This will get it up and running on port 5474, although this won't actually do to
 
 ## How do I get a nice demo up and running?
 
-  1 clone this repository 
-
-```
-git clone https://github.com/synapticloop/routemaster.git
-```
-
-  2 change to the routemaster directory
-
-```
-cd routemaster
-```
-
-  3 build the project
-
-```
-ant download-dependencies dist-full
-```
-
-  4 run the demo server
-
-```
-java -jar dist/routemaster-full.jar -d src/main/html/
-```
-
-This will run the server on port 5474
-
-  5 point your browser to [http://localhost:5474/](http://localhost:5474/)
+  1. Download the ```dist/routemaster-full.zip``` file
+  1. unzip the file, which will create a ```routemaster``` directory
+  1. go into the directory
+  1. and run ```java -jar routemaster-full.jar```
+  1. point a browser at [http://localhost:5474](http://localhost:5474)
+  1. done!!!
 
 ## How do I build RouteMaster?
 
