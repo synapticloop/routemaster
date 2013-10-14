@@ -4,6 +4,7 @@
 	<property name="dist.dir" value="dist" />
 
 	<property name="src.dir" value="src/main/java" />
+	<property name="src.html.dir" value="src/main/html" />
 
 	<target name="download-dependencies">
 		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/LICENSE.md" dest="./NanoHttpd-LICENSE.md" />
@@ -22,17 +23,45 @@
 		<mkdir dir="${dist.dir}" />
 	</target>
 
-	<target name="dist-full" depends="init">
+	<target name="clean">
+		<delete>
+			<fileset dir="${build.dir}">
+				<include name="**/*.*" />
+			</fileset>
+		</delete>
+		<delete>
+			<fileset dir="${dist.dir}">
+				<include name="**/*.*" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="dist-example" depends="clean,init">
 		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" />
 
-		<jar destfile="${dist.dir}/${ant.project.name}-full.jar">
+		<jar destfile="${dist.dir}/${ant.project.name}-full.jar" manifest="src/main/META-INF/manifest.mf">
 			<fileset dir="${build.dir}">
-				<include name="**/*.class"/>
+				<include name="**/*.class" />
 			</fileset>
 			<fileset dir="${src.dir}" >
-				<include name="*.properties"/>
+				<include name="mimetypes.properties" />
 			</fileset>
 		</jar>
+		<!--
+		  Now zip it all up
+		  -->
+		<zip destfile="${dist.dir}/${ant.project.name}-example.zip" >
+			<zipfileset dir="${dist.dir}" prefix="routemaster">
+				<include name="${ant.project.name}-full.jar" />
+			</zipfileset>
+			<zipfileset dir="${src.dir}" prefix="routemaster">
+				<include name="mimetypes.properties" />
+				<include name="routemaster.properties" />
+			</zipfileset>
+			<zipfileset dir="${src.html.dir}" prefix="routemaster">
+				<include name="**/*.*" />
+			</zipfileset>
+		</zip>
 	</target>
 
 	<target name="dist" depends="init">
@@ -40,10 +69,10 @@
 
 		<jar destfile="${dist.dir}/${ant.project.name}.jar">
 			<fileset dir="${build.dir}">
-				<include name="synapticloop/**/*.class"/>
+				<include name="synapticloop/**/*.class" />
 			</fileset>
 			<fileset dir="${src.dir}" >
-				<include name="mimetypes.properties"/>
+				<include name="mimetypes.properties" />
 			</fileset>
 		</jar>
 	</target>

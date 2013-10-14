@@ -1,6 +1,8 @@
 package synapticloop.nanohttpd.router;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -28,6 +30,15 @@ public class RouteMaster {
 		Properties properties = new Properties();
 		try {
 			InputStream inputStream = RouteMaster.class.getResourceAsStream("/routemaster.properties");
+			// maybe it is in the current working directory
+
+			if(null == inputStream) {
+				File routemasterFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "routemaster.properties");
+				if(routemasterFile.exists() && routemasterFile.canRead()) {
+					inputStream = new BufferedInputStream(new FileInputStream(routemasterFile));
+				}
+			}
+
 			if(null != inputStream) {
 				properties.load(inputStream);
 
@@ -91,10 +102,10 @@ public class RouteMaster {
 					}
 				}
 			} else {
-				SimpleLogger.logFatal("Could not load the 'routemaster.properties' file, ignoring...");
+				SimpleLogger.logFatal("Could not load the 'routemaster.properties' file, ignoring... (although this is going to be a pretty boring experience!)");
 			}
 		} catch (IOException ioex) {
-			SimpleLogger.logFatal("Could not load the 'routemaster.properties' file, ignoring...", ioex);
+			SimpleLogger.logFatal("Could not load the 'routemaster.properties' file, ignoring... (although this is going to be a pretty boring experience!)", ioex);
 		}
 
 		if(null != router) {
