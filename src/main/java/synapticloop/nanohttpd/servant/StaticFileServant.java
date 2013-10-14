@@ -1,12 +1,15 @@
 package synapticloop.nanohttpd.servant;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -20,6 +23,8 @@ import fi.iki.elonen.NanoHTTPD.Response;
 
 public class StaticFileServant extends Routable {
 
+	private static final String MIMETYPES_PROPERTIES = "mimetypes.properties";
+
 	public StaticFileServant(String routeContext) {
 		super(routeContext);
 	}
@@ -27,8 +32,18 @@ public class StaticFileServant extends Routable {
 	private static HashMap<String, String> MIME_TYPES = new HashMap<String, String>();
 	static {
 		Properties properties = new Properties();
-		InputStream inputStream = RouteMaster.class.getResourceAsStream("/mimetypes.properties");
-		if(null != inputStream) {
+		InputStream inputStream = RouteMaster.class.getResourceAsStream("/" + MIMETYPES_PROPERTIES);
+
+		// maybe it is in the current working directory
+		if(null == inputStream) {
+			File mimetypesFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") + MIMETYPES_PROPERTIES);
+			if(mimetypesFile.exists() && mimetypesFile.canRead()) {
+				try {
+					inputStream = new BufferedInputStream(new FileInputStream(mimetypesFile));
+				} catch (FileNotFoundException fnfex) {
+				}
+			}
+		} else {
 			try {
 				properties.load(inputStream);
 				Enumeration<Object> keys = properties.keys();
@@ -37,8 +52,20 @@ public class StaticFileServant extends Routable {
 					MIME_TYPES.put(key, properties.getProperty(key));
 				}
 			} catch (IOException ioex) {
-				SimpleLogger.logFatal("Could not load the 'mimetypes.properties' file, ignoring.", ioex);
+				SimpleLogger.logFatal("Could not load the '" + MIMETYPES_PROPERTIES + "' file, ignoring.", ioex);
 			}
+		}
+
+		Iterator<String> iterator = MIME_TYPES.keySet().iterator();
+		SimpleLogger.logInfo("Registered mime types:");
+		SimpleLogger.logInfo("======================");
+		if(!iterator.hasNext()) {
+			SimpleLogger.logInfo("None!!! - perhaps you need to have a " + MIMETYPES_PROPERTIES + " file in the current directory?");
+		}
+
+		while (iterator.hasNext()) {
+			String mimeType = (String) iterator.next();
+			SimpleLogger.logInfo(mimeType + " => " + MIME_TYPES.get(mimeType));
 		}
 	}
 

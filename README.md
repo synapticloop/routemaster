@@ -49,6 +49,16 @@ or
 
 See ```routemaster.properties``` file for more information.
 
+You will also need to have a mimetypes.properties file which is also required to be either
+
+  + in the root of your classpath (e.g. src/main/java).  
+
+or
+
+  + in the same directory from whence the programme was launched
+
+This will allow you to over-ride the mimetypes that are served up.
+
 ## Options
 
 Following the NanoHTTPD, you may pass in the following options

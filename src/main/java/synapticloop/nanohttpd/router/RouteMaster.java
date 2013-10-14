@@ -20,20 +20,23 @@ import fi.iki.elonen.NanoHTTPD.Response;
 import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public class RouteMaster {
-	private static ConcurrentHashMap<String, Routable> ROUTER_CACHE = new ConcurrentHashMap<String, Routable>();
+	private static final String ROUTEMASTER_PROPERTIES = "routemaster.properties";
+
 	private static Router router = null;
+
 	private static HashSet<String> indexFiles = new HashSet<String>();
 	private static ConcurrentHashMap<Integer, String> ERROR_PAGE_CACHE = new ConcurrentHashMap<Integer, String>();
+	private static ConcurrentHashMap<String, Routable> ROUTER_CACHE = new ConcurrentHashMap<String, Routable>();
 
 	static {
 		// find the route.properties file
 		Properties properties = new Properties();
 		try {
-			InputStream inputStream = RouteMaster.class.getResourceAsStream("/routemaster.properties");
-			// maybe it is in the current working directory
+			InputStream inputStream = RouteMaster.class.getResourceAsStream("/" + ROUTEMASTER_PROPERTIES);
 
+			// maybe it is in the current working directory
 			if(null == inputStream) {
-				File routemasterFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "routemaster.properties");
+				File routemasterFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") + ROUTEMASTER_PROPERTIES);
 				if(routemasterFile.exists() && routemasterFile.canRead()) {
 					inputStream = new BufferedInputStream(new FileInputStream(routemasterFile));
 				}
@@ -102,15 +105,19 @@ public class RouteMaster {
 					}
 				}
 			} else {
-				SimpleLogger.logFatal("Could not load the 'routemaster.properties' file, ignoring... (although this is going to be a pretty boring experience!)");
+				SimpleLogger.logFatal("Could not load the '" + ROUTEMASTER_PROPERTIES + "' file, ignoring... (although this is going to be a pretty boring experience!)");
 			}
 		} catch (IOException ioex) {
-			SimpleLogger.logFatal("Could not load the 'routemaster.properties' file, ignoring... (although this is going to be a pretty boring experience!)", ioex);
+			SimpleLogger.logFatal("Could not load the '" + ROUTEMASTER_PROPERTIES + "' file, ignoring... (although this is going to be a pretty boring experience!)", ioex);
 		}
 
+		SimpleLogger.logInfo("Registered routes:");
+		SimpleLogger.logInfo("==================");
 		if(null != router) {
 			router.printRoutes();
 		}
+		SimpleLogger.logInfo("Registered index files:");
+		SimpleLogger.logInfo("=======================");
 
 		if(indexFiles.size() == 0) {
 			// default welcomeFiles
@@ -123,6 +130,8 @@ public class RouteMaster {
 		}
 
 		// now print out the error pages
+		SimpleLogger.logInfo("Registered error pages:");
+		SimpleLogger.logInfo("=======================");
 		Enumeration<Integer> keys = ERROR_PAGE_CACHE.keys();
 		while (keys.hasMoreElements()) {
 			Integer key = (Integer) keys.nextElement();

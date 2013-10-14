@@ -59,10 +59,7 @@
 
 		<jar destfile="${dist.dir}/${ant.project.name}.jar" manifest="src/main/META-INF/manifest.mf">
 			<fileset dir="${build.dir}">
-				<include name="synapticloop/**/*.class" />
-			</fileset>
-			<fileset dir="${src.dir}" >
-				<include name="mimetypes.properties" />
+				<include name="**/*.class" />
 			</fileset>
 		</jar>
 	</target>

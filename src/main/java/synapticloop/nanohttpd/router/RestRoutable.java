@@ -58,7 +58,7 @@ public abstract class RestRoutable extends Routable {
 		case HEAD:
 			return(doHead(rootDir, httpSession, restParams, unmappedParams));
 		}
-		// TODO - correct return method here
+		// TODO - correct return method here - waiting for 405 to be pulled in
 		return(null);
 	}
 
