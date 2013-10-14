@@ -37,9 +37,31 @@ ant download-dependencies dist
 which will download all of the nanohttpd components and build the RouteMaster, 
 and place it in the dist directory.
 
-You will need to create a ```routemaster.properties``` file which is required to be in the root of your classpath (e.g. src/main/java).  See ```routemaster.properties``` file for more information.
+You will need to create a ```routemaster.properties``` file which is required to be either
 
-# This is a work in progress at the moment
+  + in the root of your classpath (e.g. src/main/java).  
+
+or
+
+  + in the same directory from whence the programme was launched
+
+See ```routemaster.properties``` file for more information.
+
+## Options
+
+Following the NanoHTTPD, you may pass in the following options
+
+```
+- h      
+--host   The host to bind to - default 127.0.0.1
+
+-p
+--port   The port to bind to - default 5474
+
+-d
+--dir    The directory that the html files reside in
+
+```
 
 ## As an aside
 
