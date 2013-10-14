@@ -35,41 +35,50 @@ public abstract class RestRoutable extends Routable {
 			restParams.put(restParamName, value);
 			i++;
 		}
-		
+
+		StringBuilder stringBuilder = new StringBuilder();
+		while(i < splits.length) {
+			stringBuilder.append("/");
+			stringBuilder.append(splits[i]);
+			i++;
+		}
+
+		String unmappedParams = stringBuilder.toString();
+
 		Method method = httpSession.getMethod();
 		switch(method) {
 		case GET:
-			return(doGet(rootDir, httpSession, restParams));
+			return(doGet(rootDir, httpSession, restParams, unmappedParams));
 		case POST:
-			return(doPost(rootDir, httpSession, restParams));
+			return(doPost(rootDir, httpSession, restParams, unmappedParams));
 		case PUT:
-			return(doPut(rootDir, httpSession, restParams));
+			return(doPut(rootDir, httpSession, restParams, unmappedParams));
 		case DELETE:
-			return(doDelete(rootDir, httpSession, restParams));
+			return(doDelete(rootDir, httpSession, restParams, unmappedParams));
 		case HEAD:
-			return(doHead(rootDir, httpSession, restParams));
+			return(doHead(rootDir, httpSession, restParams, unmappedParams));
 		}
 		// TODO - correct return method here
 		return(null);
 	}
 
-	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams) {
+	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedHtmlResponse("Method not allowed"));
 	}
 
-	public Response doPost(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams) {
+	public Response doPost(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedHtmlResponse("Method not allowed"));
 	}
 
-	public Response doPut(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams) {
+	public Response doPut(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedHtmlResponse("Method not allowed"));
 	}
 
-	public Response doDelete(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams) {
+	public Response doDelete(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedHtmlResponse("Method not allowed"));
 	}
 
-	public Response doHead(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams) {
+	public Response doHead(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedHtmlResponse("Method not allowed"));
 	}
 }

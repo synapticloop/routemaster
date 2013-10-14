@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import fi.iki.elonen.NanoHTTPD.IHTTPSession;
-import fi.iki.elonen.NanoHTTPD.Response;
 import synapticloop.nanohttpd.router.RestRoutable;
 import synapticloop.nanohttpd.utils.HttpUtils;
+import fi.iki.elonen.NanoHTTPD.IHTTPSession;
+import fi.iki.elonen.NanoHTTPD.Response;
 
 public class SimpleRestServant extends RestRoutable {
 
@@ -25,27 +25,27 @@ public class SimpleRestServant extends RestRoutable {
 		return(stringBuilder.toString());
 	}
 
-	private Response doMethod(String method, HashMap<String, String> restParams) {
-		return(HttpUtils.okResponseHtml(this.getClass().getName() + " [ " + method + " ] request: says OK, with params: " + getRestParams(restParams)));
+	private Response doMethod(String method, HashMap<String, String> restParams, String unmappedParams) {
+		return(HttpUtils.okResponseHtml(this.getClass().getName() + " [ " + method + " ] request: says OK, with params: " + getRestParams(restParams) + ", and un-mapped params of:" + unmappedParams));
 	}
 
-	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams) {
-		return(doMethod("GET", restParams));
+	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+		return(doMethod("GET", restParams, unmappedParams));
 	}
 
-	public Response doPost(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams) {
-		return(doMethod("POST", restParams));
+	public Response doPost(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+		return(doMethod("POST", restParams, unmappedParams));
 	}
 
-	public Response doPut(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams) {
-		return(doMethod("PUT", restParams));
+	public Response doPut(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+		return(doMethod("PUT", restParams, unmappedParams));
 	}
 
-	public Response doDelete(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams) {
-		return(doMethod("DELETE", restParams));
+	public Response doDelete(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+		return(doMethod("DELETE", restParams, unmappedParams));
 	}
 
-	public Response doHead(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams) {
-		return(doMethod("HEAD", restParams));
+	public Response doHead(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+		return(doMethod("HEAD", restParams, unmappedParams));
 	}
 }

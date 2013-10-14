@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
-import fi.iki.elonen.NanoHTTPD.IHTTPSession;
-import fi.iki.elonen.NanoHTTPD.Response;
 import synapticloop.nanohttpd.router.RestRoutable;
 import synapticloop.nanohttpd.router.Routable;
 import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.router.Router;
 import synapticloop.nanohttpd.utils.HttpUtils;
+import fi.iki.elonen.NanoHTTPD.IHTTPSession;
+import fi.iki.elonen.NanoHTTPD.Response;
 
 public class RouteMasterRestServant extends RestRoutable {
 
@@ -21,7 +21,7 @@ public class RouteMasterRestServant extends RestRoutable {
 		super(routeContext, params);
 	}
 
-	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams) {
+	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		String method = restParams.get("method");
 		StringBuilder content = new StringBuilder();
 
