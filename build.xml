@@ -36,23 +36,13 @@
 		</delete>
 	</target>
 
-	<target name="dist-example" depends="clean,init">
-		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" />
-
-		<jar destfile="${dist.dir}/${ant.project.name}-full.jar" manifest="src/main/META-INF/manifest.mf">
-			<fileset dir="${build.dir}">
-				<include name="**/*.class" />
-			</fileset>
-			<fileset dir="${src.dir}" >
-				<include name="mimetypes.properties" />
-			</fileset>
-		</jar>
+	<target name="dist-example" depends="clean,init,dist">
 		<!--
 		  Now zip it all up
 		  -->
 		<zip destfile="${dist.dir}/${ant.project.name}-example.zip" >
 			<zipfileset dir="${dist.dir}" prefix="routemaster">
-				<include name="${ant.project.name}-full.jar" />
+				<include name="${ant.project.name}.jar" />
 			</zipfileset>
 			<zipfileset dir="${src.dir}" prefix="routemaster">
 				<include name="mimetypes.properties" />
@@ -67,7 +57,7 @@
 	<target name="dist" depends="init">
 		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" />
 
-		<jar destfile="${dist.dir}/${ant.project.name}.jar">
+		<jar destfile="${dist.dir}/${ant.project.name}.jar" manifest="src/main/META-INF/manifest.mf">
 			<fileset dir="${build.dir}">
 				<include name="synapticloop/**/*.class" />
 			</fileset>

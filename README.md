@@ -20,7 +20,7 @@ This will get it up and running on port 5474, although this won't actually do to
   1. Download the ```dist/routemaster-full.zip``` file
   1. unzip the file, which will create a ```routemaster``` directory
   1. go into the directory
-  1. and run ```java -jar routemaster-full.jar```
+  1. and run ```java -jar routemaster.jar```
   1. point a browser at [http://localhost:5474](http://localhost:5474)
   1. done!!!
 
@@ -37,8 +37,7 @@ then run
 ant download-dependencies dist 
 ```
 
-which will download all of the nanohttpd components and build the RouteMaster, 
-and place it in the dist directory.
+which will download all of the nanohttpd components and build the RouteMaster, and place it in the dist directory.
 
 You will need to create a ```routemaster.properties``` file which is required to be either
 
