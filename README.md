@@ -2,6 +2,9 @@ RouteMaster
 ===========
 Handy routing controller for the truly excellent [nanohttpd](https://github.com/NanoHttpd/nanohttpd) tiny, easily embeddable HTTP Java server.
 
+![routemaster home page](https://raw.github.com/synapticloop/routemaster/master/src/main/wiki/images/nano-httpd-home.png)
+
+
 ## How do I run RouteMaster?
 
 The quickest way to get it up and running is to download ```dist/routemaster.jar``` and run
