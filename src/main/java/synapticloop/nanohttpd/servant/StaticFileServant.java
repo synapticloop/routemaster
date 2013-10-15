@@ -35,25 +35,27 @@ public class StaticFileServant extends Routable {
 		InputStream inputStream = RouteMaster.class.getResourceAsStream("/" + MIMETYPES_PROPERTIES);
 
 		// maybe it is in the current working directory
+		File mimetypesFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") + MIMETYPES_PROPERTIES);
+
 		if(null == inputStream) {
-			File mimetypesFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") + MIMETYPES_PROPERTIES);
 			if(mimetypesFile.exists() && mimetypesFile.canRead()) {
 				try {
 					inputStream = new BufferedInputStream(new FileInputStream(mimetypesFile));
 				} catch (FileNotFoundException fnfex) {
+					// do nothing - one doesn't exist
 				}
 			}
-		} else {
-			try {
-				properties.load(inputStream);
-				Enumeration<Object> keys = properties.keys();
-				while (keys.hasMoreElements()) {
-					String key = (String) keys.nextElement();
-					MIME_TYPES.put(key, properties.getProperty(key));
-				}
-			} catch (IOException ioex) {
-				SimpleLogger.logFatal("Could not load the '" + MIMETYPES_PROPERTIES + "' file, ignoring.", ioex);
+		}
+
+		try {
+			properties.load(inputStream);
+			Enumeration<Object> keys = properties.keys();
+			while (keys.hasMoreElements()) {
+				String key = (String) keys.nextElement();
+				MIME_TYPES.put(key, properties.getProperty(key));
 			}
+		} catch (IOException ioex) {
+			SimpleLogger.logFatal("Could not load the '" + MIMETYPES_PROPERTIES + "' file, ignoring.", ioex);
 		}
 
 		Iterator<String> iterator = MIME_TYPES.keySet().iterator();
