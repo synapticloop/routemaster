@@ -54,7 +54,7 @@
 		</zip>
 	</target>
 
-	<target name="dist" depends="init">
+	<target name="dist" depends="clean,init">
 		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" />
 
 		<jar destfile="${dist.dir}/${ant.project.name}.jar" manifest="src/main/META-INF/manifest.mf">
