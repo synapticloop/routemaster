@@ -35,15 +35,17 @@ public class StaticFileServant extends Routable {
 		InputStream inputStream = RouteMaster.class.getResourceAsStream("/" + MIMETYPES_PROPERTIES);
 
 		// maybe it is in the current working directory
-		File mimetypesFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") + MIMETYPES_PROPERTIES);
 
 		if(null == inputStream) {
+			File mimetypesFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") + MIMETYPES_PROPERTIES);
 			if(mimetypesFile.exists() && mimetypesFile.canRead()) {
 				try {
 					inputStream = new BufferedInputStream(new FileInputStream(mimetypesFile));
 				} catch (FileNotFoundException fnfex) {
 					// do nothing - one doesn't exist
 				}
+			} else {
+				SimpleLogger.logWarn("Could not load the '" + MIMETYPES_PROPERTIES + "' file from the classpath, or from the current directory.");
 			}
 		}
 
