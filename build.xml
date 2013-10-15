@@ -24,12 +24,12 @@
 	</target>
 
 	<target name="clean">
-		<delete>
+		<delete  failonerror="false">
 			<fileset dir="${build.dir}">
 				<include name="**/*.*" />
 			</fileset>
 		</delete>
-		<delete>
+		<delete failonerror="false">
 			<fileset dir="${dist.dir}">
 				<include name="**/*.*" />
 			</fileset>
