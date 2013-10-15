@@ -17,7 +17,7 @@ This will get it up and running on port 5474, although this won't actually do to
 
 ## How do I get a nice demo up and running?
 
-  1. Download the ```dist/routemaster-full.zip``` file
+  1. Download the ```dist/routemaster-example.zip``` file
   1. unzip the file, which will create a ```routemaster``` directory
   1. go into the directory
   1. and run ```java -jar routemaster.jar```

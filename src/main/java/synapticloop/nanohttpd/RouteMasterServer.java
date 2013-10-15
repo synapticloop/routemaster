@@ -70,8 +70,8 @@ public class RouteMasterServer extends NanoHTTPD {
 				quiet = true;
 			} else if (args[i].equalsIgnoreCase("-d") || args[i].equalsIgnoreCase("--dir")) {
 				rootDir = new File(args[i + 1]).getAbsoluteFile();
-      } else if (args[i].equalsIgnoreCase("--licence")) {
-        System.out.println(LICENCE + "\n");
+			} else if (args[i].equalsIgnoreCase("--licence")) {
+				System.out.println(LICENCE + "\n");
 			} else if (args[i].startsWith("-X:")) {
 				int dot = args[i].indexOf('=');
 				if (dot > 0) {
