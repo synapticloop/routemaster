@@ -41,6 +41,14 @@ strong {
 	font-weight: bold;
 }
 
+ol {
+	list-style-type: decimal;
+}
+ol li {
+	padding-bottom: 7px;
+	margin-left: 40px;
+}
+
 .code {
 	color: #999900;
 	border-bottom: 1px solid #999900;
