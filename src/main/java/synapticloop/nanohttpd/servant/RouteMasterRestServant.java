@@ -25,13 +25,15 @@ public class RouteMasterRestServant extends RestRoutable {
 		String method = restParams.get("method");
 		StringBuilder content = new StringBuilder();
 
-		if(method.equals("routes")) {
-			Router router = RouteMaster.getRouter();
-			printRouter(content, router);
-			return(HttpUtils.okResponse(content.toString()));
-		} else if (method.equals("cache")) {
-			printCache(content);
-			return(HttpUtils.okResponse(content.toString()));
+		if(method != null) {
+			if(method.equals("routes")) {
+				Router router = RouteMaster.getRouter();
+				printRouter(content, router);
+				return(HttpUtils.okResponse(content.toString()));
+			} else if (method.equals("cache")) {
+				printCache(content);
+				return(HttpUtils.okResponse(content.toString()));
+			}
 		}
 
 		return(HttpUtils.okResponse(this.getClass().getName() + " [ " + method + " ] request: says OK, with method '" + method + "'"));

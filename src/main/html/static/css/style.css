@@ -45,3 +45,10 @@ strong {
 	color: #999900;
 	border-bottom: 1px solid #999900;
 }
+
+#footer {
+	border-top: 1px solid #000;
+	margin: 12px 0;
+	padding: 12px;
+	text-align: center;
+}

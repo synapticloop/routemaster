@@ -118,8 +118,6 @@ public class RouteMaster {
 			router.getRouters();
 		}
 
-		SimpleLogger.logNull();
-
 		if(indexFiles.size() == 0) {
 			// default welcomeFiles
 			indexFiles.add("index.html");
@@ -127,11 +125,10 @@ public class RouteMaster {
 		}
 
 		SimpleLogger.logTable(new ArrayList(indexFiles), "index files");
-		SimpleLogger.logNull();
 
 		SimpleLogger.logTable(ERROR_PAGE_CACHE, "error pages", "status", "page");
-		SimpleLogger.logNull();
 
+		SimpleLogger.logInfo(RouteMaster.class.getSimpleName() + " initialised.");
 		initialised = true;
 	}
 

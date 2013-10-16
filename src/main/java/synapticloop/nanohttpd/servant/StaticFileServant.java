@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -54,15 +53,13 @@ public class StaticFileServant extends Routable {
 			Enumeration<Object> keys = properties.keys();
 			while (keys.hasMoreElements()) {
 				String key = (String) keys.nextElement();
-				MIME_TYPES.put(key, properties.getProperty(key));
+				getMimeTypes().put(key, properties.getProperty(key));
 			}
 		} catch (IOException ioex) {
 			SimpleLogger.logFatal("Could not load the '" + MIMETYPES_PROPERTIES + "' file, ignoring.", ioex);
 		}
 
-		SimpleLogger.logTable(MIME_TYPES, "registered mime types", "extension", "mime type");
-		SimpleLogger.logNull();
-
+		SimpleLogger.logTable(getMimeTypes(), "registered mime types", "extension", "mime type");
 	}
 
 	public Response serve(File rootDir, IHTTPSession httpSession) {
@@ -121,8 +118,8 @@ public class StaticFileServant extends Routable {
 		String mimeType = NanoHTTPD.MIME_HTML;
 		Response res = null;
 
-		if(MIME_TYPES.containsKey(extension)) {
-			mimeType = MIME_TYPES.get(extension);
+		if(getMimeTypes().containsKey(extension)) {
+			mimeType = getMimeTypes().get(extension);
 		}
 
 		try {
@@ -204,5 +201,9 @@ public class StaticFileServant extends Routable {
 		Response res = new Response(status, mimeType, message);
 		res.addHeader("Accept-Ranges", "bytes");
 		return res;
+	}
+
+	public static HashMap<String, String> getMimeTypes() {
+		return MIME_TYPES;
 	}
 }

@@ -24,6 +24,15 @@
 	<h2>Cache</h2>
 	<div id="cache">
 	</div>
+
+	<h2>Mime Types</h2>
+	<div id="mimetypes">
+	</div>
+
+	<div id="footer">
+		<p>powered by: synapticloop - routemaster - nanohttpd</p>
+	</div>
+
 </div>
 
 <script>
@@ -38,6 +47,12 @@
 			url: "/rest/cache/"
 		}).done(function(data) {
 			$("#cache").append(data);
+		});
+
+		$.ajax({
+			url: "/mimetypes/"
+		}).done(function(data) {
+			$("#mimetypes").append(data);
 		});
 
 	});
