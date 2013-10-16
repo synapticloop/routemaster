@@ -60,17 +60,9 @@ public class StaticFileServant extends Routable {
 			SimpleLogger.logFatal("Could not load the '" + MIMETYPES_PROPERTIES + "' file, ignoring.", ioex);
 		}
 
-		Iterator<String> iterator = MIME_TYPES.keySet().iterator();
-		SimpleLogger.logInfo("Registered mime types:");
-		SimpleLogger.logInfo("======================");
-		if(!iterator.hasNext()) {
-			SimpleLogger.logInfo("None!!! - perhaps you need to have a " + MIMETYPES_PROPERTIES + " file in the current directory?");
-		}
+		SimpleLogger.logTable(MIME_TYPES, "registered mime types", "extension", "mime type");
+		SimpleLogger.logNull();
 
-		while (iterator.hasNext()) {
-			String mimeType = (String) iterator.next();
-			SimpleLogger.logInfo(mimeType + " => " + MIME_TYPES.get(mimeType));
-		}
 	}
 
 	public Response serve(File rootDir, IHTTPSession httpSession) {

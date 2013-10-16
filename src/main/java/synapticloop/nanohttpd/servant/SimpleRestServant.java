@@ -26,7 +26,7 @@ public class SimpleRestServant extends RestRoutable {
 	}
 
 	private Response doMethod(String method, HashMap<String, String> restParams, String unmappedParams) {
-		return(HttpUtils.okResponseHtml(this.getClass().getName() + " [ " + method + " ] request: says OK, with params: " + getRestParams(restParams) + ", and un-mapped params of:" + unmappedParams));
+		return(HttpUtils.okResponse(this.getClass().getName() + " [ " + method + " ] request: says OK, with params: " + getRestParams(restParams) + ", and un-mapped params of:" + unmappedParams));
 	}
 
 	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {

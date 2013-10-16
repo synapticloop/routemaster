@@ -97,6 +97,7 @@ public class RouteMasterServer extends NanoHTTPD {
 		}
 		options.put("home", sb.toString());
 
+		RouteMaster.initialise();
 		ServerRunner.executeInstance(new RouteMasterServer(host, port, rootDir, quiet));
 	}
 }

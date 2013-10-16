@@ -27,8 +27,10 @@ public class RouteMaster {
 	private static HashSet<String> indexFiles = new HashSet<String>();
 	private static ConcurrentHashMap<Integer, String> ERROR_PAGE_CACHE = new ConcurrentHashMap<Integer, String>();
 	private static ConcurrentHashMap<String, Routable> ROUTER_CACHE = new ConcurrentHashMap<String, Routable>();
+	private static boolean initialised = false;
 
-	static {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static void initialise() {
 		// find the route.properties file
 		Properties properties = new Properties();
 		try {
@@ -111,13 +113,12 @@ public class RouteMaster {
 			SimpleLogger.logFatal("Could not load the '" + ROUTEMASTER_PROPERTIES + "' file, ignoring... (although this is going to be a pretty boring experience!)", ioex);
 		}
 
-		SimpleLogger.logInfo("Registered routes:");
-		SimpleLogger.logInfo("==================");
 		if(null != router) {
-			router.printRoutes();
+			SimpleLogger.logTable(router.getRouters(), "registered routes", "route", "routable class");
+			router.getRouters();
 		}
-		SimpleLogger.logInfo("Registered index files:");
-		SimpleLogger.logInfo("=======================");
+
+		SimpleLogger.logNull();
 
 		if(indexFiles.size() == 0) {
 			// default welcomeFiles
@@ -125,18 +126,13 @@ public class RouteMaster {
 			indexFiles.add("index.htm");
 		}
 
-		for (String welcomeFile : indexFiles) {
-			SimpleLogger.logInfo("Index file: => " + welcomeFile);
-		}
+		SimpleLogger.logTable(new ArrayList(indexFiles), "index files");
+		SimpleLogger.logNull();
 
-		// now print out the error pages
-		SimpleLogger.logInfo("Registered error pages:");
-		SimpleLogger.logInfo("=======================");
-		Enumeration<Integer> keys = ERROR_PAGE_CACHE.keys();
-		while (keys.hasMoreElements()) {
-			Integer key = (Integer) keys.nextElement();
-			SimpleLogger.logInfo("Error page: " + key + " => " + ERROR_PAGE_CACHE.get(key));
-		}
+		SimpleLogger.logTable(ERROR_PAGE_CACHE, "error pages", "status", "page");
+		SimpleLogger.logNull();
+
+		initialised = true;
 	}
 
 	/**
@@ -179,6 +175,10 @@ public class RouteMaster {
 	}
 
 	public static Response route(File rootDir, IHTTPSession httpSession) {
+		if(!initialised) {
+			HttpUtils.notFoundResponse();
+		}
+
 		Response routeInternalResponse = routeInternal(rootDir, httpSession);
 		if(null != routeInternalResponse) {
 			return(routeInternalResponse);
@@ -220,7 +220,6 @@ public class RouteMaster {
 	}
 
 	private static Response getErrorResponse(File rootDir, IHTTPSession httpSession, Status status, String message) {
-		
 		int requestStatus = status.getRequestStatus();
 		String uri = ERROR_PAGE_CACHE.get(requestStatus);
 		if(ERROR_PAGE_CACHE.containsKey(requestStatus)) {
@@ -232,7 +231,7 @@ public class RouteMaster {
 				return(response);
 			}
 		}
-		return(HttpUtils.notFoundResponseHtml(message + "; additionally, an over-ride " + status.toString() + " error page was not found."));
+		return(HttpUtils.notFoundResponse(message + "; additionally, an over-ride " + status.toString() + " error page was not found."));
 	}
 
 	private static Response get404Response(File rootDir, IHTTPSession httpSession) {

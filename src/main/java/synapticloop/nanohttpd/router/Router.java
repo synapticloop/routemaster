@@ -2,7 +2,9 @@ package synapticloop.nanohttpd.router;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.StringTokenizer;
 
 import synapticloop.nanohttpd.utils.SimpleLogger;
@@ -121,6 +123,34 @@ public class Router {
 				return(null);
 			}
 		}
+	}
+
+	public LinkedHashMap<String, Routable> getRouters() {
+		LinkedHashMap<String, Routable> retVal = new LinkedHashMap<String, Routable>();
+
+		if(null != defaultRoute) {
+			if(defaultRoute instanceof RestRoutable) {
+				retVal.put(" rest: " + route, defaultRoute);
+			} else {
+				retVal.put("route: " + route, defaultRoute);
+			}
+		}
+
+		if(null != wildcardRoute) {
+			if(wildcardRoute instanceof RestRoutable) {
+				retVal.put(" rest: " + route + "*", wildcardRoute);
+			} else {
+				retVal.put("route: " + route + "*", wildcardRoute);
+			}
+		}
+
+		// go through and print all of the other routes
+		Iterator<String> keySet = routerMap.keySet().iterator();
+		while (keySet.hasNext()) {
+			String next = (String) keySet.next();
+			retVal.putAll(routerMap.get(next).getRouters());
+		}
+		return(retVal);
 	}
 
 	public void printRoutes() {

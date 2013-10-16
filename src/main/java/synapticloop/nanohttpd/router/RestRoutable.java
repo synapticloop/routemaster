@@ -63,22 +63,22 @@ public abstract class RestRoutable extends Routable {
 	}
 
 	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
-		return(HttpUtils.methodNotAllowedHtmlResponse("Method not allowed"));
+		return(HttpUtils.methodNotAllowedResponse());
 	}
 
 	public Response doPost(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
-		return(HttpUtils.methodNotAllowedHtmlResponse("Method not allowed"));
+		return(HttpUtils.methodNotAllowedResponse());
 	}
 
 	public Response doPut(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
-		return(HttpUtils.methodNotAllowedHtmlResponse("Method not allowed"));
+		return(HttpUtils.methodNotAllowedResponse());
 	}
 
 	public Response doDelete(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
-		return(HttpUtils.methodNotAllowedHtmlResponse("Method not allowed"));
+		return(HttpUtils.methodNotAllowedResponse());
 	}
 
 	public Response doHead(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
-		return(HttpUtils.methodNotAllowedHtmlResponse("Method not allowed"));
+		return(HttpUtils.methodNotAllowedResponse());
 	}
 }

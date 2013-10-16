@@ -28,13 +28,13 @@ public class RouteMasterRestServant extends RestRoutable {
 		if(method.equals("routes")) {
 			Router router = RouteMaster.getRouter();
 			printRouter(content, router);
-			return(HttpUtils.okResponseHtml(content.toString()));
+			return(HttpUtils.okResponse(content.toString()));
 		} else if (method.equals("cache")) {
 			printCache(content);
-			return(HttpUtils.okResponseHtml(content.toString()));
+			return(HttpUtils.okResponse(content.toString()));
 		}
 
-		return(HttpUtils.okResponseHtml(this.getClass().getName() + " [ " + method + " ] request: says OK, with method '" + method + "'"));
+		return(HttpUtils.okResponse(this.getClass().getName() + " [ " + method + " ] request: says OK, with method '" + method + "'"));
 	}
 
 	private void printCache(StringBuilder content) {
