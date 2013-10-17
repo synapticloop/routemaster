@@ -22,9 +22,6 @@ public class HttpUtils {
 
 	public static Response methodNotAllowedResponse() { return(methodNotAllowedResponse(NanoHTTPD.MIME_HTML, "METHOD NOT ALLOWED")); }
 	public static Response methodNotAllowedResponse(String content) { return(methodNotAllowedResponse(NanoHTTPD.MIME_HTML, content)); }
-	public static Response methodNotAllowedResponse(String mimeType, String content) {
-		// TODO this should be a 405-method not allowed
-		return(new Response(Response.Status.BAD_REQUEST, mimeType, content));
-	}
+	public static Response methodNotAllowedResponse(String mimeType, String content) { return(new Response(Response.Status.METHOD_NOT_ALLOWED, mimeType, content)); }
 
 }

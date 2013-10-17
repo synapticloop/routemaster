@@ -58,8 +58,7 @@ public abstract class RestRoutable extends Routable {
 		case HEAD:
 			return(doHead(rootDir, httpSession, restParams, unmappedParams));
 		}
-		// TODO - correct return method here - waiting for 405 to be pulled in
-		return(null);
+		return(HttpUtils.methodNotAllowedResponse());
 	}
 
 	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
