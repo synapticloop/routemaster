@@ -17,6 +17,14 @@ public abstract class RestRoutable extends Routable {
 		this.restParamNames = params;
 	}
 
+	/**
+	 * Serve the correct http method (GET, POST, PUT, DELETE, HEAD)
+	 *
+	 * @param rootDir The root directory of the RouteMaster server
+	 * @param httpSession The session
+	 *
+	 * @return The response
+	 */
 	public Response serve(File rootDir, IHTTPSession httpSession) {
 		String uri = httpSession.getUri();
 
@@ -61,22 +69,72 @@ public abstract class RestRoutable extends Routable {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
+	/**
+	 * Override this method to respond to http 'GET' requests
+	 *
+	 * @param rootDir The root directory of the RouteMaster server
+	 * @param httpSession The current session
+	 * @param restParams the mapped RESTful parameters
+	 * @param unmappedParams any other uri components that could not be mapped
+	 *
+	 * @return the reponse
+	 */
 	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
+	/**
+	 * Override this method to respond to http 'POST' requests
+	 *
+	 * @param rootDir The root directory of the RouteMaster server
+	 * @param httpSession The current session
+	 * @param restParams the mapped RESTful parameters
+	 * @param unmappedParams any other uri components that could not be mapped
+	 *
+	 * @return the reponse
+	 */
 	public Response doPost(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
+	/**
+	 * Override this method to respond to http 'PUT' requests
+	 *
+	 * @param rootDir The root directory of the RouteMaster server
+	 * @param httpSession The current session
+	 * @param restParams the mapped RESTful parameters
+	 * @param unmappedParams any other uri components that could not be mapped
+	 *
+	 * @return the reponse
+	 */
 	public Response doPut(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
+	/**
+	 * Override this method to respond to http 'DELETE' requests
+	 *
+	 * @param rootDir The root directory of the RouteMaster server
+	 * @param httpSession The current session
+	 * @param restParams the mapped RESTful parameters
+	 * @param unmappedParams any other uri components that could not be mapped
+	 *
+	 * @return the reponse
+	 */
 	public Response doDelete(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
+	/**
+	 * Override this method to respond to http 'HEAD' requests
+	 *
+	 * @param rootDir The root directory of the RouteMaster server
+	 * @param httpSession The current session
+	 * @param restParams the mapped RESTful parameters
+	 * @param unmappedParams any other uri components that could not be mapped
+	 *
+	 * @return the reponse
+	 */
 	public Response doHead(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
