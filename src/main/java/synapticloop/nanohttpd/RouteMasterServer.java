@@ -57,7 +57,7 @@ public class RouteMasterServer extends NanoHTTPD {
 		String host = "127.0.0.1";
 		boolean quiet = false;
 		File rootDir = null;
-		Map<String, String> options = new HashMap<String, String>();
+		HashMap<String, String> options = new HashMap<String, String>();
 
 
 		// Parse command-line, with short and long versions of the options.
@@ -95,7 +95,9 @@ public class RouteMasterServer extends NanoHTTPD {
 		} catch (IOException ioex) {
 			ioex.printStackTrace();
 		}
+
 		options.put("home", sb.toString());
+		SimpleLogger.logTable(options, "RouteMaster options", "option", "value");
 
 		RouteMaster.initialise();
 		ServerRunner.executeInstance(new RouteMasterServer(host, port, rootDir, quiet));
