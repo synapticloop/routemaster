@@ -12,7 +12,7 @@ import fi.iki.elonen.NanoHTTPD.Response;
 public abstract class RestRoutable extends Routable {
 	protected ArrayList<String> restParamNames = new ArrayList<String>();
 
-	protected RestRoutable(String routeContext, ArrayList<String> params) {
+	public RestRoutable(String routeContext, ArrayList<String> params) {
 		super(routeContext);
 		this.restParamNames = params;
 	}

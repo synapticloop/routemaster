@@ -21,8 +21,7 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public class StaticFileServant extends Routable {
-
-	private static final String MIMETYPES_PROPERTIES = "mimetypes.properties";
+	protected static final String MIMETYPES_PROPERTIES = "mimetypes.properties";
 
 	public StaticFileServant(String routeContext) {
 		super(routeContext);
@@ -70,11 +69,13 @@ public class StaticFileServant extends Routable {
 			File indexFile = getIndexFile(rootDir, uri);
 			if(null != indexFile) {
 				file = indexFile;
+			} else {
+				return(RouteMaster.get404Response(rootDir, httpSession));
 			}
 		}
 
 		if(!file.canRead()) {
-			// return 403 - or should we just ignore
+			return(HttpUtils.forbiddenResponse());
 		}
 
 		if(file.isDirectory()) {
@@ -169,41 +170,28 @@ public class StaticFileServant extends Routable {
 					};
 					fis.skip(startFrom);
 
-					res = createResponse(Response.Status.PARTIAL_CONTENT, mimeType, fis);
+					res = HttpUtils.partialContentResponse(mimeType, fis);
 					res.addHeader("Content-Length", "" + dataLen);
 					res.addHeader("Content-Range", "bytes " + startFrom + "-" + endAt + "/" + fileLen);
 					res.addHeader("ETag", etag);
 				}
 			} else {
 				if (etag.equals(header.get("if-none-match")))
-					res = createResponse(Response.Status.NOT_MODIFIED, mimeType, "");
+					res = HttpUtils.notModifiedResponse(mimeType, "");
 				else {
-					res = createResponse(Response.Status.OK, mimeType, new FileInputStream(file));
+					res = HttpUtils.okResponse(mimeType, new FileInputStream(file));
+					res.addHeader("Accept-Ranges", "bytes");
 					res.addHeader("Content-Length", "" + fileLen);
 					res.addHeader("ETag", etag);
 				}
 			}
 		} catch (IOException ioe) {
-			res = createResponse(Response.Status.FORBIDDEN, NanoHTTPD.MIME_PLAINTEXT, "FORBIDDEN: Reading file failed.");
+			
+			res = HttpUtils.forbiddenResponse();
+			res.addHeader("Accept-Ranges", "bytes");
 		}
-
 		return res;
 	}
 
-	// Announce that the file server accepts partial content requests
-	private Response createResponse(Response.Status status, String mimeType, InputStream message) {
-		Response res = new Response(status, mimeType, message);
-		res.addHeader("Accept-Ranges", "bytes");
-		return res;
-	}
-
-	private Response createResponse(Response.Status status, String mimeType, String message) {
-		Response res = new Response(status, mimeType, message);
-		res.addHeader("Accept-Ranges", "bytes");
-		return res;
-	}
-
-	public static HashMap<String, String> getMimeTypes() {
-		return MIME_TYPES;
-	}
+	public static HashMap<String, String> getMimeTypes() { return MIME_TYPES; }
 }

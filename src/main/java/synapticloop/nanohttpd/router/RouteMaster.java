@@ -231,13 +231,8 @@ public class RouteMaster {
 		return(HttpUtils.notFoundResponse(message + "; additionally, an over-ride " + status.toString() + " error page was not found."));
 	}
 
-	private static Response get404Response(File rootDir, IHTTPSession httpSession) {
-		return(getErrorResponse(rootDir, httpSession, Response.Status.NOT_FOUND, "not found"));
-	}
-
-	private static Response get500Response(File rootDir, IHTTPSession httpSession) {
-		return(getErrorResponse(rootDir, httpSession, Response.Status.INTERNAL_ERROR, "internal server error"));
-	}
+	public static Response get404Response(File rootDir, IHTTPSession httpSession) { return(getErrorResponse(rootDir, httpSession, Response.Status.NOT_FOUND, "not found")); }
+	public static Response get500Response(File rootDir, IHTTPSession httpSession) { return(getErrorResponse(rootDir, httpSession, Response.Status.INTERNAL_ERROR, "internal server error")); }
 
 	public static Router getRouter() { return router; }
 	public static ConcurrentHashMap<String, Routable> getRouterCache() { return ROUTER_CACHE; }
