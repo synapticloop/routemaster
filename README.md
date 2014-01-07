@@ -24,6 +24,20 @@ This will get it up and running on port 5474, although this won't actually do to
   1. point a browser at [http://localhost:5474](http://localhost:5474)
   1. done!!!
 
+## How do I get the all in one demo up and running?
+
+  1. Download the ```dist/routemaster-all-in-one.jar``` file
+  1. go into the directory
+  1. and run ```java -jar routemaster-all-in-one.jar```
+  1. point a browser at [http://localhost:5474](http://localhost:5474)
+  1. done!!!
+
+## So what is the difference between ```routemaster-example``` and ```routemaster-all-in-one```?
+
+The routemaster example acts more like your traditional web server, you have a file system which you can place files into, which will be served by the web server.
+
+The all in one distribution contains all of the files required to serve the application from a single jar file.
+
 ## How do I build RouteMaster?
 
 you will need the following:
