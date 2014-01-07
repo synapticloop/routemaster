@@ -84,7 +84,7 @@ public class SimpleLogger {
 
 		System.out.println(breakLine);
 
-		// now go through the arraylists and print out the values
+		// now go through the array lists and print out the values
 		for(int i = 0; i < keys.size(); i++) {
 			System.out.print("INFO: | ");
 			System.out.print(String.format("%-" + maxKeyLength + "s", keys.get(i)));

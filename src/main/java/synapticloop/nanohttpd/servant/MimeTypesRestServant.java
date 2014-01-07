@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import synapticloop.nanohttpd.router.RestRoutable;
 import synapticloop.nanohttpd.utils.HttpUtils;
+import synapticloop.nanohttpd.utils.MimeTypeMapper;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
@@ -18,7 +19,7 @@ public class MimeTypesRestServant extends RestRoutable {
 
 	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		StringBuilder content = new StringBuilder();
-		HashMap<String, String> mimeTypeCache = StaticFileServant.getMimeTypes();
+		HashMap<String, String> mimeTypeCache = MimeTypeMapper.getMimeTypes();
 		for (Iterator<String> iterator = mimeTypeCache.keySet().iterator(); iterator.hasNext();) {
 			String mimeTypeExtension = (String)iterator.next();
 			String mimeType = mimeTypeCache.get(mimeTypeExtension);

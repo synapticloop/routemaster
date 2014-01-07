@@ -1,65 +1,24 @@
 package synapticloop.nanohttpd.servant;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 
 import synapticloop.nanohttpd.router.Routable;
 import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.utils.HttpUtils;
-import synapticloop.nanohttpd.utils.SimpleLogger;
+import synapticloop.nanohttpd.utils.MimeTypeMapper;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public class StaticFileServant extends Routable {
-	protected static final String MIMETYPES_PROPERTIES = "mimetypes.properties";
-
 	public StaticFileServant(String routeContext) {
 		super(routeContext);
 	}
 
-	private static HashMap<String, String> MIME_TYPES = new HashMap<String, String>();
-	static {
-		Properties properties = new Properties();
-		InputStream inputStream = RouteMaster.class.getResourceAsStream("/" + MIMETYPES_PROPERTIES);
-
-		// maybe it is in the current working directory
-
-		if(null == inputStream) {
-			File mimetypesFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") + MIMETYPES_PROPERTIES);
-			if(mimetypesFile.exists() && mimetypesFile.canRead()) {
-				try {
-					inputStream = new BufferedInputStream(new FileInputStream(mimetypesFile));
-				} catch (FileNotFoundException fnfex) {
-					// do nothing - one doesn't exist
-				}
-			} else {
-				SimpleLogger.logWarn("Could not load the '" + MIMETYPES_PROPERTIES + "' file from the classpath, or from the current directory.");
-			}
-		}
-
-		try {
-			properties.load(inputStream);
-			Enumeration<Object> keys = properties.keys();
-			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
-				getMimeTypes().put(key, properties.getProperty(key));
-			}
-		} catch (IOException ioex) {
-			SimpleLogger.logFatal("Could not load the '" + MIMETYPES_PROPERTIES + "' file, ignoring.", ioex);
-		}
-
-		SimpleLogger.logTable(getMimeTypes(), "registered mime types", "extension", "mime type");
-	}
 
 	public Response serve(File rootDir, IHTTPSession httpSession) {
 		String uri = HttpUtils.cleanUri(httpSession.getUri());
@@ -119,8 +78,8 @@ public class StaticFileServant extends Routable {
 		String mimeType = NanoHTTPD.MIME_HTML;
 		Response res = null;
 
-		if(getMimeTypes().containsKey(extension)) {
-			mimeType = getMimeTypes().get(extension);
+		if(MimeTypeMapper.getMimeTypes().containsKey(extension)) {
+			mimeType = MimeTypeMapper.getMimeTypes().get(extension);
 		}
 
 		try {
@@ -193,5 +152,4 @@ public class StaticFileServant extends Routable {
 		return res;
 	}
 
-	public static HashMap<String, String> getMimeTypes() { return MIME_TYPES; }
 }

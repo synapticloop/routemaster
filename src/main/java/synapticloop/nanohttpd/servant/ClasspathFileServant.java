@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.utils.HttpUtils;
+import synapticloop.nanohttpd.utils.MimeTypeMapper;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Method;
@@ -49,8 +50,8 @@ public class ClasspathFileServant extends StaticFileServant {
 		Response res = null;
 
 
-		if(getMimeTypes().containsKey(extension)) {
-			mimeType = getMimeTypes().get(extension);
+		if(MimeTypeMapper.getMimeTypes().containsKey(extension)) {
+			mimeType = MimeTypeMapper.getMimeTypes().get(extension);
 		}
 
 		byte[] bytes = null;
@@ -149,6 +150,5 @@ public class ClasspathFileServant extends StaticFileServant {
 			}
 		}
 		return(null);
-
 	}
 }

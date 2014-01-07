@@ -3,7 +3,6 @@ package synapticloop.nanohttpd;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.utils.SimpleLogger;
