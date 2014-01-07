@@ -34,4 +34,5 @@ public class ModifiableSession implements IHTTPSession {
 	public InputStream getInputStream() { return(httpSession.getInputStream()); }
 	public CookieHandler getCookies() { return(httpSession.getCookies()); }
 	public void parseBody(Map<String, String> files) throws IOException, ResponseException { httpSession.parseBody(files); }
+	public String getQueryParameterString() { return(httpSession.getQueryParameterString()); }
 }
