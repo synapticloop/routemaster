@@ -19,7 +19,7 @@ public class SimpleLogger {
 
 		ArrayList<String> keys = new ArrayList<String>();
 		ArrayList<String> values = new ArrayList<String>();
-		
+
 		Iterator<Object> iterator = map.keySet().iterator();
 		while (iterator.hasNext()) {
 			Object key = iterator.next();
@@ -69,17 +69,17 @@ public class SimpleLogger {
 		System.out.println("-+");
 
 		System.out.print("INFO: | ");
-		System.out.print(String.format("%-" + (maxKeyLength + maxValueLength + 3) + "s", tableTitle)); 
+		System.out.print(String.format("%-" + (maxKeyLength + maxValueLength + 3) + "s", tableTitle));
 		System.out.println(" |");
-		
+
 
 		System.out.println(breakLine);
 
 		// now the keyTitle and keyValue
 		System.out.print("INFO: | ");
-		System.out.print(String.format("%-" + maxKeyLength + "s", keyTitle)); 
+		System.out.print(String.format("%-" + maxKeyLength + "s", keyTitle));
 		System.out.print(" | ");
-		System.out.print(String.format("%-" + maxValueLength + "s", valueTitle)); 
+		System.out.print(String.format("%-" + maxValueLength + "s", valueTitle));
 		System.out.println(" |");
 
 		System.out.println(breakLine);
@@ -87,12 +87,12 @@ public class SimpleLogger {
 		// now go through the arraylists and print out the values
 		for(int i = 0; i < keys.size(); i++) {
 			System.out.print("INFO: | ");
-			System.out.print(String.format("%-" + maxKeyLength + "s", keys.get(i))); 
+			System.out.print(String.format("%-" + maxKeyLength + "s", keys.get(i)));
 			System.out.print(" | ");
-			System.out.print(String.format("%-" + maxValueLength + "s", values.get(i))); 
+			System.out.print(String.format("%-" + maxValueLength + "s", values.get(i)));
 			System.out.println(" |");
 		}
-		
+
 
 		System.out.println(breakLine);
 	}
@@ -117,10 +117,10 @@ public class SimpleLogger {
 		String breakLine = stringBuilder.toString();
 
 		System.out.println(breakLine);
-		System.out.println(String.format("INFO: | %-" + maxLength + "s |", tableTitle)); 
+		System.out.println(String.format("INFO: | %-" + maxLength + "s |", tableTitle));
 		System.out.println(breakLine);
 		for (Object object : list) {
-			System.out.println(String.format("INFO: | %-" + maxLength + "s |", object.toString())); 
+			System.out.println(String.format("INFO: | %-" + maxLength + "s |", object.toString()));
 		}
 		System.out.println(breakLine);
 
@@ -137,42 +137,24 @@ public class SimpleLogger {
 		}
 	}
 
-	public static void logFatal(String message) {
-		log(FATAL, message);
-	}
-
-	public static void logFatal(String message, Exception exception) {
+	private static void logException(String type, String message, Exception exception, boolean printStackTrace) {
 		log(FATAL, message, "Exception[", exception.getClass().getCanonicalName(), "] message was:", exception.getMessage());
-		exception.printStackTrace();
+		if(printStackTrace) {
+			exception.printStackTrace();
+		}
 	}
 
-	public static void logError(String message) {
-		log(ERROR, message);
-	}
+	public static void logFatal(String message) { log(FATAL, message); }
+	public static void logFatal(String message, Exception exception) { logException(FATAL, message, exception, true);}
 
-	public static void logError(String message, Exception exception) {
-		log(ERROR, message, "Exception[", exception.getClass().getCanonicalName(), "] message was:", exception.getMessage());
-	}
+	public static void logError(String message) { log(ERROR, message); }
+	public static void logError(String message, Exception exception) { logException(ERROR, message, exception, true); }
 
-	public static void logWarn(String message) {
-		log(WARN, message);
-	}
+	public static void logWarn(String message) { log(WARN, message); }
+	public static void logWarn(String message, Exception exception) { logException(WARN, message, exception, false); }
 
-	public static void logWarn(String message, Exception exception) {
-		log(WARN, message, "Exception[", exception.getClass().getCanonicalName(), "] message was:", exception.getMessage());
-	}
-
-	public static void logInfo(String message) {
-		log(INFO, message);
-	}
-
-	public static void logInfo(String message, Exception exception) {
-		log(INFO, message, "Exception[", exception.getClass().getCanonicalName(), "] message was:", exception.getMessage());
-	}
-
-	public static void logNull() {
-		System.out.println();
-	}
+	public static void logInfo(String message) { log(INFO, message); }
+	public static void logInfo(String message, Exception exception) { logException(INFO, message, exception, false); }
 
 	public static boolean getShouldLog() { return shouldLog; }
 	public static void setShouldLog(boolean shouldLog) { SimpleLogger.shouldLog = shouldLog; }

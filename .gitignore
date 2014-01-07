@@ -2,7 +2,8 @@ build-eclipse/
 src/main/java/fi/
 src/test/java/
 NanoHttpd-LICENSE.md
-src/main/java/routemaster.properties
 *~
 build/
 dist/routemaster/
+.idea
+routemaster.iml

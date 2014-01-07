@@ -82,7 +82,7 @@ public class RouteMaster {
 								params.add(split.substring(1, split.length() -1));
 							} else {
 								stringBuilder.append(split);
-								// keep adding a slash for those that are missing - but not 
+								// keep adding a slash for those that are missing - but not
 								// if it the last
 								if(i != splits.length -1) { stringBuilder.append("/"); }
 							}
@@ -134,7 +134,7 @@ public class RouteMaster {
 
 	/**
 	 * Parse the options file
-	 * 
+	 *
 	 * @param properties The properties object
 	 * @param key the option key we are looking at
 	 */
@@ -171,6 +171,14 @@ public class RouteMaster {
 		}
 	}
 
+	/**
+	 * Serve the correctly routed file
+	 *
+	 * @param rootDir The root directory of the RouteMaster server
+	 * @param httpSession The session
+	 *
+	 * @return The response
+	 */
 	public static Response route(File rootDir, IHTTPSession httpSession) {
 		if(!initialised) {
 			HttpUtils.notFoundResponse();
@@ -179,7 +187,7 @@ public class RouteMaster {
 		Response routeInternalResponse = routeInternal(rootDir, httpSession);
 		if(null != routeInternalResponse) {
 			return(routeInternalResponse);
-		} 
+		}
 		return(get500Response(rootDir, httpSession));
 	}
 
@@ -234,7 +242,26 @@ public class RouteMaster {
 	public static Response get404Response(File rootDir, IHTTPSession httpSession) { return(getErrorResponse(rootDir, httpSession, Response.Status.NOT_FOUND, "not found")); }
 	public static Response get500Response(File rootDir, IHTTPSession httpSession) { return(getErrorResponse(rootDir, httpSession, Response.Status.INTERNAL_ERROR, "internal server error")); }
 
+	/**
+	 * Get the root Router
+	 *
+	 * @return The Router assigned to the root of the site
+	 */
 	public static Router getRouter() { return router; }
+
+	/**
+	 * Get the cache of all of the Routables which contains a Map of the Routables
+	 * per path - which saves on going through the Router and determining the
+	 * Routable on every access
+	 *
+	 * @return The Routable cache
+	 */
 	public static ConcurrentHashMap<String, Routable> getRouterCache() { return ROUTER_CACHE; }
+
+	/**
+	 * Get the index/welcome files that are registered.
+	 *
+	 * @return The index files
+	 */
 	public static HashSet<String> getIndexFiles() { return indexFiles; }
 }

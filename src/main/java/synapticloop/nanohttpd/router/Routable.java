@@ -13,5 +13,13 @@ public abstract class Routable {
 		this.routeContext = routeContext;
 	}
 
+	/**
+	 * Serve the correctly routed file
+	 *
+	 * @param rootDir The root directory of the RouteMaster server
+	 * @param httpSession The session
+	 *
+	 * @return The response
+	 */
 	public abstract Response serve(File rootDir, IHTTPSession httpSession);
 }
