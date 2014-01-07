@@ -36,7 +36,7 @@
 		</delete>
 	</target>
 
-	<target name="dist-example" depends="clean,init,dist,dist-all-in-one">
+	<target name="dist-examples" depends="clean,init,dist,dist-all-in-one">
 		<!--
 		  Now zip it all up
 		  -->
