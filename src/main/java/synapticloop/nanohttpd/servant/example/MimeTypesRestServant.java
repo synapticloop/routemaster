@@ -1,4 +1,4 @@
-package synapticloop.nanohttpd.servant;
+package synapticloop.nanohttpd.servant.example;
 
 import java.io.File;
 import java.util.ArrayList;
