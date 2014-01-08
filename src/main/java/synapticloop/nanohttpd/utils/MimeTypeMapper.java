@@ -36,11 +36,13 @@ public class MimeTypeMapper {
 		}
 
 		try {
-			properties.load(inputStream);
-			Enumeration<Object> keys = properties.keys();
-			while (keys.hasMoreElements()) {
-				String key = (String) keys.nextElement();
-				MIME_TYPES.put(key, properties.getProperty(key));
+			if(null != inputStream) {
+				properties.load(inputStream);
+				Enumeration<Object> keys = properties.keys();
+				while (keys.hasMoreElements()) {
+					String key = (String) keys.nextElement();
+					MIME_TYPES.put(key, properties.getProperty(key));
+				}
 			}
 		} catch (IOException ioex) {
 			SimpleLogger.logFatal("Could not load the '" + MIMETYPES_PROPERTIES + "' file, ignoring.", ioex);
