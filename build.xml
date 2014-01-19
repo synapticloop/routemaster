@@ -36,7 +36,7 @@
 		</delete>
 	</target>
 
-	<target name="dist-examples" depends="clean,init,dist,dist-all-in-one">
+	<target name="dist-examples" depends="clean,init,dist,dist-all-in-one" description="build the example, all in one and standalone binary distributable">
 		<!--
 		  Now zip it all up
 		  -->
@@ -54,8 +54,8 @@
 		</zip>
 	</target>
 
-	<target name="dist" depends="clean,init">
-		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" />
+	<target name="dist" depends="clean,init" description="build the standalone binary distributable">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" compiler="javac1.5" />
 
 		<jar destfile="${dist.dir}/${ant.project.name}.jar" manifest="src/main/META-INF/manifest.mf">
 			<fileset dir="${build.dir}">
@@ -64,8 +64,8 @@
 		</jar>
 	</target>
 
-	<target name="dist-all-in-one" depends="clean,init">
-		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" />
+	<target name="dist-all-in-one" depends="clean,init"  description="build the all in one binary distributable">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" compiler="javac1.5" />
 		<copy file="${src.dir}/routemaster.classpath.servant.properties" tofile="${build.dir}/routemaster.properties" />
 		<copy file="${src.dir}/mimetypes.properties" todir="${build.dir}" />
 
