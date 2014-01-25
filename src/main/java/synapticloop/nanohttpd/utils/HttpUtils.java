@@ -58,4 +58,9 @@ public class HttpUtils {
 	public static Response partialContentResponse(String mimeType, String content) { return(new Response(Response.Status.PARTIAL_CONTENT, mimeType, content)); }
 	public static Response partialContentResponse(String mimeType, InputStream content) { return(new Response(Response.Status.PARTIAL_CONTENT, mimeType, content)); }
 
+	public static Response redirectResponse(String uri) {
+		Response res = new Response(Response.Status.REDIRECT, NanoHTTPD.MIME_HTML, "<html><body>Redirected: <a href=\"" + uri + "\">" + uri + "</a></body></html>");
+		res.addHeader("Location", uri);
+		return(res);
+	}
 }
