@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.utils.HttpUtils;
@@ -16,9 +17,10 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.Response;
 
-public class ClasspathFileServant extends StaticFileServant {
+public class CachingClasspathFileServant extends StaticFileServant {
+	private static ConcurrentHashMap<String, byte[]> cache = new ConcurrentHashMap<String, byte[]>();
 
-	public ClasspathFileServant(String routeContext) {
+	public CachingClasspathFileServant(String routeContext) {
 		super(routeContext);
 	}
 
@@ -54,21 +56,27 @@ public class ClasspathFileServant extends StaticFileServant {
 
 		byte[] bytes = null;
 
-		InputStream resourceAsStream = this.getClass().getResourceAsStream(uri);
-		if(null == resourceAsStream) {
-			return(RouteMaster.get404Response(rootDir, httpSession));
-		}
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		try {
-			int read = resourceAsStream.read();
-			while (read != -1) {
-				byteArrayOutputStream.write(read);
-				read = resourceAsStream.read();
+		if(cache.containsKey(uri)) {
+			// need to do something here
+			bytes = cache.get(uri);
+		} else {
+			InputStream resourceAsStream = this.getClass().getResourceAsStream(uri);
+			if(null == resourceAsStream) {
+				return(RouteMaster.get404Response(rootDir, httpSession));
 			}
-		} catch (IOException ioex) {
-			return(RouteMaster.get500Response(rootDir, httpSession));
+			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+			try {
+				int read = resourceAsStream.read();
+				while (read != -1) {
+					byteArrayOutputStream.write(read);
+					read = resourceAsStream.read();
+				}
+			} catch (IOException ioex) {
+				return(RouteMaster.get500Response(rootDir, httpSession));
+			}
+			bytes = byteArrayOutputStream.toByteArray();
+			cache.put(uri, bytes);
 		}
-		bytes = byteArrayOutputStream.toByteArray();
 
 		// etag first
 		String etag = Integer.toHexString((uri).hashCode());
