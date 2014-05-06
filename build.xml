@@ -7,15 +7,17 @@
 	<property name="src.html.dir" value="src/main/html" />
 
 	<target name="download-dependencies">
-		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/LICENSE.md" dest="./NanoHttpd-LICENSE.md" />
+		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/LICENSE.md" dest="./NanoHttpd-LICENSE.md" />
 		<mkdir dir="src/main/java/fi/iki/elonen/" />
-		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/core/src/main/java/fi/iki/elonen/NanoHTTPD.java" dest="src/main/java/fi/iki/elonen/" />
 
-		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/InternalRewrite.java" dest="src/main/java/fi/iki/elonen/" />
-		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/ServerRunner.java" dest="src/main/java/fi/iki/elonen/" />
-		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/SimpleWebServer.java" dest="src/main/java/fi/iki/elonen/" />
-		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/WebServerPlugin.java" dest="src/main/java/fi/iki/elonen/" />
-		<get src="https://raw.github.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/WebServerPluginInfo.java" dest="src/main/java/fi/iki/elonen/" />
+		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/core/src/main/java/fi/iki/elonen/NanoHTTPD.java" dest="src/main/java/fi/iki/elonen/" />
+
+		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/InternalRewrite.java" dest="src/main/java/fi/iki/elonen/" />
+		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/ServerRunner.java" dest="src/main/java/fi/iki/elonen/" />
+		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/SimpleWebServer.java" dest="src/main/java/fi/iki/elonen/" />
+		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/WebServerPlugin.java" dest="src/main/java/fi/iki/elonen/" />
+		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/WebServerPluginInfo.java" dest="src/main/java/fi/iki/elonen/" />
+
 	</target>
 
 	<target name="init">
@@ -36,6 +38,10 @@
 		</delete>
 	</target>
 
+	<target name="compile" depends="clean,init" description="compile the code">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" compiler="javac1.6" />
+	</target>
+
 	<target name="dist-examples" depends="clean,init,dist,dist-all-in-one" description="build the example, all in one and standalone binary distributable">
 		<!--
 		  Now zip it all up
@@ -54,9 +60,7 @@
 		</zip>
 	</target>
 
-	<target name="dist" depends="clean,init" description="build the standalone binary distributable">
-		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" compiler="javac1.5" />
-
+	<target name="dist" depends="clean,init,compile" description="build the standalone binary distributable">
 		<jar destfile="${dist.dir}/${ant.project.name}.jar" manifest="src/main/META-INF/manifest.mf">
 			<fileset dir="${build.dir}">
 				<include name="**/*.class" />
@@ -64,8 +68,7 @@
 		</jar>
 	</target>
 
-	<target name="dist-all-in-one" depends="clean,init"  description="build the all in one binary distributable">
-		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" compiler="javac1.5" />
+	<target name="dist-all-in-one" depends="clean,init,compile"  description="build the all in one binary distributable">
 		<copy file="${src.dir}/routemaster.classpath.servant.properties" tofile="${build.dir}/routemaster.properties" />
 		<copy file="${src.dir}/mimetypes.properties" todir="${build.dir}" />
 
@@ -82,8 +85,7 @@
 			<fileset dir="${build.dir}">
 				<include name="**/*.properties" />
 			</fileset>
-	</delete>
-
+		</delete>
 	</target>
 
 	<target name="help" description="hopefully helpful help">
