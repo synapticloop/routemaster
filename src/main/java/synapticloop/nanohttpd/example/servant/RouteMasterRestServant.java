@@ -12,6 +12,11 @@ import synapticloop.nanohttpd.router.Routable;
 import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.router.Router;
 import synapticloop.nanohttpd.utils.HttpUtils;
+import synapticloop.nanohttpd.utils.TemplarHelper;
+import synapticloop.templar.Parser;
+import synapticloop.templar.exception.ParseException;
+import synapticloop.templar.exception.RenderException;
+import synapticloop.templar.utils.TemplarContext;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
@@ -59,8 +64,8 @@ public class RouteMasterRestServant extends RestRoutable {
 		if(null != defaultRoute) {
 			printRoutable(content, router, defaultRoute, false);
 		}
-		
-			
+
+
 		Routable wildcardRoute = router.getWildcardRoute();
 		if(null != wildcardRoute) {
 			printRoutable(content, router, wildcardRoute, true);
@@ -75,22 +80,28 @@ public class RouteMasterRestServant extends RestRoutable {
 	}
 
 	private void printRoutable(StringBuilder content, Router router, Routable routable, boolean isWildcard) {
-		content.append("<p>");
+		TemplarContext templarContext = new TemplarContext();
+
 		if(routable instanceof RestRoutable) {
-			content.append("REST:");
+			templarContext.add("type", "REST");
 		} else {
-			content.append("Route:");
+			templarContext.add("type", "Route");
 		}
-		content.append(" <strong>");
-		content.append(router.getRoute());
 		if(isWildcard) {
-			content.append("*");
+			templarContext.add("route", router.getRoute() + "*");
+		} else {
+			templarContext.add("route", router.getRoute());
 		}
-		content.append("</strong> =&gt; ");
-
-		content.append(routable.getClass().getCanonicalName());
-		content.append("</p>");
-
-		content.append("<p>");
+		templarContext.add("class", routable.getClass().getCanonicalName());
+		try {
+			Parser parser = TemplarHelper.getParser("src/main/html/templar/router-snippet.templar");
+			content.append(parser.render(templarContext));
+		} catch (ParseException pex) {
+			// do nothing
+			pex.printStackTrace();
+		} catch (RenderException rex) {
+			// TODO Auto-generated catch block
+			rex.printStackTrace();
+		}
 	}
 }

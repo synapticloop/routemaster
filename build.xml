@@ -38,8 +38,14 @@
 		</delete>
 	</target>
 
+	<path id="classpath">
+		<fileset dir="lib/runtime">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
 	<target name="compile" depends="clean,init" description="compile the code">
-		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" compiler="javac1.6" />
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" compiler="javac1.6" classpathref="classpath" />
 	</target>
 
 	<target name="dist-examples" depends="clean,init,dist,dist-all-in-one" description="build the example, all in one and standalone binary distributable">
@@ -65,6 +71,7 @@
 			<fileset dir="${build.dir}">
 				<include name="**/*.class" />
 			</fileset>
+			<zipgroupfileset dir="lib/runtime" includes="*.jar" />
 		</jar>
 	</target>
 
@@ -80,6 +87,7 @@
 			<fileset dir="${src.html.dir}">
 				<include name="**/*.*" />
 			</fileset>
+			<zipgroupfileset dir="lib/runtime" includes="*.jar" />
 		</jar>
 		<delete>
 			<fileset dir="${build.dir}">

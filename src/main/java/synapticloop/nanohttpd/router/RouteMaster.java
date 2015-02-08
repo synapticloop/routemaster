@@ -110,6 +110,9 @@ public class RouteMaster {
 							router.addRestRoute(subKey, stringTokenizer, routerClass, params);
 						}
 
+					} else if(key.startsWith("plugin")) {
+						
+						
 					} else {
 						logWarn("Unknown property prefix for key '" + key + "'.");
 					}
@@ -209,6 +212,7 @@ public class RouteMaster {
 		if(null != routeInternalResponse) {
 			return(routeInternalResponse);
 		}
+
 		return(get500Response(rootDir, httpSession));
 	}
 
