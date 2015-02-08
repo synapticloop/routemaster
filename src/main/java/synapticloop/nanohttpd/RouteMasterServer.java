@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import synapticloop.nanohttpd.router.RouteMaster;
+import synapticloop.nanohttpd.utils.AsciiArt;
 import synapticloop.nanohttpd.utils.SimpleLogger;
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.ServerRunner;
@@ -99,6 +100,8 @@ public class RouteMasterServer extends NanoHTTPD {
 		SimpleLogger.logTable(options, "RouteMaster options", "option", "value");
 
 		RouteMaster.initialise();
+		System.out.println("\n\n" + AsciiArt.ROUTEMASTER);
+		System.out.println(AsciiArt.ROUTEMASTER_STARTED);
 		ServerRunner.executeInstance(new RouteMasterServer(host, port, rootDir, quiet));
 	}
 }

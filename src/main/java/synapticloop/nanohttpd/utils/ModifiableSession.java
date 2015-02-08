@@ -14,6 +14,7 @@ public class ModifiableSession implements IHTTPSession {
 	private String uri = null;
 
 	public ModifiableSession(IHTTPSession originalSession) { this.httpSession = originalSession; }
+
 	public void execute() throws IOException { httpSession.execute(); }
 	public Map<String, String> getParms() { return(httpSession.getParms()); }
 	public Map<String, String> getHeaders() { return(httpSession.getHeaders()); }
@@ -26,13 +27,17 @@ public class ModifiableSession implements IHTTPSession {
 		}
 	}
 
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
-
+	public void setUri(String uri) { this.uri = uri; }
 	public Method getMethod() { return(httpSession.getMethod()); }
 	public InputStream getInputStream() { return(httpSession.getInputStream()); }
 	public CookieHandler getCookies() { return(httpSession.getCookies()); }
 	public void parseBody(Map<String, String> files) throws IOException, ResponseException { httpSession.parseBody(files); }
 	public String getQueryParameterString() { return(httpSession.getQueryParameterString()); }
+
+	public boolean isValidRequest() {
+		// if the original session is not a modifiable session then all is good
+		// if it is, then we are about to go into an infinite loop.... best to stop
+		// now
+		return(!(httpSession instanceof ModifiableSession));
+	}
 }

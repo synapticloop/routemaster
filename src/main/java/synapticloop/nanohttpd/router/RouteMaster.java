@@ -1,5 +1,10 @@
 package synapticloop.nanohttpd.router;
 
+import static synapticloop.nanohttpd.utils.SimpleLogger.logFatal;
+import static synapticloop.nanohttpd.utils.SimpleLogger.logInfo;
+import static synapticloop.nanohttpd.utils.SimpleLogger.logTable;
+import static synapticloop.nanohttpd.utils.SimpleLogger.logWarn;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,9 +17,11 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
+import synapticloop.nanohttpd.servant.UninitialisedServant;
+import synapticloop.nanohttpd.utils.AsciiArt;
 import synapticloop.nanohttpd.utils.HttpUtils;
+import synapticloop.nanohttpd.utils.MimeTypeMapper;
 import synapticloop.nanohttpd.utils.ModifiableSession;
-import synapticloop.nanohttpd.utils.SimpleLogger;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 import fi.iki.elonen.NanoHTTPD.Response.Status;
@@ -31,6 +38,7 @@ public class RouteMaster {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void initialise() {
+		boolean allOk = true;
 		// find the route.properties file
 		Properties properties = new Properties();
 		try {
@@ -103,18 +111,22 @@ public class RouteMaster {
 						}
 
 					} else {
-						SimpleLogger.logWarn("Unknown property prefix for key '" + key + "'.");
+						logWarn("Unknown property prefix for key '" + key + "'.");
 					}
 				}
 			} else {
-				SimpleLogger.logFatal("Could not load the '" + ROUTEMASTER_PROPERTIES + "' file, ignoring... (although this is going to be a pretty boring experience!)");
+				logFatal("Could not load the '" + ROUTEMASTER_PROPERTIES + "' file, ignoring...");
+				logFatal("(Consequently this is going to be a pretty boring experience!)");
+				allOk = false;
 			}
 		} catch (IOException ioex) {
-			SimpleLogger.logFatal("Could not load the '" + ROUTEMASTER_PROPERTIES + "' file, ignoring... (although this is going to be a pretty boring experience!)", ioex);
+			logFatal("Could not load the '" + ROUTEMASTER_PROPERTIES + "' file, ignoring...");
+			logFatal("(Consequently this is going to be a pretty boring experience!)", ioex);
+			allOk = false;
 		}
 
 		if(null != router) {
-			SimpleLogger.logTable(router.getRouters(), "registered routes", "route", "routable class");
+			logTable(router.getRouters(), "registered routes", "route", "routable class");
 			router.getRouters();
 		}
 
@@ -124,12 +136,21 @@ public class RouteMaster {
 			indexFiles.add("index.htm");
 		}
 
-		SimpleLogger.logTable(new ArrayList(indexFiles), "index files");
+		logTable(new ArrayList(indexFiles), "index files");
 
-		SimpleLogger.logTable(ERROR_PAGE_CACHE, "error pages", "status", "page");
+		logTable(ERROR_PAGE_CACHE, "error pages", "status", "page");
 
-		SimpleLogger.logInfo(RouteMaster.class.getSimpleName() + " initialised.");
+		new MimeTypeMapper();
+
+		logInfo(RouteMaster.class.getSimpleName() + " initialised.");
 		initialised = true;
+
+		if(!allOk) {
+			StringTokenizer stringTokenizer = new StringTokenizer("/*", "/", false);
+			router = new Router("/*", stringTokenizer, UninitialisedServant.class.getCanonicalName());
+		}
+
+
 	}
 
 	/**
@@ -152,7 +173,7 @@ public class RouteMaster {
 				int parseInt = Integer.parseInt(subKey);
 				ERROR_PAGE_CACHE.put(parseInt, properties.getProperty(key));
 			} catch(NumberFormatException nfex) {
-				SimpleLogger.logFatal("Could not parse error key '" + subKey + "'.", nfex);
+				logFatal("Could not parse error key '" + subKey + "'.", nfex);
 			}
 		} else if(key.equals("option.log")) {
 //			logRequests = properties.getProperty("option.log").equalsIgnoreCase("true");
@@ -230,13 +251,17 @@ public class RouteMaster {
 		if(ERROR_PAGE_CACHE.containsKey(requestStatus)) {
 			ModifiableSession modifiedSession = new ModifiableSession(httpSession);
 			modifiedSession.setUri(uri);
-			Response response = route(rootDir, modifiedSession);
-			response.setStatus(status);
-			if(null != response) {
-				return(response);
+			// if not valid - we have already tried this - and we are going to get a
+			// stack overflow, so just drop through
+			if(modifiedSession.isValidRequest()) {
+				Response response = route(rootDir, modifiedSession);
+				response.setStatus(status);
+				if(null != response) {
+					return(response);
+				}
 			}
 		}
-		return(HttpUtils.notFoundResponse(message + "; additionally, an over-ride " + status.toString() + " error page was not found."));
+		return(HttpUtils.notFoundResponse(AsciiArt.ROUTEMASTER + "          " + message + ";\n\n       additionally, an over-ride " + status.toString() + " error page was not defined\n\n           in the configuration file, key 'option.error.404'."));
 	}
 
 	public static Response get404Response(File rootDir, IHTTPSession httpSession) { return(getErrorResponse(rootDir, httpSession, Response.Status.NOT_FOUND, "not found")); }

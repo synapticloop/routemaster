@@ -1,9 +1,12 @@
 build-eclipse/
 src/main/java/fi/
 src/test/java/
-NanoHttpd-LICENSE.md
 *~
 build/
 dist/routemaster/
 .idea
 routemaster.iml
+dist/tmp
+.cvsignore
+CVS
+.DS_Store

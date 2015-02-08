@@ -19,7 +19,7 @@ public class SimpleRestServant extends RestRoutable {
 	private String getRestParams(HashMap<String, String> restParams) {
 		StringBuilder stringBuilder = new StringBuilder();
 		for (Iterator<String> iterator = restParams.keySet().iterator(); iterator.hasNext();) {
-			String key = (String) iterator.next();
+			String key = iterator.next();
 			stringBuilder.append(key + ":" + restParams.get(key));
 		}
 		return(stringBuilder.toString());
@@ -48,4 +48,9 @@ public class SimpleRestServant extends RestRoutable {
 	public Response doHead(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(doMethod("HEAD", restParams, unmappedParams));
 	}
+
+	public Response doOptions(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+		return(doMethod("OPTIONS", restParams, unmappedParams));
+	}
+
 }

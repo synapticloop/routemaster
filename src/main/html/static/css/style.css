@@ -7,6 +7,10 @@ body {
 	color: #1d1d1d;
 }
 
+a:link, a:visited, a:hover, a:active {
+	color: #0FC48F;
+}
+
 #main {
 	width: 800px;
 	text-align: left;
@@ -50,8 +54,8 @@ ol li {
 }
 
 .code {
-	color: #999900;
-	border-bottom: 1px solid #999900;
+	color: #C30F43;
+	border-bottom: 1px solid #C30F43;
 }
 
 #footer {

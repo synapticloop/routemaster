@@ -56,6 +56,9 @@
 	<div>
 		<p id="simple-DELETE"></p>
 	</div>
+	<div>
+		<p id="simple-OPTIONS"></p>
+	</div>
 
 	<div id="footer">
 		<p>powered by: synapticloop - routemaster - nanohttpd</p>
@@ -109,6 +112,13 @@
 			type: "POST"
 		}).done(function(data) {
 			$("#simple-POST").empty().append(data);
+		});
+
+		$.ajax({
+			url: "/simple/mapped/unmapped/",
+			type: "OPTIONS"
+		}).done(function(data) {
+			$("#simple-OPTIONS").empty().append(data);
 		});
 
 	});

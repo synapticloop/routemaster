@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import synapticloop.nanohttpd.utils.HttpUtils;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
-import fi.iki.elonen.NanoHTTPD.Method;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public abstract class RestRoutable extends Routable {
@@ -53,8 +52,7 @@ public abstract class RestRoutable extends Routable {
 
 		String unmappedParams = stringBuilder.toString();
 
-		Method method = httpSession.getMethod();
-		switch(method) {
+		switch(httpSession.getMethod()) {
 		case GET:
 			return(doGet(rootDir, httpSession, restParams, unmappedParams));
 		case POST:
@@ -65,6 +63,8 @@ public abstract class RestRoutable extends Routable {
 			return(doDelete(rootDir, httpSession, restParams, unmappedParams));
 		case HEAD:
 			return(doHead(rootDir, httpSession, restParams, unmappedParams));
+		case OPTIONS:
+			return(doOptions(rootDir, httpSession, restParams, unmappedParams));
 		}
 		return(HttpUtils.methodNotAllowedResponse());
 	}
@@ -75,9 +75,9 @@ public abstract class RestRoutable extends Routable {
 	 * @param rootDir The root directory of the RouteMaster server
 	 * @param httpSession The current session
 	 * @param restParams the mapped RESTful parameters
-	 * @param unmappedParams any other uri components that could not be mapped
+	 * @param unmappedParams any other URI components that could not be mapped
 	 *
-	 * @return the reponse
+	 * @return the response
 	 */
 	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
@@ -89,9 +89,9 @@ public abstract class RestRoutable extends Routable {
 	 * @param rootDir The root directory of the RouteMaster server
 	 * @param httpSession The current session
 	 * @param restParams the mapped RESTful parameters
-	 * @param unmappedParams any other uri components that could not be mapped
+	 * @param unmappedParams any other URI components that could not be mapped
 	 *
-	 * @return the reponse
+	 * @return the response
 	 */
 	public Response doPost(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
@@ -103,9 +103,9 @@ public abstract class RestRoutable extends Routable {
 	 * @param rootDir The root directory of the RouteMaster server
 	 * @param httpSession The current session
 	 * @param restParams the mapped RESTful parameters
-	 * @param unmappedParams any other uri components that could not be mapped
+	 * @param unmappedParams any other URI components that could not be mapped
 	 *
-	 * @return the reponse
+	 * @return the response
 	 */
 	public Response doPut(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
@@ -117,9 +117,9 @@ public abstract class RestRoutable extends Routable {
 	 * @param rootDir The root directory of the RouteMaster server
 	 * @param httpSession The current session
 	 * @param restParams the mapped RESTful parameters
-	 * @param unmappedParams any other uri components that could not be mapped
+	 * @param unmappedParams any other URI components that could not be mapped
 	 *
-	 * @return the reponse
+	 * @return the response
 	 */
 	public Response doDelete(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
@@ -131,11 +131,26 @@ public abstract class RestRoutable extends Routable {
 	 * @param rootDir The root directory of the RouteMaster server
 	 * @param httpSession The current session
 	 * @param restParams the mapped RESTful parameters
-	 * @param unmappedParams any other uri components that could not be mapped
+	 * @param unmappedParams any other URI components that could not be mapped
 	 *
-	 * @return the reponse
+	 * @return the response
 	 */
 	public Response doHead(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
+
+	/**
+	 * Override this method to respond to http 'OPTIONS' requests
+	 *
+	 * @param rootDir The root directory of the RouteMaster server
+	 * @param httpSession The current session
+	 * @param restParams the mapped RESTful parameters
+	 * @param unmappedParams any other URI components that could not be mapped
+	 *
+	 * @return the response
+	 */
+	public Response doOptions(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+		return(HttpUtils.methodNotAllowedResponse());
+	}
+
 }

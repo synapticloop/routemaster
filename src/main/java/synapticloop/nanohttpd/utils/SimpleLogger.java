@@ -6,10 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public class SimpleLogger {
-	private static final String INFO = "INFO";
-	private static final String ERROR = "ERROR";
-	private static final String FATAL = "FATAL";
-	private static final String WARN = "WARN";
+	private static final String INFO = "[INFO]:  ";
+	private static final String ERROR = "[ERROR]: ";
+	private static final String FATAL = "[FATAL]: ";
+	private static final String WARN = "[WARN]:  ";
 	private static boolean shouldLog = true;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -45,7 +45,7 @@ public class SimpleLogger {
 
 		// now print it out
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("INFO: +-");
+		stringBuilder.append(INFO + "+-");
 		for (int i = 0; i < maxKeyLength; i++) {
 			stringBuilder.append("-");
 		}
@@ -57,7 +57,7 @@ public class SimpleLogger {
 		String breakLine = stringBuilder.toString();
 
 		// print out the table title
-		System.out.print("INFO: +-");
+		System.out.print(INFO + "+-");
 		for (int i = 0; i < maxKeyLength; i++) {
 			System.out.print("-");
 		}
@@ -68,7 +68,7 @@ public class SimpleLogger {
 
 		System.out.println("-+");
 
-		System.out.print("INFO: | ");
+		System.out.print(INFO + "| ");
 		System.out.print(String.format("%-" + (maxKeyLength + maxValueLength + 3) + "s", tableTitle));
 		System.out.println(" |");
 
@@ -76,7 +76,7 @@ public class SimpleLogger {
 		System.out.println(breakLine);
 
 		// now the keyTitle and keyValue
-		System.out.print("INFO: | ");
+		System.out.print(INFO + "| ");
 		System.out.print(String.format("%-" + maxKeyLength + "s", keyTitle));
 		System.out.print(" | ");
 		System.out.print(String.format("%-" + maxValueLength + "s", valueTitle));
@@ -86,7 +86,7 @@ public class SimpleLogger {
 
 		// now go through the array lists and print out the values
 		for(int i = 0; i < keys.size(); i++) {
-			System.out.print("INFO: | ");
+			System.out.print(INFO + "| ");
 			System.out.print(String.format("%-" + maxKeyLength + "s", keys.get(i)));
 			System.out.print(" | ");
 			System.out.print(String.format("%-" + maxValueLength + "s", values.get(i)));
@@ -109,7 +109,7 @@ public class SimpleLogger {
 		}
 
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("INFO: +-");
+		stringBuilder.append(INFO + "+-");
 		for (int i = 0; i < maxLength; i++) {
 			stringBuilder.append("-");
 		}
@@ -117,18 +117,18 @@ public class SimpleLogger {
 		String breakLine = stringBuilder.toString();
 
 		System.out.println(breakLine);
-		System.out.println(String.format("INFO: | %-" + maxLength + "s |", tableTitle));
+		System.out.println(String.format(INFO + "| %-" + maxLength + "s |", tableTitle));
 		System.out.println(breakLine);
 		for (Object object : list) {
-			System.out.println(String.format("INFO: | %-" + maxLength + "s |", object.toString()));
+			System.out.println(String.format(INFO + "| %-" + maxLength + "s |", object.toString()));
 		}
 		System.out.println(breakLine);
 
 	}
+
 	private static void log(String type, String... messages) {
 		if(shouldLog) {
 			System.out.print(type);
-			System.out.print(": ");
 			for (int i = 0; i < messages.length; i++) {
 				if(i != 0) { System.out.print(" "); }
 				System.out.print(messages[i]);

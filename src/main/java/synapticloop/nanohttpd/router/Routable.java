@@ -9,6 +9,11 @@ public abstract class Routable {
 	// the route that this routable is bound to
 	protected String routeContext = null;
 
+	/**
+	 * Create a new routable class with the bound routing context
+	 *
+	 * @param routeContext the context to route to
+	 */
 	public Routable(String routeContext) {
 		this.routeContext = routeContext;
 	}
