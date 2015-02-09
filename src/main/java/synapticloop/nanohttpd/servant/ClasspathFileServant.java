@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import synapticloop.nanohttpd.handler.Handler;
 import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.utils.HttpUtils;
 import synapticloop.nanohttpd.utils.MimeTypeMapper;
@@ -48,6 +50,16 @@ public class ClasspathFileServant extends StaticFileServant {
 		Response res = null;
 
 
+		// try and get the handler
+		
+		ConcurrentHashMap<String, Handler> handlerCache = RouteMaster.getHandlerCache();
+		if(handlerCache.containsKey(extension)) {
+			Handler handler = handlerCache.get(extension);
+			if(handler.canServeUri(uri, rootDir)) {
+//				handler.serveFile(uri, headers, httpSession, file, mimeType)
+			}
+		}
+		
 		if(MimeTypeMapper.getMimeTypes().containsKey(extension)) {
 			mimeType = MimeTypeMapper.getMimeTypes().get(extension);
 		}

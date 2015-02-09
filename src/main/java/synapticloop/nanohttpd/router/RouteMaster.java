@@ -17,6 +17,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
+import synapticloop.nanohttpd.handler.Handler;
 import synapticloop.nanohttpd.servant.UninitialisedServant;
 import synapticloop.nanohttpd.utils.AsciiArt;
 import synapticloop.nanohttpd.utils.HttpUtils;
@@ -29,11 +30,17 @@ import fi.iki.elonen.NanoHTTPD.Response.Status;
 public class RouteMaster {
 	private static final String ROUTEMASTER_PROPERTIES = "routemaster.properties";
 
+	private static final String PROPERTY_PREFIX_REST = "rest.";
+	private static final String PROPERTY_PREFIX_ROUTE = "route.";
+	private static final String PROPERTY_PREFIX_HANDLER = "handler.";
+
 	private static Router router = null;
 
 	private static HashSet<String> indexFiles = new HashSet<String>();
 	private static ConcurrentHashMap<Integer, String> ERROR_PAGE_CACHE = new ConcurrentHashMap<Integer, String>();
 	private static ConcurrentHashMap<String, Routable> ROUTER_CACHE = new ConcurrentHashMap<String, Routable>();
+	private static ConcurrentHashMap<String, Handler> HANDLER_CACHE = new ConcurrentHashMap<String, Handler>();
+
 	private static boolean initialised = false;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -61,18 +68,18 @@ public class RouteMaster {
 				while (keys.hasMoreElements()) {
 					String key = (String) keys.nextElement();
 					String routerClass = (String)properties.get(key);
-					if(key.startsWith("route.")) {
+					if(key.startsWith(PROPERTY_PREFIX_ROUTE)) {
 						// time to bind a route
-						String subKey = key.substring("route.".length());
+						String subKey = key.substring(PROPERTY_PREFIX_ROUTE.length());
 						StringTokenizer stringTokenizer = new StringTokenizer(subKey, "/", false);
 						if(null == router) {
 							router = new Router(subKey, stringTokenizer, routerClass);
 						} else {
 							router.addRoute(subKey, stringTokenizer, routerClass);
 						}
-					} else if(key.startsWith("rest.")) {
+					} else if(key.startsWith(PROPERTY_PREFIX_REST)) {
 						// time to bind a rest route
-						String subKey = key.substring("rest.".length());
+						String subKey = key.substring(PROPERTY_PREFIX_REST.length());
 						// now we need to get the parameters
 						String[] splits = subKey.split("/");
 						StringBuilder stringBuilder = new StringBuilder();
@@ -110,8 +117,25 @@ public class RouteMaster {
 							router.addRestRoute(subKey, stringTokenizer, routerClass, params);
 						}
 
-					} else if(key.startsWith("plugin")) {
-						
+					} else if(key.startsWith(PROPERTY_PREFIX_HANDLER)) {
+						// we are going to add in a plugin
+						String subKey = key.substring(PROPERTY_PREFIX_HANDLER.length());
+						String pluginProperty = properties.getProperty(key);
+
+						try {
+							Object pluginClass = Class.forName(pluginProperty).newInstance();
+							if(pluginClass instanceof Handler) {
+								HANDLER_CACHE.put(subKey, (Handler)pluginClass);
+							} else {
+								logFatal("Plugin class '" + pluginProperty + "' is not of instance Plugin.");
+							}
+						} catch (ClassNotFoundException cnfex) {
+							logFatal("Could not find the class for '" + pluginProperty + "'.", cnfex);
+						} catch (InstantiationException iex) {
+							logFatal("Could not find the class for '" + pluginProperty + "'.", iex);
+						} catch (IllegalAccessException iaex) {
+							logFatal("Could not find the class for '" + pluginProperty + "'.", iaex);
+						}
 						
 					} else {
 						logWarn("Unknown property prefix for key '" + key + "'.");
@@ -142,6 +166,8 @@ public class RouteMaster {
 		logTable(new ArrayList(indexFiles), "index files");
 
 		logTable(ERROR_PAGE_CACHE, "error pages", "status", "page");
+
+		logTable(HANDLER_CACHE, "Handlers", "extension", "handler class");
 
 		new MimeTypeMapper();
 
@@ -206,6 +232,15 @@ public class RouteMaster {
 	public static Response route(File rootDir, IHTTPSession httpSession) {
 		if(!initialised) {
 			HttpUtils.notFoundResponse();
+		}
+
+		// at this point we want to check for plugins
+		String absolutePath = rootDir.getAbsolutePath();
+		int lastIndexOf = absolutePath.lastIndexOf(".");
+		if(lastIndexOf != -1) {
+			// Figure out if we have a handler
+			System.out.println(absolutePath.substring(lastIndexOf));
+			
 		}
 
 		Response routeInternalResponse = routeInternal(rootDir, httpSession);
@@ -276,7 +311,7 @@ public class RouteMaster {
 	 *
 	 * @return The Router assigned to the root of the site
 	 */
-	public static Router getRouter() { return router; }
+	public static Router getRouter() { return(router); }
 
 	/**
 	 * Get the cache of all of the Routables which contains a Map of the Routables
@@ -285,7 +320,7 @@ public class RouteMaster {
 	 *
 	 * @return The Routable cache
 	 */
-	public static ConcurrentHashMap<String, Routable> getRouterCache() { return ROUTER_CACHE; }
+	public static ConcurrentHashMap<String, Routable> getRouterCache() { return (ROUTER_CACHE); }
 
 	/**
 	 * Get the index/welcome files that are registered.
@@ -293,4 +328,11 @@ public class RouteMaster {
 	 * @return The index files
 	 */
 	public static HashSet<String> getIndexFiles() { return indexFiles; }
+
+	/**
+	 * Get the handler cache
+	 * 
+	 * @return the handler cache
+	 */
+	public static ConcurrentHashMap<String, Handler> getHandlerCache() { return (HANDLER_CACHE); }
 }

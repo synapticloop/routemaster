@@ -8,12 +8,12 @@ import synapticloop.templar.exception.ParseException;
 public class TemplarHelper {
 
 	public static Parser getParser(String filePath) throws ParseException {
-		File inputFile = new File("src/main/html/templar/router-snippet.templar");
+		File inputFile = new File(filePath);
 		Parser parser = null;
 		if(inputFile.isFile()) {
 			parser = new Parser(inputFile);
 		} else {
-			parser = new Parser(TemplarHelper.class.getResourceAsStream("src/main/html/templar/router-snippet.templar"));
+			parser = new Parser(TemplarHelper.class.getResourceAsStream(filePath));
 		}
 		return(parser);
 	}

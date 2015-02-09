@@ -1,9 +1,13 @@
-RouteMaster
-===========
+# RouteMaster
+
 Handy routing controller for the truly excellent [nanohttpd](https://github.com/NanoHttpd/nanohttpd) tiny, easily embeddable HTTP Java server.
+
 
 ![routemaster home page](https://raw.github.com/synapticloop/routemaster/master/src/main/wiki/images/nano-httpd-home.png)
 
+# Now with Templar templating!
+
+Yes, you can now do some server side includes, using the synapticloop templar templating language!
 
 ## How do I run RouteMaster?
 
