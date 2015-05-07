@@ -45,6 +45,10 @@ public class RouteMasterServer extends NanoHTTPD {
 		this.rootDir = rootDir;
 	}
 
+	public RouteMasterServer(String host, int port, String rootDir, boolean quiet) {
+		this(host, port, new File(rootDir), !quiet);
+	}
+
 	public Response serve(IHTTPSession httpSession) {
 		return(RouteMaster.route(rootDir, httpSession));
 	}
