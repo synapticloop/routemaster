@@ -1,9 +1,6 @@
 package synapticloop.nanohttpd.router;
 
-import static synapticloop.nanohttpd.utils.SimpleLogger.logFatal;
-import static synapticloop.nanohttpd.utils.SimpleLogger.logInfo;
-import static synapticloop.nanohttpd.utils.SimpleLogger.logTable;
-import static synapticloop.nanohttpd.utils.SimpleLogger.logWarn;
+import static synapticloop.nanohttpd.utils.SimpleLogger.*;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -126,6 +123,7 @@ public class RouteMaster {
 							Object pluginClass = Class.forName(pluginProperty).newInstance();
 							if(pluginClass instanceof Handler) {
 								HANDLER_CACHE.put(subKey, (Handler)pluginClass);
+								logInfo("Handler '" + pluginClass + "', registered for '*." + subKey + "'.");
 							} else {
 								logFatal("Plugin class '" + pluginProperty + "' is not of instance Plugin.");
 							}

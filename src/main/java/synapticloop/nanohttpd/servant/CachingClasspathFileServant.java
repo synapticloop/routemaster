@@ -122,7 +122,7 @@ public class CachingClasspathFileServant extends StaticFileServant {
 				};
 				byteArrayInputStream.skip(startFrom);
 
-				res = HttpUtils.partialContentResponse(mimeType, byteArrayInputStream);
+				res = HttpUtils.partialContentResponse(mimeType, byteArrayInputStream, dataLen);
 				res.addHeader("Content-Length", "" + dataLen);
 				res.addHeader("Content-Range", "bytes " + startFrom + "-" + endAt + "/" + bytesLength);
 				res.addHeader("ETag", etag);
@@ -131,7 +131,7 @@ public class CachingClasspathFileServant extends StaticFileServant {
 			if (etag.equals(headers.get("if-none-match")))
 				res = HttpUtils.notModifiedResponse(mimeType, "");
 			else {
-				res = HttpUtils.okResponse(mimeType, new ByteArrayInputStream(bytes));
+				res = HttpUtils.okResponse(mimeType, new ByteArrayInputStream(bytes), bytesLength);
 				res.addHeader("Content-Length", "" + bytesLength);
 				res.addHeader("ETag", etag);
 			}

@@ -51,15 +51,15 @@ public class ClasspathFileServant extends StaticFileServant {
 
 
 		// try and get the handler
-		
+
 		ConcurrentHashMap<String, Handler> handlerCache = RouteMaster.getHandlerCache();
 		if(handlerCache.containsKey(extension)) {
 			Handler handler = handlerCache.get(extension);
 			if(handler.canServeUri(uri, rootDir)) {
-//				handler.serveFile(uri, headers, httpSession, file, mimeType)
+				return(handler.serveFile(uri, headers, httpSession));
 			}
 		}
-		
+
 		if(MimeTypeMapper.getMimeTypes().containsKey(extension)) {
 			mimeType = MimeTypeMapper.getMimeTypes().get(extension);
 		}
@@ -124,9 +124,10 @@ public class ClasspathFileServant extends StaticFileServant {
 						return (int) dataLen;
 					}
 				};
+
 				byteArrayInputStream.skip(startFrom);
 
-				res = HttpUtils.partialContentResponse(mimeType, byteArrayInputStream);
+				res = HttpUtils.partialContentResponse(mimeType, byteArrayInputStream, (long)dataLen);
 				res.addHeader("Content-Length", "" + dataLen);
 				res.addHeader("Content-Range", "bytes " + startFrom + "-" + endAt + "/" + bytesLength);
 				res.addHeader("ETag", etag);
@@ -135,7 +136,7 @@ public class ClasspathFileServant extends StaticFileServant {
 			if (etag.equals(headers.get("if-none-match")))
 				res = HttpUtils.notModifiedResponse(mimeType, "");
 			else {
-				res = HttpUtils.okResponse(mimeType, new ByteArrayInputStream(bytes));
+				res = HttpUtils.okResponse(mimeType, new ByteArrayInputStream(bytes), (long)bytes.length);
 				res.addHeader("Content-Length", "" + bytesLength);
 				res.addHeader("ETag", etag);
 			}

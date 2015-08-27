@@ -105,7 +105,10 @@ public class RouteMasterServer extends NanoHTTPD {
 
 		RouteMaster.initialise();
 		System.out.println("\n\n" + AsciiArt.ROUTEMASTER);
-		System.out.println(AsciiArt.ROUTEMASTER_STARTED);
+		System.out.print(AsciiArt.ROUTEMASTER_STARTED);
+		System.out.print(AsciiArt.LINE);
+		System.out.println("                    |          Servicing port " + port + ".       |");
+		System.out.println(AsciiArt.LINE);
 		ServerRunner.executeInstance(new RouteMasterServer(host, port, rootDir, quiet));
 	}
 }

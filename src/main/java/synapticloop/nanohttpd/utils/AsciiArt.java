@@ -1,6 +1,8 @@
 package synapticloop.nanohttpd.utils;
 
 public class AsciiArt {
+	public static final String LINE = "                    +-------------------------------------+\n";
+
 	public static final String ROUTEMASTER =
 			"                           ....OND8OOOOOO88DDN=...         \n" +
 			"                         ..D8OZ$$$$$$$$$77777777$OD.       \n" +
@@ -34,13 +36,13 @@ public class AsciiArt {
 			"                    .:+$8NMMMMMMMMMMMMMMMMMMMMMMMMMMN8$?~,.\n\n";
 
 	public static final String ROUTE_NOT_IN_SERVICE =
-			"                    +-------------------------------------+\n" +
+			LINE +
 			"                    |   This route no longer in service.  |\n" +
-			"                    +-------------------------------------+\n";
+			LINE;
 
 	public static final String ROUTEMASTER_STARTED =
-			"                    +-------------------------------------+\n" +
+			LINE +
 			"                    |     Routemaster up and running.     |\n" +
-			"                    +-------------------------------------+\n";
+			LINE;
 
 }

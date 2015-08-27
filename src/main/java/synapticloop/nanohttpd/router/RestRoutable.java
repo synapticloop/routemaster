@@ -24,6 +24,7 @@ public abstract class RestRoutable extends Routable {
 	 *
 	 * @return The response
 	 */
+	@Override
 	public Response serve(File rootDir, IHTTPSession httpSession) {
 		String uri = httpSession.getUri();
 
@@ -63,6 +64,12 @@ public abstract class RestRoutable extends Routable {
 			return(doDelete(rootDir, httpSession, restParams, unmappedParams));
 		case HEAD:
 			return(doHead(rootDir, httpSession, restParams, unmappedParams));
+		case TRACE:
+			return(doTrace(rootDir, httpSession, restParams, unmappedParams));
+		case PATCH:
+			return(doPatch(rootDir, httpSession, restParams, unmappedParams));
+		case CONNECT:
+			return(doConnect(rootDir, httpSession, restParams, unmappedParams));
 		case OPTIONS:
 			return(doOptions(rootDir, httpSession, restParams, unmappedParams));
 		}
@@ -150,6 +157,48 @@ public abstract class RestRoutable extends Routable {
 	 * @return the response
 	 */
 	public Response doOptions(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+		return(HttpUtils.methodNotAllowedResponse());
+	}
+
+	/**
+	 * Override this method to respond to http 'TRACE' requests
+	 *
+	 * @param rootDir The root directory of the RouteMaster server
+	 * @param httpSession The current session
+	 * @param restParams the mapped RESTful parameters
+	 * @param unmappedParams any other URI components that could not be mapped
+	 *
+	 * @return the response
+	 */
+	public Response doTrace(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+		return(HttpUtils.methodNotAllowedResponse());
+	}
+
+	/**
+	 * Override this method to respond to http 'PATCH' requests
+	 *
+	 * @param rootDir The root directory of the RouteMaster server
+	 * @param httpSession The current session
+	 * @param restParams the mapped RESTful parameters
+	 * @param unmappedParams any other URI components that could not be mapped
+	 *
+	 * @return the response
+	 */
+	public Response doPatch(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+		return(HttpUtils.methodNotAllowedResponse());
+	}
+
+	/**
+	 * Override this method to respond to http 'CONNECT' requests
+	 *
+	 * @param rootDir The root directory of the RouteMaster server
+	 * @param httpSession The current session
+	 * @param restParams the mapped RESTful parameters
+	 * @param unmappedParams any other URI components that could not be mapped
+	 *
+	 * @return the response
+	 */
+	public Response doConnect(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 

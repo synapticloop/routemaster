@@ -129,7 +129,7 @@ public class StaticFileServant extends Routable {
 					};
 					fis.skip(startFrom);
 
-					res = HttpUtils.partialContentResponse(mimeType, fis);
+					res = HttpUtils.partialContentResponse(mimeType, fis, dataLen);
 					res.addHeader("Content-Length", "" + dataLen);
 					res.addHeader("Content-Range", "bytes " + startFrom + "-" + endAt + "/" + fileLen);
 					res.addHeader("ETag", etag);
@@ -138,7 +138,7 @@ public class StaticFileServant extends Routable {
 				if (etag.equals(header.get("if-none-match")))
 					res = HttpUtils.notModifiedResponse(mimeType, "");
 				else {
-					res = HttpUtils.okResponse(mimeType, new FileInputStream(file));
+					res = HttpUtils.okResponse(mimeType, new FileInputStream(file), file.length());
 					res.addHeader("Accept-Ranges", "bytes");
 					res.addHeader("Content-Length", "" + fileLen);
 					res.addHeader("ETag", etag);
