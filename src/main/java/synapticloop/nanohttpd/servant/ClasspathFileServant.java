@@ -49,7 +49,6 @@ public class ClasspathFileServant extends StaticFileServant {
 		String mimeType = NanoHTTPD.MIME_HTML;
 		Response res = null;
 
-
 		// try and get the handler
 
 		ConcurrentHashMap<String, Handler> handlerCache = RouteMaster.getHandlerCache();

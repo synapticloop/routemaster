@@ -15,10 +15,14 @@ public class ModifiableSession implements IHTTPSession {
 
 	public ModifiableSession(IHTTPSession originalSession) { this.httpSession = originalSession; }
 
+	@Override
 	public void execute() throws IOException { httpSession.execute(); }
+	@Override
 	public Map<String, String> getParms() { return(httpSession.getParms()); }
+	@Override
 	public Map<String, String> getHeaders() { return(httpSession.getHeaders()); }
 
+	@Override
 	public String getUri() {
 		if(null == uri) {
 			return(httpSession.getUri());
@@ -28,10 +32,15 @@ public class ModifiableSession implements IHTTPSession {
 	}
 
 	public void setUri(String uri) { this.uri = uri; }
+	@Override
 	public Method getMethod() { return(httpSession.getMethod()); }
+	@Override
 	public InputStream getInputStream() { return(httpSession.getInputStream()); }
+	@Override
 	public CookieHandler getCookies() { return(httpSession.getCookies()); }
+	@Override
 	public void parseBody(Map<String, String> files) throws IOException, ResponseException { httpSession.parseBody(files); }
+	@Override
 	public String getQueryParameterString() { return(httpSession.getQueryParameterString()); }
 
 	public boolean isValidRequest() {
