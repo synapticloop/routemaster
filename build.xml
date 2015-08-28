@@ -7,6 +7,8 @@
 	<property name="src.html.dir" value="src/main/html" />
 
 	<target name="download-dependencies">
+		
+		<!-- nano httpd dependencies -->
 		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/LICENSE.md" dest="./NanoHttpd-LICENSE.md" />
 		<mkdir dir="src/main/java/fi/iki/elonen/" />
 
@@ -18,6 +20,8 @@
 		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/WebServerPlugin.java" dest="src/main/java/fi/iki/elonen/" />
 		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/WebServerPluginInfo.java" dest="src/main/java/fi/iki/elonen/" />
 
+		<!-- templar runtime dependency -->
+		<get src="https://github.com/synapticloop/templar/releases/download/1.0.0/templar.jar" dest="lib/runtime" />
 	</target>
 
 	<target name="init">
@@ -31,6 +35,7 @@
 				<include name="**/*.*" />
 			</fileset>
 		</delete>
+
 		<delete failonerror="false">
 			<fileset dir="${dist.dir}">
 				<include name="**/*.*" />

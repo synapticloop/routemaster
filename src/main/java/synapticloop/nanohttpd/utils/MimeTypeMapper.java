@@ -78,10 +78,9 @@ public class MimeTypeMapper {
 			MIME_TYPES.put("exe", "application/octet-stream");
 			MIME_TYPES.put("class", "application/octet-stream");
 		}
-
-		SimpleLogger.logTable(MIME_TYPES, "registered mime types", "extension", "mime type");
 	}
 
+	public static void logMimeTypes() { SimpleLogger.logTable(MIME_TYPES, "registered mime types", "extension", "mime type"); }
 	public static HashMap<String, String> getMimeTypes() { return MIME_TYPES; }
 
 }

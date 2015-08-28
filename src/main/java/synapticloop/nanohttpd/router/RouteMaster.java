@@ -167,7 +167,7 @@ public class RouteMaster {
 
 		logTable(HANDLER_CACHE, "Handlers", "extension", "handler class");
 
-		new MimeTypeMapper();
+		MimeTypeMapper.logMimeTypes();
 
 		logInfo(RouteMaster.class.getSimpleName() + " initialised.");
 		initialised = true;

@@ -13,38 +13,39 @@
 	<h1>RouteMaster <em>(nanoHTTPD edition)</em><br /><em>(now with templar templating engine)</em></h1>
 
 	<pre>
-                                    ....OND8OOOOOO88DDN=...         {\n}
-                                  ..D8OZ$$$$$$$$$77777777$OD.       {\n}
-                                  .D888OOOOZZZZZ$$77IIIIII7$8.      {\n}
-                                  ~II??+++====~~~~~::::::::~+.      {\n}
-                                  ??++===~~:::,,,,..........:.      {\n}
-                                 .I?++==~~~:::,,,,..........:.      {\n}
-                                 .I+=======:::::::,,::::::::=.      {\n}
-                               . .888888OOOZZZZZZZ$ZZZZZZZZZ8~      {\n}
-                                  8OZ88OOOOZZZZ$$$???+++??I=$I      {\n}
-                                 .NO$8OOOOZZZZ$$$$I??++??II=7$      {\n}
-                                 .NZ$88NNNND88OZ$7I=~~=+III=78      {\n}
-                                 .NZ$8ZM8$78OI?I+??=~==+III=7N      {\n}
-                                 .NOZ88MNNDD88OZIII===+?III+7N..    {\n}
-                               ...N8Z8OOOOOZZZZ$$$I???+??II+7M.     {\n}
-                              ..,.7??????$Z$?I????ZZZ?????????~,..  {\n}
-                              .?8.7?+++====+~~~~~~:::::::~~~=+??=   {\n}
-                              .?O.7I??+++===:::::,,,,,.,,,::=???+   {\n}
-                             ..88.7??????===::::,,,,.....,:,=?8I..  {\n}
-                             . . .7??I??+==+::::,,,,.....,:,=?...   {\n}
-                               . .7??????===~~::,,,..,..,,:,=?..    {\n}
-                                 .MM????+===~:::,,,..,...,:,=?..    {\n}
-                                 .ND888M++==::::,,,......,:,=?..    {\n}
-                                ..ND88OOOO$8::::,,,,.....,,:=?..    {\n}
-                                ..ND88OOOZZZZ$+NDDO888DDDDDDDM.     {\n}
-                                ..ND+M~OOOZZZZ$$$$+N88OOO~D?DM.     {\n}
-                                ..ND?=OOOOZZZZZZ$$7II?IMN~OZ8M      {\n}
-                                ..NDD8:OOOZZZ$$Z$7$7II??I,$MMM.     {\n}
-                                ..MMMMMMMMMMMMMMMMMMMMMMMMMMMN.     {\n}
-                                  .MMMMMM.............MMMOMM,.      {\n}
-                             .:+$8NMMMMMMMMMMMMMMMMMMMMMMMMMMN8$?~,.{\n}
+{pre
+                                    ....OND8OOOOOO88DDN=...         
+                                  ..D8OZ$$$$$$$$$77777777$OD.       
+                                  .D888OOOOZZZZZ$$77IIIIII7$8.      
+                                  ~II??+++====~~~~~::::::::~+.      
+                                  ??++===~~:::,,,,..........:.      
+                                 .I?++==~~~:::,,,,..........:.      
+                                 .I+=======:::::::,,::::::::=.      
+                               . .888888OOOZZZZZZZ$ZZZZZZZZZ8~      
+                                  8OZ88OOOOZZZZ$$$???+++??I=$I      
+                                 .NO$8OOOOZZZZ$$$$I??++??II=7$      
+                                 .NZ$88NNNND88OZ$7I=~~=+III=78      
+                                 .NZ$8ZM8$78OI?I+??=~==+III=7N      
+                                 .NOZ88MNNDD88OZIII===+?III+7N..    
+                               ...N8Z8OOOOOZZZZ$$$I???+??II+7M.     
+                              ..,.7??????$Z$?I????ZZZ?????????~,..  
+                              .?8.7?+++====+~~~~~~:::::::~~~=+??=   
+                              .?O.7I??+++===:::::,,,,,.,,,::=???+   
+                             ..88.7??????===::::,,,,.....,:,=?8I..  
+                             . . .7??I??+==+::::,,,,.....,:,=?...   
+                               . .7??????===~~::,,,..,..,,:,=?..    
+                                 .MM????+===~:::,,,..,...,:,=?..    
+                                 .ND888M++==::::,,,......,:,=?..    
+                                ..ND88OOOO$8::::,,,,.....,,:=?..    
+                                ..ND88OOOZZZZ$+NDDO888DDDDDDDM.     
+                                ..ND+M~OOOZZZZ$$$$+N88OOO~D?DM.     
+                                ..ND?=OOOOZZZZZZ$$7II?IMN~OZ8M      
+                                ..NDD8:OOOZZZ$$Z$7$7II??I,$MMM.     
+                                ..MMMMMMMMMMMMMMMMMMMMMMMMMMMN.     
+                                  .MMMMMM.............MMMOMM,.      
+                             .:+$8NMMMMMMMMMMMMMMMMMMMMMMMMMMN8$?~,.
 
-
+pre}
 </pre>
 
 	<p><strong>Congratulations!!</strong> - The Route Master Server is up and running!</p>
@@ -109,67 +110,69 @@
 </div>
 
 <script>
-	$(document).ready(function() {{
-		$.ajax({{
+{pre
+	$(document).ready(function() {
+		$.ajax({
 			url: "/rest/routes/"
-		}).done(function(data) {{
+		}).done(function(data) {
 			$("#routes").append(data);
 		});
 
-		$.ajax({{
+		$.ajax({
 			url: "/rest/cache/"
-		}).done(function(data) {{
+		}).done(function(data) {
 			$("#cache").append(data);
 		});
 
-		$.ajax({{
+		$.ajax({
 			url: "/mimetypes/"
-		}).done(function(data) {{
+		}).done(function(data) {
 			$("#mimetypes").append(data);
 		});
 
-		$.ajax({{
+		$.ajax({
 			url: "/handlers/"
-		}).done(function(data) {{
+		}).done(function(data) {
 			$("#handlers").append(data);
 		});
 
-		$.ajax({{
+		$.ajax({
 			url: "/simple/mapped/unmapped/",
 			type: "DELETE"
-		}).done(function(data) {{
+		}).done(function(data) {
 			$("#simple-DELETE").empty().append(data);
 		});
 
-		$.ajax({{
+		$.ajax({
 			url: "/simple/mapped/unmapped/",
 			type: "GET" 
-		}).done(function(data) {{
+		}).done(function(data) {
 			$("#simple-GET").empty().append(data);
 		});
 
-		$.ajax({{
+		$.ajax({
 			url: "/simple/mapped/unmapped/",
 			type: "PUT" 
-		}).done(function(data) {{
+		}).done(function(data) {
 			$("#simple-PUT").empty().append(data);
 		});
 
-		$.ajax({{
+		$.ajax({
 			url: "/simple/mapped/unmapped/",
 			type: "POST"
-		}).done(function(data) {{
+		}).done(function(data) {
 			$("#simple-POST").empty().append(data);
 		});
 
-		$.ajax({{
+		$.ajax({
 			url: "/simple/mapped/unmapped/",
 			type: "OPTIONS"
-		}).done(function(data) {{
+		}).done(function(data) {
 			$("#simple-OPTIONS").empty().append(data);
 		});
 
 	});
+pre}
 </script>
 </body>
 </html>

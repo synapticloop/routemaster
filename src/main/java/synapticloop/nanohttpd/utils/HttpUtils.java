@@ -3,12 +3,16 @@ package synapticloop.nanohttpd.utils;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.Response;
 import fi.iki.elonen.NanoHTTPD.Response.IStatus;
 
 public class HttpUtils {
+	private static final Logger LOGGER = Logger.getLogger(HttpUtils.class.getName());
+
 	public static String cleanUri(String uri) {
 		return(uri.replaceAll("/\\.\\./", "/"));
 	}
@@ -86,8 +90,8 @@ public class HttpUtils {
 			byte[] bytes;
 			try {
 				bytes = txt.getBytes("UTF-8");
-			} catch (UnsupportedEncodingException e) {
-//				NanoHTTPD.LOG.log(Level.SEVERE, "encoding problem, responding nothing", e);
+			} catch (UnsupportedEncodingException ueex) {
+				LOGGER.log(Level.SEVERE, "Encoding problem, responding nothing", ueex);
 				bytes = new byte[0];
 			}
 			return newFixedLengthResponse(status, mimeType, new ByteArrayInputStream(bytes), bytes.length);

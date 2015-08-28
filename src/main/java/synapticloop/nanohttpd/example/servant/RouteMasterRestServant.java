@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import synapticloop.nanohttpd.router.RestRoutable;
 import synapticloop.nanohttpd.router.Routable;
@@ -21,6 +23,8 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public class RouteMasterRestServant extends RestRoutable {
+	private static final String ROUTER_SNIPPET_TEMPLAR = "src/main/html/templar/router-snippet.templar";
+	private static final Logger LOGGER = Logger.getLogger(RouteMasterRestServant.class.getName());
 
 	public RouteMasterRestServant(String routeContext, ArrayList<String> params) {
 		super(routeContext, params);
@@ -95,14 +99,12 @@ public class RouteMasterRestServant extends RestRoutable {
 		}
 		templarContext.add("class", routable.getClass().getCanonicalName());
 		try {
-			Parser parser = TemplarHelper.getParser("src/main/html/templar/router-snippet.templar");
+			Parser parser = TemplarHelper.getParser(ROUTER_SNIPPET_TEMPLAR);
 			content.append(parser.render(templarContext));
 		} catch (ParseException pex) {
-			// do nothing
-			pex.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Could not parse '" + ROUTER_SNIPPET_TEMPLAR + "'.", pex);
 		} catch (RenderException rex) {
-			// TODO Auto-generated catch block
-			rex.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Could not parse '" + ROUTER_SNIPPET_TEMPLAR + "'.", rex);
 		}
 	}
 }

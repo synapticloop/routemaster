@@ -3,6 +3,8 @@ package synapticloop.nanohttpd;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.utils.AsciiArt;
@@ -11,6 +13,7 @@ import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.ServerRunner;
 
 public class RouteMasterServer extends NanoHTTPD {
+	private static final Logger LOGGER = Logger.getLogger(RouteMasterServer.class.getName());
 	private final File rootDir;
 
 	private static final String LICENCE =
@@ -49,6 +52,7 @@ public class RouteMasterServer extends NanoHTTPD {
 		this(host, port, new File(rootDir), !quiet);
 	}
 
+	@Override
 	public Response serve(IHTTPSession httpSession) {
 		return(RouteMaster.route(rootDir, httpSession));
 	}
@@ -66,15 +70,15 @@ public class RouteMasterServer extends NanoHTTPD {
 
 		// Parse command-line, with short and long versions of the options.
 		for (int i = 0; i < args.length; ++i) {
-			if (args[i].equalsIgnoreCase("-h") || args[i].equalsIgnoreCase("--host")) {
+			if ("-h".equalsIgnoreCase(args[i]) || "-host".equalsIgnoreCase(args[i])) {
 				host = args[i + 1];
-			} else if (args[i].equalsIgnoreCase("-p") || args[i].equalsIgnoreCase("--port")) {
+			} else if ("-p".equalsIgnoreCase(args[i]) || "--port".equalsIgnoreCase(args[i])) {
 				port = Integer.parseInt(args[i + 1]);
-			} else if (args[i].equalsIgnoreCase("-q") || args[i].equalsIgnoreCase("--quiet")) {
+			} else if ("-q".equalsIgnoreCase(args[i]) || "--quiet".equalsIgnoreCase(args[i])) {
 				quiet = true;
-			} else if (args[i].equalsIgnoreCase("-d") || args[i].equalsIgnoreCase("--dir")) {
+			} else if ("-d".equalsIgnoreCase(args[i]) || "--dir".equalsIgnoreCase(args[i])) {
 				rootDir = new File(args[i + 1]).getAbsoluteFile();
-			} else if (args[i].equalsIgnoreCase("--licence")) {
+			} else if ("--licence".equalsIgnoreCase(args[i])) {
 				System.out.println(LICENCE + "\n");
 			} else if (args[i].startsWith("-X:")) {
 				int dot = args[i].indexOf('=');
@@ -91,13 +95,13 @@ public class RouteMasterServer extends NanoHTTPD {
 		}
 
 		options.put("host", host);
-		options.put("port", ""+port);
+		options.put("port", Integer.toString(port));
 		options.put("quiet", String.valueOf(quiet));
 		StringBuilder sb = new StringBuilder();
 		try {
 			sb.append(rootDir.getCanonicalPath());
 		} catch (IOException ioex) {
-			ioex.printStackTrace();
+			LOGGER.log(Level.SEVERE, "Could not get the path for the root directory - results may vary...", ioex);
 		}
 
 		options.put("home", sb.toString());
