@@ -13,15 +13,21 @@
 		<mkdir dir="src/main/java/fi/iki/elonen/" />
 
 		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/core/src/main/java/fi/iki/elonen/NanoHTTPD.java" dest="src/main/java/fi/iki/elonen/" />
-
-		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/InternalRewrite.java" dest="src/main/java/fi/iki/elonen/" />
 		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/ServerRunner.java" dest="src/main/java/fi/iki/elonen/" />
+		<!-- nanohttpd has closed off the Response object - change it here -->
+		<replaceregexp match="protected Response\(IStatus status, String mimeType, InputStream data, long totalBytes\)" replace="public Response\(IStatus status, String mimeType, InputStream data, long totalBytes\)" flags="g">
+			<fileset dir="src/main/java/fi/iki/elonen/" includes="NanoHTTPD.java" />
+		</replaceregexp>
+
+		<!-- the following files are ignored, but are uesful for reference -->
+		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/InternalRewrite.java" dest="src/main/java/fi/iki/elonen/" />
 		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/SimpleWebServer.java" dest="src/main/java/fi/iki/elonen/" />
 		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/WebServerPlugin.java" dest="src/main/java/fi/iki/elonen/" />
 		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/WebServerPluginInfo.java" dest="src/main/java/fi/iki/elonen/" />
 
 		<!-- templar runtime dependency -->
 		<get src="https://github.com/synapticloop/templar/releases/download/1.0.0/templar.jar" dest="lib/runtime" />
+
 	</target>
 
 	<target name="init">
