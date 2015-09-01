@@ -1,9 +1,9 @@
 package synapticloop.nanohttpd.utils;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class SimpleLogger {
 	private static final String INFO = "[INFO]:  ";
@@ -12,15 +12,16 @@ public class SimpleLogger {
 	private static final String WARN = "[WARN]:  ";
 	private static boolean shouldLog = true;
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static void logTable(AbstractMap map, String tableTitle, String keyTitle, String valueTitle) {
+	private SimpleLogger() {}
+
+	public static void logTable(Map<?, ?> map, String tableTitle, String keyTitle, String valueTitle) {
 		int maxKeyLength = keyTitle.length();
 		int maxValueLength = valueTitle.length();
 
 		ArrayList<String> keys = new ArrayList<String>();
 		ArrayList<String> values = new ArrayList<String>();
 
-		Iterator<Object> iterator = map.keySet().iterator();
+		Iterator<?> iterator = map.keySet().iterator();
 		while (iterator.hasNext()) {
 			Object key = iterator.next();
 			String stringKey = key.toString();
@@ -138,7 +139,7 @@ public class SimpleLogger {
 	}
 
 	private static void logException(String type, String message, Exception exception, boolean printStackTrace) {
-		log(FATAL, message, "Exception[", exception.getClass().getCanonicalName(), "] message was:", exception.getMessage());
+		log(type, message, "Exception[", exception.getClass().getCanonicalName(), "] message was:", exception.getMessage());
 		if(printStackTrace) {
 			exception.printStackTrace();
 		}

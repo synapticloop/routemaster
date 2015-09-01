@@ -50,10 +50,20 @@
 	</path>
 
 	<target name="compile" depends="clean,init" description="compile the code">
-		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" compiler="javac1.6" classpathref="classpath" />
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="on" includeantruntime="false" compiler="javac1.6" classpathref="classpath">
+			<include name="**/*.java" />
+			<exclude name="fi/iki/elonen/InternalRewrite.java" />
+			<exclude name="fi/iki/elonen/*WebServer*.java" />
+		</javac>
 	</target>
 
-	<target name="dist-examples" depends="clean,init,dist,dist-all-in-one" description="build the example, all in one and standalone binary distributable">
+	<!--
+	  Build all of the distributables:
+	    - routemaster with and without templar
+	    - example with and without templar
+	  -->
+
+	<target name="dist" depends="clean,init,dist-routemaster,dist-routemaster-templar,dist-all-in-one" description="build the example, all in one and standalone binary distributable">
 		<!--
 		  Now zip it all up
 		  -->
@@ -71,13 +81,35 @@
 		</zip>
 	</target>
 
-	<target name="dist" depends="clean,init,compile" description="build the standalone binary distributable">
+	<!--
+	  Build the routemaster jar without templar
+	  -->
+	<target name="dist-routemaster" depends="clean,init,compile" description="build the standalone binary distributable">
 		<jar destfile="${dist.dir}/${ant.project.name}.jar" manifest="src/main/META-INF/manifest.mf">
 			<fileset dir="${build.dir}">
 				<include name="**/*.class" />
 			</fileset>
+			<fileset dir="${src.dir}">
+				<include name="**/*.example.properties" />
+			</fileset>
+		</jar>
+	</target>
+
+	<!--
+	  Build the routemaster jar with templar
+	  -->
+	<target name="dist-routemaster-templar" depends="clean,init,compile" description="build the standalone binary distributable">
+		<copy file="${src.dir}/routemaster.example.templar.properties" tofile="${build.dir}/routemaster.example.properties" />
+		<jar destfile="${dist.dir}/${ant.project.name}-templar.jar" manifest="src/main/META-INF/manifest.mf">
+			<fileset dir="${build.dir}">
+				<include name="**/*.class" />
+			</fileset>
+			<fileset dir="${src.dir}">
+				<include name="**/mimetype.example.properties" />
+			</fileset>
 			<zipgroupfileset dir="lib/runtime" includes="*.jar" />
 		</jar>
+		<delete file="${build.dir}/routemaster.example.properties" />
 	</target>
 
 	<target name="dist-all-in-one" depends="clean,init,compile"  description="build the all in one binary distributable">
@@ -87,7 +119,9 @@
 		<jar destfile="${dist.dir}/${ant.project.name}-all-in-one.jar" manifest="src/main/META-INF/manifest.mf">
 			<fileset dir="${build.dir}">
 				<include name="**/*.class" />
-				<include name="**/*.properties" />
+			</fileset>
+			<fileset dir="${src.dir}">
+				<include name="**/*.example.properties" />
 			</fileset>
 			<fileset dir="${src.html.dir}">
 				<include name="**/*.*" />

@@ -1,11 +1,10 @@
 package synapticloop.nanohttpd.example.servant;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,21 +25,21 @@ public class RouteMasterRestServant extends RestRoutable {
 	private static final String ROUTER_SNIPPET_TEMPLAR = "src/main/html/templar/router-snippet.templar";
 	private static final Logger LOGGER = Logger.getLogger(RouteMasterRestServant.class.getName());
 
-	public RouteMasterRestServant(String routeContext, ArrayList<String> params) {
+	public RouteMasterRestServant(String routeContext, List<String> params) {
 		super(routeContext, params);
 	}
 
 	@Override
-	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+	public Response doGet(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		String method = restParams.get("method");
 		StringBuilder content = new StringBuilder();
 
 		if(method != null) {
-			if(method.equals("routes")) {
+			if("routes".equals(method)) {
 				Router router = RouteMaster.getRouter();
 				printRouter(content, router);
 				return(HttpUtils.okResponse(content.toString()));
-			} else if (method.equals("cache")) {
+			} else if ("cache".equals(method)) {
 				printCache(content);
 				return(HttpUtils.okResponse(content.toString()));
 			}
@@ -50,9 +49,9 @@ public class RouteMasterRestServant extends RestRoutable {
 	}
 
 	private void printCache(StringBuilder content) {
-		ConcurrentHashMap<String,Routable> routerCache = RouteMaster.getRouterCache();
+		Map<String,Routable> routerCache = RouteMaster.getRouterCache();
 		for (Iterator<String> iterator = routerCache.keySet().iterator(); iterator.hasNext();) {
-			String uri = (String)iterator.next();
+			String uri = iterator.next();
 			Routable routable = routerCache.get(uri);
 			content.append("<p> Cached: <strong>");
 			content.append(uri);
@@ -76,10 +75,10 @@ public class RouteMasterRestServant extends RestRoutable {
 			printRoutable(content, router, wildcardRoute, true);
 		}
 
-		HashMap<String,Router> routerMap = router.getRouterMap();
+		Map<String,Router> routerMap = router.getRouterMap();
 		Collection<Router> values = routerMap.values();
 		for (Iterator<Router> iterator = values.iterator(); iterator.hasNext();) {
-			Router subRouter = (Router) iterator.next();
+			Router subRouter = iterator.next();
 			printRouter(content, subRouter);
 		}
 	}

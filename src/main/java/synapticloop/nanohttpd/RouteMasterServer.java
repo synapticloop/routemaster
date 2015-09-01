@@ -65,6 +65,7 @@ public class RouteMasterServer extends NanoHTTPD {
 		String host = "127.0.0.1";
 		boolean quiet = false;
 		File rootDir = null;
+
 		HashMap<String, String> options = new HashMap<String, String>();
 
 

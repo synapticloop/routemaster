@@ -2,7 +2,7 @@ package synapticloop.nanohttpd.example.servant;
 
 import java.io.File;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 import synapticloop.nanohttpd.handler.Handler;
 import synapticloop.nanohttpd.router.Routable;
@@ -25,12 +25,12 @@ public class HandlerServant extends Routable {
 	@Override
 	public Response serve(File rootDir, IHTTPSession httpSession) {
 		StringBuilder content = new StringBuilder();
-		ConcurrentHashMap<String, Handler> handlerCache = RouteMaster.getHandlerCache();
+		Map<String, Handler> handlerCache = RouteMaster.getHandlerCache();
 
 		TemplarContext templarContext = new TemplarContext();
 
 		for (Iterator<String> iterator = handlerCache.keySet().iterator(); iterator.hasNext();) {
-			String extension = (String)iterator.next();
+			String extension = iterator.next();
 			Handler plugin = handlerCache.get(extension);
 
 			templarContext.clear();

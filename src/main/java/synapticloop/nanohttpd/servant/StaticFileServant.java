@@ -3,8 +3,9 @@ package synapticloop.nanohttpd.servant;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import synapticloop.nanohttpd.router.Routable;
 import synapticloop.nanohttpd.router.RouteMaster;
@@ -15,6 +16,8 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public class StaticFileServant extends Routable {
+	private static final Logger LOGGER = Logger.getLogger(StaticFileServant.class.getSimpleName());
+
 	public StaticFileServant(String routeContext) {
 		super(routeContext);
 	}
@@ -61,9 +64,9 @@ public class StaticFileServant extends Routable {
 		return(null);
 	}
 
-	private File getIndexFile(File rootDir, String uri) {
+	private static File getIndexFile(File rootDir, String uri) {
 		// time to check the indexFiles
-		HashSet<String> indexFiles = RouteMaster.getIndexFiles();
+		Set<String> indexFiles = RouteMaster.getIndexFiles();
 		for (String indexFile : indexFiles) {
 			File file = new File(rootDir.getAbsolutePath() + uri + "/" + indexFile);
 			if(file.exists()) {
@@ -74,7 +77,7 @@ public class StaticFileServant extends Routable {
 		return(null);
 	}
 
-	private Response serveFile(File file, Map<String, String> header, String extension) {
+	private static Response serveFile(File file, Map<String, String> header, String extension) {
 		String mimeType = NanoHTTPD.MIME_HTML;
 		Response res = null;
 
@@ -90,17 +93,16 @@ public class StaticFileServant extends Routable {
 			long startFrom = 0;
 			long endAt = -1;
 			String range = header.get("range");
-			if (range != null) {
-				if (range.startsWith("bytes=")) {
-					range = range.substring("bytes=".length());
-					int minus = range.indexOf('-');
-					try {
-						if (minus > 0) {
-							startFrom = Long.parseLong(range.substring(0, minus));
-							endAt = Long.parseLong(range.substring(minus + 1));
-						}
-					} catch (NumberFormatException ignored) {
+			if (range != null && range.startsWith("bytes=")) {
+				range = range.substring("bytes=".length());
+				int minus = range.indexOf('-');
+				try {
+					if (minus > 0) {
+						startFrom = Long.parseLong(range.substring(0, minus));
+						endAt = Long.parseLong(range.substring(minus + 1));
 					}
+				} catch (NumberFormatException ignored) {
+					// do nothing
 				}
 			}
 
@@ -109,7 +111,7 @@ public class StaticFileServant extends Routable {
 			if (range != null && startFrom >= 0) {
 				if (startFrom >= fileLen) {
 					res = HttpUtils.rangeNotSatisfiableResponse(NanoHTTPD.MIME_PLAINTEXT, "");
-					res.addHeader("Content-Range", "bytes 0-0/" + fileLen);
+					res.addHeader("Content-Range", "bytes 0-0/" + Long.toString(fileLen));
 					res.addHeader("ETag", etag);
 				} else {
 					if (endAt < 0) {
@@ -127,10 +129,13 @@ public class StaticFileServant extends Routable {
 							return (int) dataLen;
 						}
 					};
-					fis.skip(startFrom);
+					long skip = fis.skip(startFrom);
+					if(skip != startFrom) {
+						LOGGER.severe("Tried to skip: " + startFrom + " bytes, but actualy skipped: " + skip + " bytes");
+					}
 
 					res = HttpUtils.partialContentResponse(mimeType, fis, dataLen);
-					res.addHeader("Content-Length", "" + dataLen);
+					res.addHeader("Content-Length", "" + Long.toString(dataLen));
 					res.addHeader("Content-Range", "bytes " + startFrom + "-" + endAt + "/" + fileLen);
 					res.addHeader("ETag", etag);
 				}
@@ -140,16 +145,15 @@ public class StaticFileServant extends Routable {
 				else {
 					res = HttpUtils.okResponse(mimeType, new FileInputStream(file), file.length());
 					res.addHeader("Accept-Ranges", "bytes");
-					res.addHeader("Content-Length", "" + fileLen);
+					res.addHeader("Content-Length", "" + Long.toString(fileLen));
 					res.addHeader("ETag", etag);
 				}
 			}
 		} catch (IOException ioe) {
-			
+
 			res = HttpUtils.forbiddenResponse();
 			res.addHeader("Accept-Ranges", "bytes");
 		}
 		return res;
 	}
-
 }

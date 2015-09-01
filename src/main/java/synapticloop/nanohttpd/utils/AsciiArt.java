@@ -45,4 +45,6 @@ public class AsciiArt {
 			"                    |     Routemaster up and running.     |\n" +
 			LINE;
 
+	private AsciiArt() {}
+
 }

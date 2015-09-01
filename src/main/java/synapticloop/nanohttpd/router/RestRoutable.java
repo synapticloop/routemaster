@@ -3,15 +3,17 @@ package synapticloop.nanohttpd.router;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import synapticloop.nanohttpd.utils.HttpUtils;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
 public abstract class RestRoutable extends Routable {
-	protected ArrayList<String> restParamNames = new ArrayList<String>();
+	protected List<String> restParamNames = new ArrayList<String>();
 
-	public RestRoutable(String routeContext, ArrayList<String> params) {
+	public RestRoutable(String routeContext, List<String> params) {
 		super(routeContext);
 		this.restParamNames = params;
 	}
@@ -72,8 +74,9 @@ public abstract class RestRoutable extends Routable {
 			return(doConnect(rootDir, httpSession, restParams, unmappedParams));
 		case OPTIONS:
 			return(doOptions(rootDir, httpSession, restParams, unmappedParams));
+		default:
+			return(HttpUtils.methodNotAllowedResponse());
 		}
-		return(HttpUtils.methodNotAllowedResponse());
 	}
 
 	/**
@@ -86,7 +89,7 @@ public abstract class RestRoutable extends Routable {
 	 *
 	 * @return the response
 	 */
-	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+	public Response doGet(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
@@ -100,7 +103,7 @@ public abstract class RestRoutable extends Routable {
 	 *
 	 * @return the response
 	 */
-	public Response doPost(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+	public Response doPost(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
@@ -114,7 +117,7 @@ public abstract class RestRoutable extends Routable {
 	 *
 	 * @return the response
 	 */
-	public Response doPut(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+	public Response doPut(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
@@ -128,7 +131,7 @@ public abstract class RestRoutable extends Routable {
 	 *
 	 * @return the response
 	 */
-	public Response doDelete(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+	public Response doDelete(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
@@ -142,7 +145,7 @@ public abstract class RestRoutable extends Routable {
 	 *
 	 * @return the response
 	 */
-	public Response doHead(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+	public Response doHead(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
@@ -156,7 +159,7 @@ public abstract class RestRoutable extends Routable {
 	 *
 	 * @return the response
 	 */
-	public Response doOptions(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+	public Response doOptions(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
@@ -170,7 +173,7 @@ public abstract class RestRoutable extends Routable {
 	 *
 	 * @return the response
 	 */
-	public Response doTrace(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+	public Response doTrace(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
@@ -184,7 +187,7 @@ public abstract class RestRoutable extends Routable {
 	 *
 	 * @return the response
 	 */
-	public Response doPatch(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+	public Response doPatch(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 
@@ -198,7 +201,7 @@ public abstract class RestRoutable extends Routable {
 	 *
 	 * @return the response
 	 */
-	public Response doConnect(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+	public Response doConnect(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		return(HttpUtils.methodNotAllowedResponse());
 	}
 

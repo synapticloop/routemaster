@@ -16,10 +16,12 @@ import fi.iki.elonen.NanoHTTPD.Response;
 public class TemplarHandler extends Handler {
 	private static final String TEMPLAR_POSTFIX = ".templar";
 
+	@Override
 	public boolean canServeUri(String uri, File rootDir) {
 		return(uri.endsWith(TEMPLAR_POSTFIX));
 	}
 
+	@Override
 	public Response serveFile(String uri, Map<String, String> headers, IHTTPSession session, File file) {
 		// get the mime type if it exists
 		String mimeType = getMimeType(file.getAbsolutePath());
@@ -38,7 +40,7 @@ public class TemplarHandler extends Handler {
 		}
 	}
 
-	private String getMimeType(String uri) {
+	private static String getMimeType(String uri) {
 		String[] split = uri.split("\\.");
 		int length = split.length;
 

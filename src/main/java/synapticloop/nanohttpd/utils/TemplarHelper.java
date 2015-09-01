@@ -6,6 +6,7 @@ import synapticloop.templar.Parser;
 import synapticloop.templar.exception.ParseException;
 
 public class TemplarHelper {
+	private TemplarHelper() {}
 
 	public static Parser getParser(String filePath) throws ParseException {
 		File inputFile = new File(filePath);

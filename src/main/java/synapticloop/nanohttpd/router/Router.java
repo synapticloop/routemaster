@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import synapticloop.nanohttpd.utils.SimpleLogger;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 
 public class Router {
+	private static final String COULD_NOT_INSTANTIATE_THE_DEFAULT_ROUTE_FOR = "Could not instantiate the default route for '";
 	private HashMap<String, Router> routerMap = new HashMap<String, Router>();
 	private Routable wildcardRoute = null;
 	private Routable defaultRoute = null;
@@ -19,7 +22,7 @@ public class Router {
 		addRoute(route, stringTokenizer, routerClass);
 	}
 
-	public Router(String route, StringTokenizer stringTokenizer, String routerClass, ArrayList<String> params) {
+	public Router(String route, StringTokenizer stringTokenizer, String routerClass, List<String> params) {
 		addRestRoute(route, stringTokenizer, routerClass, params);
 	}
 
@@ -27,7 +30,7 @@ public class Router {
 
 		if(stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
-			if(token.equals("*")) {
+			if("*".equals(token)) {
 				try {
 					this.route = route.substring(0, route.length() -1);
 					wildcardRoute = (Routable) Routable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class).newInstance(this.route);
@@ -39,7 +42,7 @@ public class Router {
 						defaultRoute = (Routable) Routable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class).newInstance(this.route);
 					}
 				} catch (Exception ex) {
-					SimpleLogger.logFatal("Could not instantiate the default route for '" + route + "'.", ex);
+					SimpleLogger.logFatal(COULD_NOT_INSTANTIATE_THE_DEFAULT_ROUTE_FOR + route + "'.", ex);
 				}
 			} else {
 				if(routerMap.containsKey(token)) {
@@ -53,15 +56,15 @@ public class Router {
 				this.route = route;
 				defaultRoute = (Routable) Routable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class).newInstance(this.route);
 			} catch (Exception ex) {
-				SimpleLogger.logFatal("Could not instantiate the default route for '" + route + "'.", ex);
+				SimpleLogger.logFatal(COULD_NOT_INSTANTIATE_THE_DEFAULT_ROUTE_FOR + route + "'.", ex);
 			}
 		}
 	}
 
-	public void addRestRoute(String route, StringTokenizer stringTokenizer, String routerClass, ArrayList<String> params) {
+	public void addRestRoute(String route, StringTokenizer stringTokenizer, String routerClass, List<String> params) {
 		if(stringTokenizer.hasMoreTokens()) {
 			String token = stringTokenizer.nextToken();
-			if(token.equals("*")) {
+			if("*".equals(token)) {
 				try {
 					this.route = route.substring(0, route.length() -1);
 					wildcardRoute = (Routable) RestRoutable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class, ArrayList.class).newInstance(this.route, params);
@@ -73,7 +76,7 @@ public class Router {
 						defaultRoute = (Routable) RestRoutable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class, ArrayList.class).newInstance(this.route, params);
 					}
 				} catch (Exception ex) {
-					SimpleLogger.logFatal("Could not instantiate the default route for '" + route + "'.", ex);
+					SimpleLogger.logFatal(COULD_NOT_INSTANTIATE_THE_DEFAULT_ROUTE_FOR + route + "'.", ex);
 				}
 			} else {
 				if(routerMap.containsKey(token)) {
@@ -87,7 +90,7 @@ public class Router {
 				this.route = route;
 				defaultRoute = (Routable) RestRoutable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class, ArrayList.class).newInstance(this.route, params);
 			} catch (Exception ex) {
-				SimpleLogger.logFatal("Could not instantiate the default route for '" + route + "'.", ex);
+				SimpleLogger.logFatal(COULD_NOT_INSTANTIATE_THE_DEFAULT_ROUTE_FOR + route + "'.", ex);
 			}
 		}
 	}
@@ -124,7 +127,7 @@ public class Router {
 		}
 	}
 
-	public LinkedHashMap<String, Routable> getRouters() {
+	public Map<String, Routable> getRouters() {
 		LinkedHashMap<String, Routable> retVal = new LinkedHashMap<String, Routable>();
 
 		if(null != defaultRoute) {
@@ -146,7 +149,7 @@ public class Router {
 		// go through and print all of the other routes
 		Iterator<String> keySet = routerMap.keySet().iterator();
 		while (keySet.hasNext()) {
-			String next = (String) keySet.next();
+			String next = keySet.next();
 			retVal.putAll(routerMap.get(next).getRouters());
 		}
 		return(retVal);
@@ -172,12 +175,12 @@ public class Router {
 		// go through and print all of the other routes
 		Iterator<String> keySet = routerMap.keySet().iterator();
 		while (keySet.hasNext()) {
-			String next = (String) keySet.next();
+			String next = keySet.next();
 			routerMap.get(next).printRoutes();
 		}
 	}
 
-	public HashMap<String, Router> getRouterMap() { return routerMap; }
+	public Map<String, Router> getRouterMap() { return routerMap; }
 	public Routable getWildcardRoute() { return wildcardRoute; }
 	public Routable getDefaultRoute() { return defaultRoute; }
 	public String getRoute() { return route; }

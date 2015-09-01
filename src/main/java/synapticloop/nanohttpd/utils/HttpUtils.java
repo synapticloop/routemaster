@@ -13,6 +13,8 @@ import fi.iki.elonen.NanoHTTPD.Response.IStatus;
 public class HttpUtils {
 	private static final Logger LOGGER = Logger.getLogger(HttpUtils.class.getName());
 
+	private HttpUtils() {}
+
 	public static String cleanUri(String uri) {
 		return(uri.replaceAll("/\\.\\./", "/"));
 	}
@@ -28,46 +30,37 @@ public class HttpUtils {
 	public static Response notFoundResponse() { return(defaultTextResponse(Response.Status.NOT_FOUND)); }
 	public static Response notFoundResponse(String content) { return(defaultTextResponse(Response.Status.NOT_FOUND, content)); }
 	public static Response notFoundResponse(String mimeType, String content) { return(newFixedLengthResponse(Response.Status.NOT_FOUND, mimeType, content)); }
-
-	//public static Response notFoundResponse(InputStream content) { return(notFoundResponse(NanoHTTPD.MIME_PLAINTEXT, content)); }
-//	public static Response notFoundResponse(String mimeType, InputStream content) { return(new Response(Response.Status.NOT_FOUND, mimeType, content)); }
+	public static Response notFoundResponse(String mimeType, InputStream content, long totalBytes) { return(newFixedLengthResponse(Response.Status.NOT_FOUND, mimeType, content, totalBytes)); }
 
 	public static Response rangeNotSatisfiableResponse() { return(defaultTextResponse(Response.Status.RANGE_NOT_SATISFIABLE)); }
 	public static Response rangeNotSatisfiableResponse(String content) { return(defaultTextResponse(Response.Status.RANGE_NOT_SATISFIABLE, content)); }
 	public static Response rangeNotSatisfiableResponse(String mimeType, String content) { return(newFixedLengthResponse(Response.Status.RANGE_NOT_SATISFIABLE, mimeType, content)); }
-
-	//	public static Response rangeNotSatisfiableResponse(String mimeType, InputStream content) { return(new Response(Response.Status.RANGE_NOT_SATISFIABLE, mimeType, content)); }
-//	public static Response rangeNotSatisfiableResponse(InputStream content) { return(rangeNotSatisfiableResponse(NanoHTTPD.MIME_PLAINTEXT, content)); }
+	public static Response rangeNotSatisfiableResponse(String mimeType, InputStream content, long totalBytes) { return(newFixedLengthResponse(Response.Status.RANGE_NOT_SATISFIABLE, mimeType, content, totalBytes)); }
 
 	public static Response methodNotAllowedResponse() { return(defaultTextResponse(Response.Status.METHOD_NOT_ALLOWED)); }
 	public static Response methodNotAllowedResponse(String content) { return(defaultTextResponse(Response.Status.METHOD_NOT_ALLOWED, content)); }
 	public static Response methodNotAllowedResponse(String mimeType, String content) { return(newFixedLengthResponse(Response.Status.METHOD_NOT_ALLOWED, mimeType, content)); }
-//	public static Response methodNotAllowedResponse(String mimeType, InputStream content) { return(new Response(Response.Status.METHOD_NOT_ALLOWED, mimeType, content)); }
-//	public static Response methodNotAllowedResponse(InputStream content) { return(methodNotAllowedResponse(NanoHTTPD.MIME_PLAINTEXT, content)); }
+	public static Response methodNotAllowedResponse(String mimeType, InputStream content, long totalBytes) { return(newFixedLengthResponse(Response.Status.METHOD_NOT_ALLOWED, mimeType, content, totalBytes)); }
 
 	public static Response internalServerErrorResponse() { return(defaultTextResponse(Response.Status.INTERNAL_ERROR)); }
 	public static Response internalServerErrorResponse(String content) { return(defaultTextResponse(Response.Status.INTERNAL_ERROR, content)); }
 	public static Response internalServerErrorResponse(String mimeType, String content) { return(newFixedLengthResponse(Response.Status.INTERNAL_ERROR, mimeType, content)); }
-//	public static Response internalServerErrorResponse(String mimeType, InputStream content) { return(new Response(Response.Status.INTERNAL_ERROR, mimeType, content)); }
-//	public static Response internalServerErrorResponse(InputStream content) { return(internalServerErrorResponse(NanoHTTPD.MIME_PLAINTEXT, content)); }
+	public static Response internalServerErrorResponse(String mimeType, InputStream content, long totalBytes) { return(newFixedLengthResponse(Response.Status.INTERNAL_ERROR, mimeType, content, totalBytes)); }
 
 	public static Response forbiddenResponse() { return(defaultTextResponse(Response.Status.FORBIDDEN)); }
 	public static Response forbiddenResponse(String content) { return(defaultTextResponse(Response.Status.FORBIDDEN, content)); }
 	public static Response forbiddenResponse(String mimeType, String content) { return(newFixedLengthResponse(Response.Status.FORBIDDEN, mimeType, content)); }
-//	public static Response forbiddenResponse(String mimeType, InputStream content) { return(new Response(Response.Status.FORBIDDEN, mimeType, content)); }
-//	public static Response forbiddenResponse(InputStream content) { return(forbiddenResponse(NanoHTTPD.MIME_PLAINTEXT, content)); }
+	public static Response forbiddenResponse(String mimeType, InputStream content, long totalBytes) { return(newFixedLengthResponse(Response.Status.FORBIDDEN, mimeType, content, totalBytes)); }
 
 	public static Response notModifiedResponse() { return(defaultTextResponse(Response.Status.NOT_MODIFIED)); }
 	public static Response notModifiedResponse(String content) { return(defaultTextResponse(Response.Status.NOT_MODIFIED, content)); }
 	public static Response notModifiedResponse(String mimeType, String content) { return(newFixedLengthResponse(Response.Status.NOT_MODIFIED, mimeType, content)); }
-//	public static Response notModifiedResponse(String mimeType, InputStream content) { return(new Response(Response.Status.NOT_MODIFIED, mimeType, content)); }
-//	public static Response notModifiedResponse(InputStream content) { return(notModifiedResponse(NanoHTTPD.MIME_PLAINTEXT, content)); }
+	public static Response notModifiedResponse(String mimeType, InputStream content, long totalBytes) { return(newFixedLengthResponse(Response.Status.NOT_MODIFIED, mimeType, content, totalBytes)); }
 
 	public static Response partialContentResponse() { return(defaultTextResponse(Response.Status.PARTIAL_CONTENT)); }
 	public static Response partialContentResponse(String content) { return(defaultTextResponse(Response.Status.PARTIAL_CONTENT, content)); }
 	public static Response partialContentResponse(String mimeType, String content) { return(newFixedLengthResponse(Response.Status.PARTIAL_CONTENT, mimeType, content)); }
 	public static Response partialContentResponse(String mimeType, InputStream content, long totalBytes) { return(newFixedLengthResponse(Response.Status.PARTIAL_CONTENT, mimeType, content, totalBytes)); }
-	public static Response partialContentResponse(InputStream content, long totalBytes) { return(newFixedLengthResponse(Response.Status.PARTIAL_CONTENT, NanoHTTPD.MIME_PLAINTEXT, content, totalBytes)); }
 
 	public static Response redirectResponse(String uri) { return(redirectResponse(uri, "<html><body>Redirected: <a href=\"" + uri + "\">" + uri + "</a></body></html>")); }
 	public static Response redirectResponse(String uri, String message) {
@@ -96,5 +89,17 @@ public class HttpUtils {
 			}
 			return newFixedLengthResponse(status, mimeType, new ByteArrayInputStream(bytes), bytes.length);
 		}
+	}
+
+	public static String getMimeType(String uri) {
+		int lastIndexOf = uri.lastIndexOf(".");
+		String extension = uri.substring(lastIndexOf + 1);
+
+		String mimeType = NanoHTTPD.MIME_HTML;
+
+		if(MimeTypeMapper.getMimeTypes().containsKey(extension)) {
+			mimeType = MimeTypeMapper.getMimeTypes().get(extension);
+		}
+		return(mimeType);
 	}
 }

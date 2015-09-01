@@ -1,9 +1,9 @@
 package synapticloop.nanohttpd.example.servant;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import synapticloop.nanohttpd.router.RestRoutable;
 import synapticloop.nanohttpd.utils.HttpUtils;
@@ -13,15 +13,16 @@ import fi.iki.elonen.NanoHTTPD.Response;
 
 public class MimeTypesRestServant extends RestRoutable {
 
-	public MimeTypesRestServant(String routeContext, ArrayList<String> params) {
+	public MimeTypesRestServant(String routeContext, List<String> params) {
 		super(routeContext, params);
 	}
 
-	public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams) {
+	@Override
+	public Response doGet(File rootDir, IHTTPSession httpSession, Map<String, String> restParams, String unmappedParams) {
 		StringBuilder content = new StringBuilder();
-		HashMap<String, String> mimeTypeCache = MimeTypeMapper.getMimeTypes();
+		Map<String, String> mimeTypeCache = MimeTypeMapper.getMimeTypes();
 		for (Iterator<String> iterator = mimeTypeCache.keySet().iterator(); iterator.hasNext();) {
-			String mimeTypeExtension = (String)iterator.next();
+			String mimeTypeExtension = iterator.next();
 			String mimeType = mimeTypeCache.get(mimeTypeExtension);
 			content.append("<p> Mime type: <strong>");
 			content.append(mimeTypeExtension);

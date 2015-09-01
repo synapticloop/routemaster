@@ -10,7 +10,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,6 +28,7 @@ import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public class RouteMaster {
 	private static final String ROUTEMASTER_PROPERTIES = "routemaster.properties";
+	private static final String ROUTEMASTER_EXAMPLE_PROPERTIES = "routemaster.example.properties";
 
 	private static final String PROPERTY_PREFIX_REST = "rest.";
 	private static final String PROPERTY_PREFIX_ROUTE = "route.";
@@ -33,20 +36,23 @@ public class RouteMaster {
 
 	private static Router router = null;
 
-	private static HashSet<String> indexFiles = new HashSet<String>();
-	private static ConcurrentHashMap<Integer, String> ERROR_PAGE_CACHE = new ConcurrentHashMap<Integer, String>();
-	private static ConcurrentHashMap<String, Routable> ROUTER_CACHE = new ConcurrentHashMap<String, Routable>();
-	private static ConcurrentHashMap<String, Handler> HANDLER_CACHE = new ConcurrentHashMap<String, Handler>();
+	private static Set<String> indexFiles = new HashSet<String>();
+	private static Map<Integer, String> errorPageCache = new ConcurrentHashMap<Integer, String>();
+	private static Map<String, Routable> routerCache = new ConcurrentHashMap<String, Routable>();
+	private static Map<String, Handler> handlerCache = new ConcurrentHashMap<String, Handler>();
 
 	private static boolean initialised = false;
+
+	private RouteMaster() {}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void initialise() {
 		boolean allOk = true;
 		// find the route.properties file
 		Properties properties = new Properties();
+		InputStream inputStream = null;
 		try {
-			InputStream inputStream = RouteMaster.class.getResourceAsStream("/" + ROUTEMASTER_PROPERTIES);
+			inputStream = RouteMaster.class.getResourceAsStream("/" + ROUTEMASTER_PROPERTIES);
 
 			// maybe it is in the current working directory
 			if(null == inputStream) {
@@ -54,6 +60,10 @@ public class RouteMaster {
 				if(routemasterFile.exists() && routemasterFile.canRead()) {
 					inputStream = new BufferedInputStream(new FileInputStream(routemasterFile));
 				}
+			}
+
+			if(null == inputStream) {
+				inputStream = RouteMaster.class.getResourceAsStream("/" + ROUTEMASTER_EXAMPLE_PROPERTIES);
 			}
 
 			if(null != inputStream) {
@@ -122,7 +132,7 @@ public class RouteMaster {
 						try {
 							Object pluginClass = Class.forName(pluginProperty).newInstance();
 							if(pluginClass instanceof Handler) {
-								HANDLER_CACHE.put(subKey, (Handler)pluginClass);
+								handlerCache.put(subKey, (Handler)pluginClass);
 								logInfo("Handler '" + pluginClass + "', registered for '*." + subKey + "'.");
 							} else {
 								logFatal("Plugin class '" + pluginProperty + "' is not of instance Plugin.");
@@ -130,11 +140,11 @@ public class RouteMaster {
 						} catch (ClassNotFoundException cnfex) {
 							logFatal("Could not find the class for '" + pluginProperty + "'.", cnfex);
 						} catch (InstantiationException iex) {
-							logFatal("Could not find the class for '" + pluginProperty + "'.", iex);
+							logFatal("Could not instantiate the class for '" + pluginProperty + "'.", iex);
 						} catch (IllegalAccessException iaex) {
-							logFatal("Could not find the class for '" + pluginProperty + "'.", iaex);
+							logFatal("Illegal acces for class '" + pluginProperty + "'.", iaex);
 						}
-						
+
 					} else {
 						logWarn("Unknown property prefix for key '" + key + "'.");
 					}
@@ -148,6 +158,14 @@ public class RouteMaster {
 			logFatal("Could not load the '" + ROUTEMASTER_PROPERTIES + "' file, ignoring...");
 			logFatal("(Consequently this is going to be a pretty boring experience!)", ioex);
 			allOk = false;
+		} finally {
+			if(null != inputStream) {
+				try {
+					inputStream.close();
+				} catch (IOException ioex) {
+					// do nothing
+				}
+			}
 		}
 
 		if(null != router) {
@@ -155,7 +173,7 @@ public class RouteMaster {
 			router.getRouters();
 		}
 
-		if(indexFiles.size() == 0) {
+		if(indexFiles.isEmpty()) {
 			// default welcomeFiles
 			indexFiles.add("index.html");
 			indexFiles.add("index.htm");
@@ -163,9 +181,9 @@ public class RouteMaster {
 
 		logTable(new ArrayList(indexFiles), "index files");
 
-		logTable(ERROR_PAGE_CACHE, "error pages", "status", "page");
+		logTable(errorPageCache, "error pages", "status", "page");
 
-		logTable(HANDLER_CACHE, "Handlers", "extension", "handler class");
+		logTable(handlerCache, "Handlers", "extension", "handler class");
 
 		MimeTypeMapper.logMimeTypes();
 
@@ -187,7 +205,7 @@ public class RouteMaster {
 	 * @param key the option key we are looking at
 	 */
 	private static void parseOption(Properties properties, String key) {
-		if(key.equals("option.indexfiles")) {
+		if("option.indexfiles".equals(key)) {
 			String property = properties.getProperty(key);
 			String[] splits = property.split(",");
 			for (int i = 0; i < splits.length; i++) {
@@ -198,12 +216,12 @@ public class RouteMaster {
 			String subKey = key.substring("option.error.".length());
 			try {
 				int parseInt = Integer.parseInt(subKey);
-				ERROR_PAGE_CACHE.put(parseInt, properties.getProperty(key));
+				errorPageCache.put(parseInt, properties.getProperty(key));
 			} catch(NumberFormatException nfex) {
 				logFatal("Could not parse error key '" + subKey + "'.", nfex);
 			}
-		} else if(key.equals("option.log")) {
-//			logRequests = properties.getProperty("option.log").equalsIgnoreCase("true");
+		} else if("option.log".equals(key)) {
+			//			logRequests = properties.getProperty("option.log").equalsIgnoreCase("true");
 		}
 	}
 
@@ -232,15 +250,6 @@ public class RouteMaster {
 			HttpUtils.notFoundResponse();
 		}
 
-		// at this point we want to check for plugins
-		String absolutePath = rootDir.getAbsolutePath();
-		int lastIndexOf = absolutePath.lastIndexOf(".");
-		if(lastIndexOf != -1) {
-			// Figure out if we have a handler
-			System.out.println(absolutePath.substring(lastIndexOf));
-			
-		}
-
 		Response routeInternalResponse = routeInternal(rootDir, httpSession);
 		if(null != routeInternalResponse) {
 			return(routeInternalResponse);
@@ -254,8 +263,8 @@ public class RouteMaster {
 			// try and find the route
 			String uri = httpSession.getUri();
 			// do we have a cached version of this?
-			if(ROUTER_CACHE.containsKey(uri)) {
-				Response serve = ROUTER_CACHE.get(uri).serve(rootDir, httpSession);
+			if(routerCache.containsKey(uri)) {
+				Response serve = routerCache.get(uri).serve(rootDir, httpSession);
 				if(serve == null) {
 					return(get404Response(rootDir, httpSession));
 				} else {
@@ -265,7 +274,7 @@ public class RouteMaster {
 				StringTokenizer stringTokenizer = new StringTokenizer(uri, "/", false);
 				Routable routable = router.route(httpSession, stringTokenizer);
 				if(null != routable) {
-					ROUTER_CACHE.put(uri, routable);
+					routerCache.put(uri, routable);
 					Response serve = routable.serve(rootDir, httpSession);
 					if(null != serve) {
 						return(serve);
@@ -284,8 +293,8 @@ public class RouteMaster {
 
 	private static Response getErrorResponse(File rootDir, IHTTPSession httpSession, Status status, String message) {
 		int requestStatus = status.getRequestStatus();
-		String uri = ERROR_PAGE_CACHE.get(requestStatus);
-		if(ERROR_PAGE_CACHE.containsKey(requestStatus)) {
+		String uri = errorPageCache.get(requestStatus);
+		if(errorPageCache.containsKey(requestStatus)) {
 			ModifiableSession modifiedSession = new ModifiableSession(httpSession);
 			modifiedSession.setUri(uri);
 			// if not valid - we have already tried this - and we are going to get a
@@ -318,19 +327,19 @@ public class RouteMaster {
 	 *
 	 * @return The Routable cache
 	 */
-	public static ConcurrentHashMap<String, Routable> getRouterCache() { return (ROUTER_CACHE); }
+	public static Map<String, Routable> getRouterCache() { return (routerCache); }
 
 	/**
 	 * Get the index/welcome files that are registered.
 	 *
 	 * @return The index files
 	 */
-	public static HashSet<String> getIndexFiles() { return indexFiles; }
+	public static Set<String> getIndexFiles() { return indexFiles; }
 
 	/**
 	 * Get the handler cache
 	 * 
 	 * @return the handler cache
 	 */
-	public static ConcurrentHashMap<String, Handler> getHandlerCache() { return (HANDLER_CACHE); }
+	public static Map<String, Handler> getHandlerCache() { return (handlerCache); }
 }
