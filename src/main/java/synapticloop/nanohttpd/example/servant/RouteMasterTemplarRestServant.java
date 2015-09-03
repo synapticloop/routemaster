@@ -5,18 +5,28 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import synapticloop.nanohttpd.router.RestRoutable;
 import synapticloop.nanohttpd.router.Routable;
 import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.router.Router;
 import synapticloop.nanohttpd.utils.HttpUtils;
+import synapticloop.nanohttpd.utils.TemplarHelper;
+import synapticloop.templar.Parser;
+import synapticloop.templar.exception.ParseException;
+import synapticloop.templar.exception.RenderException;
+import synapticloop.templar.utils.TemplarContext;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
-public class RouteMasterRestServant extends RestRoutable {
+public class RouteMasterTemplarRestServant extends RestRoutable {
 
-	public RouteMasterRestServant(String routeContext, List<String> params) {
+	private static final String ROUTER_SNIPPET_TEMPLAR = "src/main/html/templar/router-snippet.templar";
+	private static final Logger LOGGER = Logger.getLogger(RouteMasterRestServant.class.getName());
+
+	public RouteMasterTemplarRestServant(String routeContext, List<String> params) {
 		super(routeContext, params);
 	}
 
@@ -75,23 +85,26 @@ public class RouteMasterRestServant extends RestRoutable {
 	}
 
 	private void printRoutable(StringBuilder content, Router router, Routable routable, boolean isWildcard) {
-		StringBuilder stringBuilder = new StringBuilder();
-		// <p>{type}: <strong>{route}</strong> =&gt; {class}</p>
-		stringBuilder.append("<p>");
-		if(routable instanceof RestRoutable) {
-			stringBuilder.append("REST");
-		} else {
-			stringBuilder.append("Route");
-		}
-		stringBuilder.append(": <strong>");
+		TemplarContext templarContext = new TemplarContext();
 
-		stringBuilder.append(router.getRoute() + "*");
-		if(isWildcard) {
-			stringBuilder.append("*");
+		if(routable instanceof RestRoutable) {
+			templarContext.add("type", "REST");
+		} else {
+			templarContext.add("type", "Route");
 		}
-		stringBuilder.append("</strong> =&gt; ");
-		stringBuilder.append(routable.getClass().getCanonicalName());
-		stringBuilder.append("</p>");
-		content.append(stringBuilder.toString());
+		if(isWildcard) {
+			templarContext.add("route", router.getRoute() + "*");
+		} else {
+			templarContext.add("route", router.getRoute());
+		}
+		templarContext.add("class", routable.getClass().getCanonicalName());
+		try {
+			Parser parser = TemplarHelper.getParser(ROUTER_SNIPPET_TEMPLAR);
+			content.append(parser.render(templarContext));
+		} catch (ParseException pex) {
+			LOGGER.log(Level.SEVERE, "Could not parse '" + ROUTER_SNIPPET_TEMPLAR + "'.", pex);
+		} catch (RenderException rex) {
+			LOGGER.log(Level.SEVERE, "Could not parse '" + ROUTER_SNIPPET_TEMPLAR + "'.", rex);
+		}
 	}
 }

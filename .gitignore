@@ -13,4 +13,6 @@ src/main/java/fi/iki/elonen/InternalRewrite.java
 src/main/java/fi/iki/elonen/SimpleWebServer.java
 src/main/java/fi/iki/elonen/WebServerPlugin.java
 src/main/java/fi/iki/elonen/WebServerPluginInfo.java
+mimetypes.properties
+routemaster.properties
 

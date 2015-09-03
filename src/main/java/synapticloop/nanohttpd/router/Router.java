@@ -1,6 +1,5 @@
 package synapticloop.nanohttpd.router;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -34,7 +33,7 @@ public class Router {
 				try {
 					this.route = route.substring(0, route.length() -1);
 					wildcardRoute = (Routable) Routable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class).newInstance(this.route);
-					
+
 					// this should also bind to the default route (as the * should also 
 					// map to an empty string) - this will be over-ridden later if another
 					// binding is found
@@ -55,8 +54,8 @@ public class Router {
 			try {
 				this.route = route;
 				defaultRoute = (Routable) Routable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class).newInstance(this.route);
-			} catch (Exception ex) {
-				SimpleLogger.logFatal(COULD_NOT_INSTANTIATE_THE_DEFAULT_ROUTE_FOR + route + "'.", ex);
+			} catch (Throwable th) {
+				SimpleLogger.logFatal(COULD_NOT_INSTANTIATE_THE_DEFAULT_ROUTE_FOR + route + "'.", th);
 			}
 		}
 	}
@@ -67,16 +66,16 @@ public class Router {
 			if("*".equals(token)) {
 				try {
 					this.route = route.substring(0, route.length() -1);
-					wildcardRoute = (Routable) RestRoutable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class, ArrayList.class).newInstance(this.route, params);
-					
+					wildcardRoute = (Routable) RestRoutable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class, List.class).newInstance(this.route, params);
+
 					// this should also bind to the default route (as the * should also 
 					// map to an empty string) - this will be over-ridden later if another
 					// binding is found
 					if(null == defaultRoute) {
-						defaultRoute = (Routable) RestRoutable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class, ArrayList.class).newInstance(this.route, params);
+						defaultRoute = (Routable) RestRoutable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class, List.class).newInstance(this.route, params);
 					}
-				} catch (Exception ex) {
-					SimpleLogger.logFatal(COULD_NOT_INSTANTIATE_THE_DEFAULT_ROUTE_FOR + route + "'.", ex);
+				} catch (Throwable th) {
+					SimpleLogger.logFatal(COULD_NOT_INSTANTIATE_THE_DEFAULT_ROUTE_FOR + route + "'.", th);
 				}
 			} else {
 				if(routerMap.containsKey(token)) {
@@ -88,7 +87,7 @@ public class Router {
 		} else {
 			try {
 				this.route = route;
-				defaultRoute = (Routable) RestRoutable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class, ArrayList.class).newInstance(this.route, params);
+				defaultRoute = (Routable) RestRoutable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class, List.class).newInstance(this.route, params);
 			} catch (Exception ex) {
 				SimpleLogger.logFatal(COULD_NOT_INSTANTIATE_THE_DEFAULT_ROUTE_FOR + route + "'.", ex);
 			}

@@ -18,8 +18,8 @@ public class SimpleLogger {
 		int maxKeyLength = keyTitle.length();
 		int maxValueLength = valueTitle.length();
 
-		ArrayList<String> keys = new ArrayList<String>();
-		ArrayList<String> values = new ArrayList<String>();
+		List<String> keys = new ArrayList<String>();
+		List<String> values = new ArrayList<String>();
 
 		Iterator<?> iterator = map.keySet().iterator();
 		while (iterator.hasNext()) {
@@ -138,24 +138,24 @@ public class SimpleLogger {
 		}
 	}
 
-	private static void logException(String type, String message, Exception exception, boolean printStackTrace) {
-		log(type, message, "Exception[", exception.getClass().getCanonicalName(), "] message was:", exception.getMessage());
+	private static void logException(String type, String message, Throwable throwable, boolean printStackTrace) {
+		log(type, message, "Exception[", throwable.getClass().getCanonicalName(), "] message was:", throwable.getMessage());
 		if(printStackTrace) {
-			exception.printStackTrace();
+			throwable.printStackTrace();
 		}
 	}
 
 	public static void logFatal(String message) { log(FATAL, message); }
-	public static void logFatal(String message, Exception exception) { logException(FATAL, message, exception, true);}
+	public static void logFatal(String message, Throwable throwable) { logException(FATAL, message, throwable, true);}
 
 	public static void logError(String message) { log(ERROR, message); }
-	public static void logError(String message, Exception exception) { logException(ERROR, message, exception, true); }
+	public static void logError(String message, Throwable throwable) { logException(ERROR, message, throwable, true); }
 
 	public static void logWarn(String message) { log(WARN, message); }
-	public static void logWarn(String message, Exception exception) { logException(WARN, message, exception, false); }
+	public static void logWarn(String message, Throwable throwable) { logException(WARN, message, throwable, false); }
 
 	public static void logInfo(String message) { log(INFO, message); }
-	public static void logInfo(String message, Exception exception) { logException(INFO, message, exception, false); }
+	public static void logInfo(String message, Throwable throwable) { logException(INFO, message, throwable, false); }
 
 	public static boolean getShouldLog() { return shouldLog; }
 	public static void setShouldLog(boolean shouldLog) { SimpleLogger.shouldLog = shouldLog; }

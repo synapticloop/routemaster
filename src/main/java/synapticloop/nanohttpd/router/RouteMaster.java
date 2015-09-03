@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -19,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import synapticloop.nanohttpd.handler.Handler;
 import synapticloop.nanohttpd.servant.UninitialisedServant;
 import synapticloop.nanohttpd.utils.AsciiArt;
+import synapticloop.nanohttpd.utils.FileHelper;
 import synapticloop.nanohttpd.utils.HttpUtils;
 import synapticloop.nanohttpd.utils.MimeTypeMapper;
 import synapticloop.nanohttpd.utils.ModifiableSession;
@@ -62,9 +64,9 @@ public class RouteMaster {
 				}
 			}
 
-			if(null == inputStream) {
-				inputStream = RouteMaster.class.getResourceAsStream("/" + ROUTEMASTER_EXAMPLE_PROPERTIES);
-			}
+//			if(null == inputStream) {
+//				inputStream = RouteMaster.class.getResourceAsStream("/" + ROUTEMASTER_EXAMPLE_PROPERTIES);
+//			}
 
 			if(null != inputStream) {
 				properties.load(inputStream);
@@ -91,7 +93,7 @@ public class RouteMaster {
 						String[] splits = subKey.split("/");
 						StringBuilder stringBuilder = new StringBuilder();
 
-						ArrayList<String> params = new ArrayList<String>();
+						List<String> params = new ArrayList<String>();
 						if(subKey.startsWith("/")) { stringBuilder.append("/"); }
 
 						for (int i = 0; i < splits.length; i++) {
@@ -150,13 +152,11 @@ public class RouteMaster {
 					}
 				}
 			} else {
-				logFatal("Could not load the '" + ROUTEMASTER_PROPERTIES + "' file, ignoring...");
-				logFatal("(Consequently this is going to be a pretty boring experience!)");
+				logNoRoutemasterProperties();
 				allOk = false;
 			}
 		} catch (IOException ioex) {
-			logFatal("Could not load the '" + ROUTEMASTER_PROPERTIES + "' file, ignoring...");
-			logFatal("(Consequently this is going to be a pretty boring experience!)", ioex);
+			logNoRoutemasterProperties();
 			allOk = false;
 		} finally {
 			if(null != inputStream) {
@@ -195,6 +195,17 @@ public class RouteMaster {
 			router = new Router("/*", stringTokenizer, UninitialisedServant.class.getCanonicalName());
 		}
 
+
+	}
+
+	private static void logNoRoutemasterProperties() {
+		logFatal("Could not load the '" + ROUTEMASTER_PROPERTIES + "' file, ignoring...");
+		logFatal("(Consequently this is going to be a pretty boring experience!");
+		logFatal("but we did write out an example file for you - '" + ROUTEMASTER_EXAMPLE_PROPERTIES + "')");
+
+		InputStream inputStream = RouteMaster.class.getResourceAsStream("/" + ROUTEMASTER_EXAMPLE_PROPERTIES);
+
+		FileHelper.writeFile(new File(ROUTEMASTER_EXAMPLE_PROPERTIES), inputStream);
 
 	}
 

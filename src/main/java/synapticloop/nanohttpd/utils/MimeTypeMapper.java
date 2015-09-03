@@ -44,12 +44,16 @@ public class MimeTypeMapper {
 			if(null != inputStream) {
 				loadMimeTypesFromProperties(properties, inputStream);
 			} else {
+				// at this point we don't have any mimetype.properties file - so we may as well load up the 
+				// example file and then write it to the file system for future reference
 				SimpleLogger.logInfo("Filling up the cache with default values from file '" + MIMETYPES_EXAMPLE_PROPERTIES + "'.");
 				inputStream = RouteMaster.class.getResourceAsStream("/" + MIMETYPES_EXAMPLE_PROPERTIES);
 				loadMimeTypesFromProperties(properties, inputStream);
-				// now also write out the file to the filesytem
-				SimpleLogger.logInfo("writing out the default  '" + MIMETYPES_PROPERTIES + "' file.");
 				inputStream.close();
+
+				// now also write out the file to the file system
+				SimpleLogger.logInfo("Writing out the default  '" + MIMETYPES_PROPERTIES + "' file.");
+
 				inputStream = RouteMaster.class.getResourceAsStream("/" + MIMETYPES_EXAMPLE_PROPERTIES);
 				FileHelper.writeFile(mimetypesFile, inputStream);
 				
