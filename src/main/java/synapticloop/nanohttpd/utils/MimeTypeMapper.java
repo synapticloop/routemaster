@@ -27,7 +27,7 @@ public class MimeTypeMapper {
 
 		// maybe it is in the current working directory
 
-		File mimetypesFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") + MIMETYPES_PROPERTIES);
+		File mimetypesFile = new File("./" + MIMETYPES_PROPERTIES);
 		if(null == inputStream) {
 			if(mimetypesFile.exists() && mimetypesFile.canRead()) {
 				try {

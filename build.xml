@@ -12,17 +12,8 @@
 	</target>
 
 	<target name="clean">
-		<delete failonerror="false">
-			<fileset dir="${build.dir}">
-				<include name="**/*.*" />
-			</fileset>
-		</delete>
-
-		<delete failonerror="false">
-			<fileset dir="${dist.dir}">
-				<include name="**/*.*" />
-			</fileset>
-		</delete>
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.dir}" />
 	</target>
 
 	<path id="classpath">
@@ -45,23 +36,7 @@
 	    - example with and without templar
 	  -->
 
-	<target name="dist" depends="clean,init,dist-routemaster,dist-routemaster-templar,dist-all-in-one" description="build the example, all in one and standalone binary distributable">
-		<!--
-		  Now zip it all up
-		  -->
-		<zip destfile="${dist.dir}/${ant.project.name}-example.zip" >
-			<zipfileset dir="${dist.dir}" prefix="routemaster">
-				<include name="${ant.project.name}.jar" />
-			</zipfileset>
-			<zipfileset dir="${src.dir}" prefix="routemaster">
-				<include name="mimetypes.properties" />
-				<include name="routemaster.properties" />
-			</zipfileset>
-			<zipfileset dir="${src.html.dir}" prefix="routemaster">
-				<include name="templar/**/*.*" />
-			</zipfileset>
-		</zip>
-	</target>
+	<target name="dist" depends="clean,init,dist-routemaster,dist-routemaster-templar,dist-example" description="build the example, all in one and standalone binary distributable" />
 
 	<!--
 	  Build the routemaster jar without templar
@@ -99,25 +74,29 @@
 		<delete file="${build.dir}/routemaster.example.properties" />
 	</target>
 
-	<!--
-	  Build the routemaster jar with templar
-	  -->
-	<target name="dist-all-in-one" depends="clean,init,compile"  description="build the all in one binary distributable">
-		<copy file="${src.dir}/routemaster.classpath.servant.properties" tofile="${build.dir}/routemaster.properties" />
-		<copy file="${src.dir}/mimetypes.properties" todir="${build.dir}" />
+	<target name="dist-example" depends="clean,init,compile" description="build the example zip file">
+		<!-- Copy over the example templar files -->
+		<copy file="${src.dir}/routemaster.example.fileservant.properties" tofile="${build.dir}/routemaster.properties" />
+		<copy file="${src.dir}/mimetypes.example.properties" tofile="${build.dir}/mimetypes.properties" />
 
-		<jar destfile="${dist.dir}/${ant.project.name}-all-in-one.jar" manifest="src/main/META-INF/manifest.mf">
-			<fileset dir="${build.dir}">
-				<include name="**/*.class" />
-			</fileset>
-			<fileset dir="${src.dir}">
-				<include name="**/*.example.properties" />
-			</fileset>
-			<fileset dir="${src.html.dir}">
+		<!--
+		  Now zip it all up
+		  -->
+		<zip destfile="${dist.dir}/${ant.project.name}-example.zip" >
+
+			<zipfileset dir="${dist.dir}" prefix="routemaster">
+				<include name="${ant.project.name}-templar.jar" />
+			</zipfileset>
+			<zipfileset dir="${build.dir}" prefix="routemaster">
+				<include name="mimetypes.properties" />
+				<include name="routemaster.properties" />
+			</zipfileset>
+			<zipfileset dir="${src.html.dir}" prefix="routemaster">
 				<include name="**/*.*" />
-			</fileset>
-			<zipgroupfileset dir="lib/runtime" includes="*.jar" />
-		</jar>
+			</zipfileset>
+		</zip>
+
+		<!-- delete the files -->
 		<delete>
 			<fileset dir="${build.dir}">
 				<include name="**/*.properties" />

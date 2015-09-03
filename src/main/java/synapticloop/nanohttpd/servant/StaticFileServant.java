@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import synapticloop.nanohttpd.handler.Handler;
 import synapticloop.nanohttpd.router.Routable;
 import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.utils.HttpUtils;
@@ -46,13 +47,24 @@ public class StaticFileServant extends Routable {
 			if(null != indexFile) {
 				file = indexFile;
 			}
-		} else {
-			// is a file - 
 		}
 
 		String absolutePath = file.getAbsolutePath();
+		// at this point we have a file and we now need to check whether we need a handler
+
+		int lastIndexOf = absolutePath.lastIndexOf(".");
+		String extension = absolutePath.substring(lastIndexOf + 1);
+
+		Map<String, Handler> handlerCache = RouteMaster.getHandlerCache();
+		if(handlerCache.containsKey(extension)) {
+			Handler handler = handlerCache.get(extension);
+			if(handler.canServeUri(file.getName(), rootDir)) {
+				return(handler.serveFile(uri, httpSession.getHeaders(), httpSession, file));
+			}
+		}
+
+		// at this point - we haven't been handled by a handler - need to serve the file
 		if(file.exists() && file.canRead()) {
-			int lastIndexOf = absolutePath.lastIndexOf(".");
 			if(lastIndexOf != -1) {
 				// have a file here
 				return(serveFile(file, httpSession.getHeaders(), absolutePath.substring(lastIndexOf + 1)));
@@ -81,6 +93,7 @@ public class StaticFileServant extends Routable {
 		String mimeType = NanoHTTPD.MIME_HTML;
 		Response res = null;
 
+		
 		if(MimeTypeMapper.getMimeTypes().containsKey(extension)) {
 			mimeType = MimeTypeMapper.getMimeTypes().get(extension);
 		}

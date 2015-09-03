@@ -18,6 +18,8 @@ import fi.iki.elonen.NanoHTTPD.Response;
 
 public class HandlerTemplarServant extends Routable {
 
+	private static final String HANDLER_SNIPPET_TEMPLAR = "/templar/handler-snippet.templar";
+
 	public HandlerTemplarServant(String routeContext) {
 		super(routeContext);
 	}
@@ -38,7 +40,7 @@ public class HandlerTemplarServant extends Routable {
 			templarContext.add("handler", plugin.getName());
 
 			try {
-				Parser parser = TemplarHelper.getParser("/templar/handler-snippet.templar");
+				Parser parser = TemplarHelper.getParser(rootDir.getAbsolutePath() + HANDLER_SNIPPET_TEMPLAR);
 				content.append(parser.render(templarContext));
 			} catch (ParseException pex) {
 				return(HttpUtils.internalServerErrorResponse(pex.getMessage()));

@@ -23,7 +23,7 @@ import fi.iki.elonen.NanoHTTPD.Response;
 
 public class RouteMasterRestTemplarServant extends RestRoutable {
 
-	private static final String ROUTER_SNIPPET_TEMPLAR = "src/main/html/templar/router-snippet.templar";
+	private static final String ROUTER_SNIPPET_TEMPLAR = "/templar/router-snippet.templar";
 	private static final Logger LOGGER = Logger.getLogger(RouteMasterRestServant.class.getName());
 
 	public RouteMasterRestTemplarServant(String routeContext, List<String> params) {
@@ -38,7 +38,7 @@ public class RouteMasterRestTemplarServant extends RestRoutable {
 		if(method != null) {
 			if("routes".equals(method)) {
 				Router router = RouteMaster.getRouter();
-				printRouter(content, router);
+				printRouter(rootDir, content, router);
 				return(HttpUtils.okResponse(content.toString()));
 			} else if ("cache".equals(method)) {
 				printCache(content);
@@ -62,29 +62,29 @@ public class RouteMasterRestTemplarServant extends RestRoutable {
 		}
 	}
 
-	private void printRouter(StringBuilder content, Router router) {
+	private void printRouter(File rootDir, StringBuilder content, Router router) {
 		// now get all of the other routes
 
 		Routable defaultRoute = router.getDefaultRoute();
 		if(null != defaultRoute) {
-			printRoutable(content, router, defaultRoute, false);
+			printRoutable(rootDir, content, router, defaultRoute, false);
 		}
 
 
 		Routable wildcardRoute = router.getWildcardRoute();
 		if(null != wildcardRoute) {
-			printRoutable(content, router, wildcardRoute, true);
+			printRoutable(rootDir, content, router, wildcardRoute, true);
 		}
 
 		Map<String,Router> routerMap = router.getRouterMap();
 		Collection<Router> values = routerMap.values();
 		for (Iterator<Router> iterator = values.iterator(); iterator.hasNext();) {
 			Router subRouter = iterator.next();
-			printRouter(content, subRouter);
+			printRouter(rootDir, content, subRouter);
 		}
 	}
 
-	private void printRoutable(StringBuilder content, Router router, Routable routable, boolean isWildcard) {
+	private void printRoutable(File rootDir, StringBuilder content, Router router, Routable routable, boolean isWildcard) {
 		TemplarContext templarContext = new TemplarContext();
 
 		if(routable instanceof RestRoutable) {
@@ -99,7 +99,7 @@ public class RouteMasterRestTemplarServant extends RestRoutable {
 		}
 		templarContext.add("class", routable.getClass().getCanonicalName());
 		try {
-			Parser parser = TemplarHelper.getParser(ROUTER_SNIPPET_TEMPLAR);
+			Parser parser = TemplarHelper.getParser(rootDir.getAbsolutePath() + ROUTER_SNIPPET_TEMPLAR);
 			content.append(parser.render(templarContext));
 		} catch (ParseException pex) {
 			LOGGER.log(Level.SEVERE, "Could not parse '" + ROUTER_SNIPPET_TEMPLAR + "'.", pex);
