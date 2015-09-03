@@ -58,7 +58,7 @@
 				<include name="routemaster.properties" />
 			</zipfileset>
 			<zipfileset dir="${src.html.dir}" prefix="routemaster">
-				<include name="**/*.*" />
+				<include name="templar/**/*.*" />
 			</zipfileset>
 		</zip>
 	</target>
@@ -70,6 +70,7 @@
 		<jar destfile="${dist.dir}/${ant.project.name}.jar" manifest="src/main/META-INF/manifest.mf">
 			<fileset dir="${build.dir}">
 				<include name="**/*.class" />
+				<exclude name="**/*TemplarServant.class" />
 			</fileset>
 			<fileset dir="${src.dir}">
 				<include name="**/*.example.properties" />
@@ -85,9 +86,13 @@
 		<jar destfile="${dist.dir}/${ant.project.name}-templar.jar" manifest="src/main/META-INF/manifest.mf">
 			<fileset dir="${build.dir}">
 				<include name="**/*.class" />
+				<include name="**/routemaster.example.properties" />
 			</fileset>
 			<fileset dir="${src.dir}">
-				<include name="**/mimetype.example.properties" />
+				<include name="**/mimetypes.example.properties" />
+			</fileset>
+			<fileset dir="${src.html.dir}">
+				<include name="**/mimetypes.example.properties" />
 			</fileset>
 			<zipgroupfileset dir="lib/runtime" includes="*.jar" />
 		</jar>

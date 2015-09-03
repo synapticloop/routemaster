@@ -21,12 +21,12 @@ import synapticloop.templar.utils.TemplarContext;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
-public class RouteMasterTemplarRestServant extends RestRoutable {
+public class RouteMasterRestTemplarServant extends RestRoutable {
 
 	private static final String ROUTER_SNIPPET_TEMPLAR = "src/main/html/templar/router-snippet.templar";
 	private static final Logger LOGGER = Logger.getLogger(RouteMasterRestServant.class.getName());
 
-	public RouteMasterTemplarRestServant(String routeContext, List<String> params) {
+	public RouteMasterRestTemplarServant(String routeContext, List<String> params) {
 		super(routeContext, params);
 	}
 
