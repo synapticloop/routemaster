@@ -26,7 +26,7 @@
 		<get src="https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/webserver/src/main/java/fi/iki/elonen/WebServerPluginInfo.java" dest="src/main/java/fi/iki/elonen/" />
 
 		<!-- templar runtime dependency -->
-		<get src="https://github.com/synapticloop/templar/releases/download/1.0.0/templar.jar" dest="lib/runtime" />
+		<get src="https://github.com/synapticloop/templar/releases/download/1.0.3/templar.jar" dest="lib/runtime" />
 
 	</target>
 
@@ -118,6 +118,9 @@
 		<delete file="${build.dir}/routemaster.example.properties" />
 	</target>
 
+	<!--
+	  Build the routemaster jar with templar
+	  -->
 	<target name="dist-all-in-one" depends="clean,init,compile"  description="build the all in one binary distributable">
 		<copy file="${src.dir}/routemaster.classpath.servant.properties" tofile="${build.dir}/routemaster.properties" />
 		<copy file="${src.dir}/mimetypes.properties" todir="${build.dir}" />
