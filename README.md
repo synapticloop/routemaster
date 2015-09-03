@@ -11,36 +11,34 @@ Yes, you can now do some server side includes, using the synapticloop templar te
 
 ## How do I run RouteMaster?
 
-The quickest way to get it up and running is to download ```dist/routemaster.jar``` and run
+The quickest way is to grab a release from the [releases](https://github.com/synapticloop/routemaster/releases) page.
+
+### Which release?
+
+ - `routemaster-example.zip`
+ - `routemaster-templar.jar`
+ - `routemaster.jar`
+
+The `routemaster-example.zip` contains `routemaster-templar.jar` with the files served from the file system with the example site. 
+
+Unzip the folder, change to the `routemaster` directory - and run
 
 ```
-java -jar routemaster.jar
+java -jar routemaster-templar.jar
 ```
 
-This will get it up and running on port 5474, although this won't actually do too much
+point a browser at [http://localhost:5474](http://localhost:5474)
+and away you go.
 
-## How do I get a nice demo up and running?
+All of the files are server from the directory in which you started the server.
 
-  1. Download the ```dist/routemaster-example.zip``` file
-  1. unzip the file, which will create a ```routemaster``` directory
-  1. go into the directory
-  1. and run ```java -jar routemaster.jar```
-  1. point a browser at [http://localhost:5474](http://localhost:5474)
-  1. done!!!
+`routemaster-templar.jar`
 
-## How do I get the all in one demo up and running?
+This is the routemaster jar file with templar templating engine bundeled in with it.
 
-  1. Download the ```dist/routemaster-all-in-one.jar``` file
-  1. go into the directory
-  1. and run ```java -jar routemaster-all-in-one.jar```
-  1. point a browser at [http://localhost:5474](http://localhost:5474)
-  1. done!!!
+ - `routemaster.jar`
 
-## So what is the difference between ```routemaster-example``` and ```routemaster-all-in-one```?
-
-The routemaster example acts more like your traditional web server, you have a file system which you can place files into, which will be served by the web server.
-
-The all in one distribution contains all of the files required to serve the application from a single jar file.
+This is the plain routemaster jar file without nay other dependencies.
 
 ## How do I build RouteMaster?
 
@@ -52,7 +50,8 @@ you will need the following:
 then run
 
 ```
-ant download-dependencies dist 
+ant -f build-ant-github.xml
+ant dist 
 ```
 
 which will download all of the nanohttpd components and build the RouteMaster, and place it in the dist directory.
