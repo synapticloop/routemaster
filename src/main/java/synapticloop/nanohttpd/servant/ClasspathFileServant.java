@@ -54,8 +54,8 @@ public class ClasspathFileServant extends StaticFileServant {
 		Map<String, Handler> handlerCache = RouteMaster.getHandlerCache();
 		if(handlerCache.containsKey(extension)) {
 			Handler handler = handlerCache.get(extension);
-			if(handler.canServeUri(uri, rootDir)) {
-				return(handler.serveFile(uri, headers, httpSession));
+			if(handler.canServeUri(uri)) {
+				return(handler.serveFile(rootDir, uri, headers, httpSession));
 			}
 		}
 

@@ -58,8 +58,8 @@ public class StaticFileServant extends Routable {
 		Map<String, Handler> handlerCache = RouteMaster.getHandlerCache();
 		if(handlerCache.containsKey(extension)) {
 			Handler handler = handlerCache.get(extension);
-			if(handler.canServeUri(file.getName(), rootDir)) {
-				return(handler.serveFile(uri, httpSession.getHeaders(), httpSession, file));
+			if(handler.canServeUri(file.getName())) {
+				return(handler.serveFile(rootDir, uri, httpSession.getHeaders(), httpSession));
 			}
 		}
 

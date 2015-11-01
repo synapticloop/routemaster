@@ -40,7 +40,7 @@ public class HandlerTemplarServant extends Routable {
 			templarContext.add("handler", plugin.getName());
 
 			try {
-				Parser parser = TemplarHelper.getParser(rootDir.getAbsolutePath() + HANDLER_SNIPPET_TEMPLAR);
+				Parser parser = TemplarHelper.getParser(rootDir, HANDLER_SNIPPET_TEMPLAR);
 				content.append(parser.render(templarContext));
 			} catch (ParseException pex) {
 				return(HttpUtils.internalServerErrorResponse(pex.getMessage()));

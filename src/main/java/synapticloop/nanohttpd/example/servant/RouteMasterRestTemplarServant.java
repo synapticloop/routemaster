@@ -99,7 +99,7 @@ public class RouteMasterRestTemplarServant extends RestRoutable {
 		}
 		templarContext.add("class", routable.getClass().getCanonicalName());
 		try {
-			Parser parser = TemplarHelper.getParser(rootDir.getAbsolutePath() + ROUTER_SNIPPET_TEMPLAR);
+			Parser parser = TemplarHelper.getParser(rootDir, ROUTER_SNIPPET_TEMPLAR);
 			content.append(parser.render(templarContext));
 		} catch (ParseException pex) {
 			LOGGER.log(Level.SEVERE, "Could not parse '" + ROUTER_SNIPPET_TEMPLAR + "'.", pex);

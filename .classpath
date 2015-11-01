@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/main/html"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/synapticloop/templar/v1.0.5/templar-v1.0.5.jar" sourcepath="/Users/osmanj/.m2/repository/synapticloop/templar/v1.0.5/templar-v1.0.5-sources.jar"/>
 	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/org/json/json/20150729/json-20150729.jar" sourcepath="/Users/osmanj/.m2/repository/org/json/json/20150729/json-20150729-sources.jar"/>

@@ -252,6 +252,7 @@ public class RouteMaster {
 		if(null != router) {
 			// try and find the route
 			String uri = httpSession.getUri();
+
 			// do we have a cached version of this?
 			if(routerCache.containsKey(uri)) {
 				Response serve = routerCache.get(uri).serve(rootDir, httpSession);
