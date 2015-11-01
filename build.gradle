@@ -7,7 +7,6 @@ plugins {
 	id "maven"
 	id "maven-publish"
 	id "com.github.johnrengelman.shadow" version "1.2.2"
-	id 'net.researchgate.release' version '2.3.1'
 }
 
 version = 'v1.1.1'
@@ -52,21 +51,21 @@ shadowJar {
 	append('/src/main/html/templar/*')
 }
 
-//task downloadDependencies {
-//	def f = new File('src/main/resources/NanoHttpd-LICENSE.md')
-//	new URL('https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/LICENSE.md').withInputStream{ i -> f.withOutputStream{ it << i }}
+task downloadDependencies {
+	def f = new File('src/main/resources/NanoHttpd-LICENSE.md')
+	new URL('https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/LICENSE.md').withInputStream{ i -> f.withOutputStream{ it << i }}
 
-//	f = new File('src/main/java/fi/iki/elonen/NanoHTTPD.java')
-//	new URL('https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/core/src/main/java/fi/iki/elonen/NanoHTTPD.java').withInputStream{ 
-//		i -> f.withOutputStream{ it << i }
-//	}
-//	def updatedContent = f.getText('UTF-8').replaceAll("protected Response\\(IStatus status, String mimeType, InputStream data, long totalBytes\\)", "public Response\\(IStatus status, String mimeType, InputStream data, long totalBytes\\)")
-//	f.write(updatedContent, 'UTF-8')
+	f = new File('src/main/java/fi/iki/elonen/NanoHTTPD.java')
+	new URL('https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/core/src/main/java/fi/iki/elonen/NanoHTTPD.java').withInputStream{ 
+		i -> f.withOutputStream{ it << i }
+	}
+	def updatedContent = f.getText('UTF-8').replaceAll("protected Response\\(IStatus status, String mimeType, InputStream data, long totalBytes\\)", "public Response\\(IStatus status, String mimeType, InputStream data, long totalBytes\\)")
+	f.write(updatedContent, 'UTF-8')
 
-//	f = new File('src/main/java/fi/iki/elonen/util/ServerRunner.java')
-//	new URL('https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/core/src/main/java/fi/iki/elonen/util/ServerRunner.java').withInputStream{ i -> f.withOutputStream{ it << i }}
+	f = new File('src/main/java/fi/iki/elonen/util/ServerRunner.java')
+	new URL('https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/core/src/main/java/fi/iki/elonen/util/ServerRunner.java').withInputStream{ i -> f.withOutputStream{ it << i }}
 
-//}
+}
 
 
 cobertura {
@@ -93,9 +92,6 @@ task zip << {
 			include(name: 'routemaster-templar-${version}.jar')
 		}
 	}
-}
-
-task downloadDependencies {
 }
 
 zip.mustRunAfter shadowJar
@@ -181,28 +177,4 @@ compileJava.mustRunAfter downloadDependencies
 task(testMain, dependsOn: jar, type: JavaExec ) {
 	main = 'synapticloop.h2zero.Main'
 	classpath = sourceSets.main.runtimeClasspath
-}
-
-release {
-	failOnCommitNeeded = true
-	failOnPublishNeeded = true
-	failOnSnapshotDependencies = true
-	failOnUnversionedFiles = true
-	failOnUpdateNeeded = true
-	revertOnFail = true
-	preCommitText = ''
-	preTagCommitMessage = '[Gradle Release Plugin] - pre tag commit: '
-	tagCommitMessage = '[Gradle Release Plugin] - creating tag: '
-	newVersionCommitMessage = '[Gradle Release Plugin] - new version commit: '
-	tagTemplate = '${version}'
-	buildTasks = ['build']
-	scmAdapters = [
-		net.researchgate.release.GitAdapter
-	]
-
-	git {
-		requireBranch = 'master'
-		pushToRemote = 'origin'
-		pushToBranchPrefix = ''
-	}
 }
