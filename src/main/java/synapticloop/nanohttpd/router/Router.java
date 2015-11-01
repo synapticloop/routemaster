@@ -55,6 +55,7 @@ public class Router {
 				this.route = route;
 				defaultRoute = (Routable) Routable.class.getClassLoader().loadClass(routerClass).getConstructor(String.class).newInstance(this.route);
 			} catch (Throwable th) {
+				// here we catch throwable - as we are using reflection...
 				SimpleLogger.logFatal(COULD_NOT_INSTANTIATE_THE_DEFAULT_ROUTE_FOR + route + "'.", th);
 			}
 		}

@@ -1,12 +1,16 @@
 package synapticloop.nanohttpd.utils;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +18,69 @@ public class FileHelper {
 	private static final Logger LOGGER = Logger.getLogger(FileHelper.class.getSimpleName());
 
 	private FileHelper() {}
+
+	/**
+	 * Confirm that the properties file exists - this will do the following (in order)
+	 * 
+	 * <ol>
+	 *   <li>look at the file system to see if the properties file exists in the root directory</li>
+	 *   <li>look in the classpath to see if the properties file exists</li>
+	 *   <li>finally if the properties file is missing in the above two cases, use the example file
+	 *   in the classpath __AND__ write this file to the default file location</li>
+	 * </ol>
+	 * 
+	 * @param propertiesFile the name of the properties file to look for (file system, then classpath)
+	 * @param examplePropertiesFile the name of the example properties file if not found above
+	 * 
+	 * @return the loaded properties file
+	 * @throws IOException if we cannot load the properties
+	 */
+	public static Properties confirmPropertiesFileDefault(String propertiesFile, String examplePropertiesFile) throws IOException {
+		// first look it up on the file system
+		Properties properties = new Properties();
+
+		InputStream inputStream = null;
+		File mimetypesFile = new File("./" + propertiesFile);
+		if(mimetypesFile.exists() && mimetypesFile.canRead()) {
+			try {
+				inputStream = new BufferedInputStream(new FileInputStream(mimetypesFile));
+			} catch (FileNotFoundException fnfex) {
+				// do nothing - one doesn't exist
+			}
+		} else {
+			SimpleLogger.logWarn("Could not load the '" + propertiesFile + "' file from the current directory.");
+		}
+
+		if(null != inputStream) {
+			properties.load(inputStream);
+			return(properties);
+		} else {
+			// try to get it from the classpath
+			inputStream = FileHelper.class.getResourceAsStream("/" + propertiesFile);
+		}
+
+		// maybe it is in the current working directory
+		if(null != inputStream) {
+			properties.load(inputStream);
+			return(properties);
+		} else {
+			SimpleLogger.logWarn("Could not load the '" + propertiesFile + "' file from the classpath.");
+		}
+
+		// if it is still null - lookup the example properties file in the classpath
+		inputStream = FileHelper.class.getResourceAsStream("/" + examplePropertiesFile);
+
+		if(null == inputStream) {
+			// we are out of options
+			SimpleLogger.logFatal("Could not find properties files: '" + propertiesFile + ", or " + examplePropertiesFile + " from the filesystem or classpath.");
+			return(null);
+		} else {
+			properties.load(inputStream);
+			// write out the file
+			writeFile(new File("./" + propertiesFile), inputStream);
+			return(properties);
+		}
+	}
 
 	public static void writeFile(File outputFile, InputStream inputStream) {
 		BufferedReader bufferedReader = null;

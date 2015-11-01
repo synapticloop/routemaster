@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/main/html"/>
+	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/runtime/templar.jar" sourcepath="/templar"/>
-	<classpathentry kind="output" path="build-eclipse"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/synapticloop/templar/v1.0.5/templar-v1.0.5.jar" sourcepath="/Users/osmanj/.m2/repository/synapticloop/templar/v1.0.5/templar-v1.0.5-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/org/json/json/20150729/json-20150729.jar" sourcepath="/Users/osmanj/.m2/repository/org/json/json/20150729/json-20150729-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/org/apache/ant/ant/1.9.6/ant-1.9.6.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/javax/servlet/jsp/jsp-api/2.2/jsp-api-2.2.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/com/mchange/c3p0/0.9.5.1/c3p0-0.9.5.1.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/commons-validator/commons-validator/1.4.1/commons-validator-1.4.1.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/org/apache/logging/log4j/log4j-core/2.4.1/log4j-core-2.4.1.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/io/dropwizard/metrics/metrics-core/3.1.2/metrics-core-3.1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/javax/mail/javax.mail-api/1.5.4/javax.mail-api-1.5.4.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/junit/junit/4.11/junit-4.11.jar" sourcepath="/Users/osmanj/.m2/repository/junit/junit/4.11/junit-4.11-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/org/mockito/mockito-all/1.10.19/mockito-all-1.10.19.jar" sourcepath="/Users/osmanj/.m2/repository/org/mockito/mockito-all/1.10.19/mockito-all-1.10.19-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/org/apache/ant/ant-launcher/1.9.6/ant-launcher-1.9.6.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/com/mchange/mchange-commons-java/0.2.10/mchange-commons-java-0.2.10.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/commons-beanutils/commons-beanutils/1.8.3/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/commons-digester/commons-digester/1.8.1/commons-digester-1.8.1.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/org/apache/logging/log4j/log4j-api/2.4.1/log4j-api-2.4.1.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/javax/activation/activation/1.1/activation-1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/osmanj/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" sourcepath="/Users/osmanj/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3-sources.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

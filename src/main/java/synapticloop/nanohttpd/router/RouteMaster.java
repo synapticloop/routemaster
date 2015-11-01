@@ -2,9 +2,7 @@ package synapticloop.nanohttpd.router;
 
 import static synapticloop.nanohttpd.utils.SimpleLogger.*;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -47,124 +45,113 @@ public class RouteMaster {
 
 	private RouteMaster() {}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void initialise() {
+		Properties properties = null;
 		boolean allOk = true;
-		// find the route.properties file
-		Properties properties = new Properties();
-		InputStream inputStream = null;
+
 		try {
-			inputStream = RouteMaster.class.getResourceAsStream("/" + ROUTEMASTER_PROPERTIES);
-
-			// maybe it is in the current working directory
-			if(null == inputStream) {
-				File routemasterFile = new File(System.getProperty("user.dir") + System.getProperty("file.separator") + ROUTEMASTER_PROPERTIES);
-				if(routemasterFile.exists() && routemasterFile.canRead()) {
-					inputStream = new BufferedInputStream(new FileInputStream(routemasterFile));
-				}
-			}
-
-//			if(null == inputStream) {
-//				inputStream = RouteMaster.class.getResourceAsStream("/" + ROUTEMASTER_EXAMPLE_PROPERTIES);
-//			}
-
-			if(null != inputStream) {
-				properties.load(inputStream);
-
-				parseOptions(properties);
-				Enumeration<Object> keys = properties.keys();
-
-				while (keys.hasMoreElements()) {
-					String key = (String) keys.nextElement();
-					String routerClass = (String)properties.get(key);
-					if(key.startsWith(PROPERTY_PREFIX_ROUTE)) {
-						// time to bind a route
-						String subKey = key.substring(PROPERTY_PREFIX_ROUTE.length());
-						StringTokenizer stringTokenizer = new StringTokenizer(subKey, "/", false);
-						if(null == router) {
-							router = new Router(subKey, stringTokenizer, routerClass);
-						} else {
-							router.addRoute(subKey, stringTokenizer, routerClass);
-						}
-					} else if(key.startsWith(PROPERTY_PREFIX_REST)) {
-						// time to bind a rest route
-						String subKey = key.substring(PROPERTY_PREFIX_REST.length());
-						// now we need to get the parameters
-						String[] splits = subKey.split("/");
-						StringBuilder stringBuilder = new StringBuilder();
-
-						List<String> params = new ArrayList<String>();
-						if(subKey.startsWith("/")) { stringBuilder.append("/"); }
-
-						for (int i = 0; i < splits.length; i++) {
-							String split = splits[i];
-							if(split.length() == 0) {
-								continue;
-							}
-							if(split.startsWith("%") && split.endsWith("%")) {
-								// have a parameter
-								params.add(split.substring(1, split.length() -1));
-							} else {
-								stringBuilder.append(split);
-								// keep adding a slash for those that are missing - but not
-								// if it the last
-								if(i != splits.length -1) { stringBuilder.append("/"); }
-							}
-						}
-
-						// now clean up the route
-						String temp = stringBuilder.toString();
-						if(subKey.endsWith("/") && !temp.endsWith("/")) { stringBuilder.append("/"); }
-						// need to make sure that the rest router always picks up wildcards
-						if(!subKey.endsWith("*")) { stringBuilder.append("*"); }
-
-						subKey = stringBuilder.toString();
-						StringTokenizer stringTokenizer = new StringTokenizer(subKey, "/", false);
-						if(null == router) {
-							router = new Router(subKey, stringTokenizer, routerClass, params);
-						} else {
-							router.addRestRoute(subKey, stringTokenizer, routerClass, params);
-						}
-
-					} else if(key.startsWith(PROPERTY_PREFIX_HANDLER)) {
-						// we are going to add in a plugin
-						String subKey = key.substring(PROPERTY_PREFIX_HANDLER.length());
-						String pluginProperty = properties.getProperty(key);
-
-						try {
-							Object pluginClass = Class.forName(pluginProperty).newInstance();
-							if(pluginClass instanceof Handler) {
-								handlerCache.put(subKey, (Handler)pluginClass);
-								logInfo("Handler '" + pluginClass + "', registered for '*." + subKey + "'.");
-							} else {
-								logFatal("Plugin class '" + pluginProperty + "' is not of instance Plugin.");
-							}
-						} catch (ClassNotFoundException cnfex) {
-							logFatal("Could not find the class for '" + pluginProperty + "'.", cnfex);
-						} catch (InstantiationException iex) {
-							logFatal("Could not instantiate the class for '" + pluginProperty + "'.", iex);
-						} catch (IllegalAccessException iaex) {
-							logFatal("Illegal acces for class '" + pluginProperty + "'.", iaex);
-						}
-
-					} else {
-						logWarn("Unknown property prefix for key '" + key + "'.");
-					}
-				}
-			} else {
-				logNoRoutemasterProperties();
-				allOk = false;
-			}
+			properties = FileHelper.confirmPropertiesFileDefault(ROUTEMASTER_PROPERTIES, ROUTEMASTER_EXAMPLE_PROPERTIES);
 		} catch (IOException ioex) {
 			logNoRoutemasterProperties();
 			allOk = false;
-		} finally {
-			if(null != inputStream) {
-				try {
-					inputStream.close();
-				} catch (IOException ioex) {
-					// do nothing
+		}
+
+		if(null == properties) {
+			logNoRoutemasterProperties();
+			allOk = false;
+		}
+
+		if(allOk) {
+			parseOptionsAndRoutes(properties);
+			initialised = true;
+		} else {
+			StringTokenizer stringTokenizer = new StringTokenizer("/*", "/", false);
+			router = new Router("/*", stringTokenizer, UninitialisedServant.class.getCanonicalName());
+		}
+
+
+	}
+
+	private static void parseOptionsAndRoutes(Properties properties) {
+		// now parse the properties
+		parseOptions(properties);
+		Enumeration<Object> keys = properties.keys();
+
+		while (keys.hasMoreElements()) {
+			String key = (String) keys.nextElement();
+			String routerClass = (String)properties.get(key);
+			if(key.startsWith(PROPERTY_PREFIX_ROUTE)) {
+				// time to bind a route
+				String subKey = key.substring(PROPERTY_PREFIX_ROUTE.length());
+				StringTokenizer stringTokenizer = new StringTokenizer(subKey, "/", false);
+				if(null == router) {
+					router = new Router(subKey, stringTokenizer, routerClass);
+				} else {
+					router.addRoute(subKey, stringTokenizer, routerClass);
 				}
+			} else if(key.startsWith(PROPERTY_PREFIX_REST)) {
+				// time to bind a rest route
+				String subKey = key.substring(PROPERTY_PREFIX_REST.length());
+				// now we need to get the parameters
+				String[] splits = subKey.split("/");
+				StringBuilder stringBuilder = new StringBuilder();
+
+				List<String> params = new ArrayList<String>();
+				if(subKey.startsWith("/")) { stringBuilder.append("/"); }
+
+				for (int i = 0; i < splits.length; i++) {
+					String split = splits[i];
+					if(split.length() == 0) {
+						continue;
+					}
+					if(split.startsWith("%") && split.endsWith("%")) {
+						// have a parameter
+						params.add(split.substring(1, split.length() -1));
+					} else {
+						stringBuilder.append(split);
+						// keep adding a slash for those that are missing - but not
+						// if it the last
+						if(i != splits.length -1) { stringBuilder.append("/"); }
+					}
+				}
+
+				// now clean up the route
+				String temp = stringBuilder.toString();
+				if(subKey.endsWith("/") && !temp.endsWith("/")) { stringBuilder.append("/"); }
+				// need to make sure that the rest router always picks up wildcards
+				if(!subKey.endsWith("*")) { stringBuilder.append("*"); }
+
+				subKey = stringBuilder.toString();
+				StringTokenizer stringTokenizer = new StringTokenizer(subKey, "/", false);
+				if(null == router) {
+					router = new Router(subKey, stringTokenizer, routerClass, params);
+				} else {
+					router.addRestRoute(subKey, stringTokenizer, routerClass, params);
+				}
+
+			} else if(key.startsWith(PROPERTY_PREFIX_HANDLER)) {
+				// we are going to add in a plugin
+				String subKey = key.substring(PROPERTY_PREFIX_HANDLER.length());
+				String pluginProperty = properties.getProperty(key);
+
+				try {
+					Object pluginClass = Class.forName(pluginProperty).newInstance();
+					if(pluginClass instanceof Handler) {
+						handlerCache.put(subKey, (Handler)pluginClass);
+						logInfo("Handler '" + pluginClass + "', registered for '*." + subKey + "'.");
+					} else {
+						logFatal("Plugin class '" + pluginProperty + "' is not of instance Plugin.");
+					}
+				} catch (ClassNotFoundException cnfex) {
+					logFatal("Could not find the class for '" + pluginProperty + "'.", cnfex);
+				} catch (InstantiationException iex) {
+					logFatal("Could not instantiate the class for '" + pluginProperty + "'.", iex);
+				} catch (IllegalAccessException iaex) {
+					logFatal("Illegal acces for class '" + pluginProperty + "'.", iaex);
+				}
+
+			} else {
+				logWarn("Unknown property prefix for key '" + key + "'.");
 			}
 		}
 
@@ -179,7 +166,7 @@ public class RouteMaster {
 			indexFiles.add("index.htm");
 		}
 
-		logTable(new ArrayList(indexFiles), "index files");
+		logTable(new ArrayList<String>(indexFiles), "index files");
 
 		logTable(errorPageCache, "error pages", "status", "page");
 
@@ -188,14 +175,6 @@ public class RouteMaster {
 		MimeTypeMapper.logMimeTypes();
 
 		logInfo(RouteMaster.class.getSimpleName() + " initialised.");
-		initialised = true;
-
-		if(!allOk) {
-			StringTokenizer stringTokenizer = new StringTokenizer("/*", "/", false);
-			router = new Router("/*", stringTokenizer, UninitialisedServant.class.getCanonicalName());
-		}
-
-
 	}
 
 	private static void logNoRoutemasterProperties() {

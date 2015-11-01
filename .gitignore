@@ -15,4 +15,5 @@ src/main/java/fi/iki/elonen/WebServerPlugin.java
 src/main/java/fi/iki/elonen/WebServerPluginInfo.java
 mimetypes.properties
 routemaster.properties
-
+bin/
+.gradle

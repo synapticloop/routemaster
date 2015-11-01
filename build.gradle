@@ -1,0 +1,160 @@
+plugins {
+	id 'java'
+	id 'eclipse'
+	id 'net.saliman.cobertura' version '2.2.6'
+	id "org.sonarqube" version "1.0"
+	id "com.jfrog.bintray" version "1.4"
+	id "com.github.johnrengelman.shadow" version "1.2.2"
+	id "maven"
+	id "maven-publish"
+}
+
+version = 'v1.1.1'
+
+group = 'synapticloop'
+archivesBaseName = 'routemaster'
+description = """lightweight ORM generator for mysql, java and optionally jsp/servlets"""
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	jcenter()
+}
+
+dependencies {
+	testCompile 'junit:junit:4.11'
+	testCompile 'org.mockito:mockito-all:1.10.19'
+	testCompile 'synapticloop:templar:v1.0.6'
+
+	runtime 'synapticloop:templar:v1.0.6'
+
+	compile 'synapticloop:templar:v1.0.6'
+
+	shadow 'synapticloop:templar:v1.0.6'
+}
+
+jar {
+	manifest {
+		attributes("Main-Class": "synapticloop.nanohttpd.RouteMasterServer",
+				"Implementation-Version": version)
+	}
+}
+
+shadowJar {
+	classifier = ""
+}
+
+task downloadDependencies {
+	def f = new File('src/main/resources/NanoHttpd-LICENSE.md')
+	new URL('https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/LICENSE.md').withInputStream{ i -> f.withOutputStream{ it << i }}
+
+	f = new File('src/main/java/fi/iki/elonen/NanoHTTPD.java')
+	new URL('https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/core/src/main/java/fi/iki/elonen/NanoHTTPD.java').withInputStream{ 
+		i -> f.withOutputStream{ it << i }
+	}
+	def updatedContent = f.getText('UTF-8').replaceAll("protected Response\\(IStatus status, String mimeType, InputStream data, long totalBytes\\)", "public Response\\(IStatus status, String mimeType, InputStream data, long totalBytes\\)")
+	f.write(updatedContent, 'UTF-8')
+
+	f = new File('src/main/java/fi/iki/elonen/util/ServerRunner.java')
+	new URL('https://raw.githubusercontent.com/NanoHttpd/nanohttpd/master/core/src/main/java/fi/iki/elonen/util/ServerRunner.java').withInputStream{ i -> f.withOutputStream{ it << i }}
+
+}
+
+
+cobertura {
+	coverageFormats = [ 'html', 'xml']
+}
+
+test {
+	include '**/*Test.class' 
+	maxParallelForks = 5
+	forkEvery = 50 
+}
+
+
+
+def javaApiUrl = 'http://docs.oracle.com/javase/1.7.0/docs/api/'
+def groovyApiUrl = 'http://groovy.codehaus.org/gapi/'
+
+tasks.withType(Javadoc) {
+	options.links(javaApiUrl, groovyApiUrl)
+	exclude '**/fi/**'
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+	classifier = 'javadoc'
+	from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+	from sourceSets.main.allSource
+	classifier = 'sources'
+}
+
+publishing {
+	publications {
+		Synapticloop(MavenPublication) {
+			from components.java
+			artifact sourcesJar
+			artifact javadocJar
+
+			groupId 'synapticloop'
+			artifactId 'routemaster'
+
+			pom.withXml {
+				configurations.compile.resolvedConfiguration.firstLevelModuleDependencies.each { dep ->
+					asNode().dependencies[0].dependency.find {
+						it.artifactId[0].text() == dep.moduleName &&
+								it.groupId[0].text() == dep.moduleGroup
+					}.scope[0].value = 'compile'
+				}
+			}
+		}
+
+		SynapticloopAll(MavenPublication) {
+			from components.shadow
+			groupId 'synapticloop'
+			artifactId 'routemaster-templar'
+
+			artifact sourcesJar
+			artifact javadocJar
+
+
+			pom.withXml {
+				configurations.compile.resolvedConfiguration.firstLevelModuleDependencies.each { dep ->
+					asNode().dependencies[0].dependency.find {
+						it.artifactId[0].text() == dep.moduleName &&
+								it.groupId[0].text() == dep.moduleGroup
+					}.scope[0].value = 'compile'
+				}
+			}
+		}
+	}
+}
+
+bintray {
+	user = System.getenv('BINTRAY_USER')
+	key = System.getenv('BINTRAY_PASSWORD')
+
+	publications = [ 'Synapticloop', 'SynapticloopAll' ]
+
+	publish = true
+
+	pkg {
+		repo = 'maven'
+		name = 'routemaster'
+	}
+
+}
+
+task(dist).dependsOn( [ 'clean', 'shadowJar', 'downloadDependencies', 'cobertura', 'jar', 'javadoc' ] )
+
+compileJava.mustRunAfter downloadDependencies
+
+task(testMain, dependsOn: jar, type: JavaExec ) {
+	main = 'synapticloop.h2zero.Main'
+	classpath = sourceSets.main.runtimeClasspath
+}

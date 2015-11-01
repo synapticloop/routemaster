@@ -10,7 +10,7 @@ import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.utils.AsciiArt;
 import synapticloop.nanohttpd.utils.SimpleLogger;
 import fi.iki.elonen.NanoHTTPD;
-import fi.iki.elonen.ServerRunner;
+import fi.iki.elonen.util.ServerRunner;
 
 public class RouteMasterServer extends NanoHTTPD {
 	private static final Logger LOGGER = Logger.getLogger(RouteMasterServer.class.getName());

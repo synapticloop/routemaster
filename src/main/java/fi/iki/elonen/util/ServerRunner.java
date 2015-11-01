@@ -1,4 +1,4 @@
-package fi.iki.elonen;
+package fi.iki.elonen.util;
 
 /*
  * #%L
@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import fi.iki.elonen.NanoHTTPD;
+
 public class ServerRunner {
 
     /**
@@ -46,7 +48,7 @@ public class ServerRunner {
 
     public static void executeInstance(NanoHTTPD server) {
         try {
-            server.start();
+            server.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         } catch (IOException ioe) {
             System.err.println("Couldn't start server:\n" + ioe);
             System.exit(-1);

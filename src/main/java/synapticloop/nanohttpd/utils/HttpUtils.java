@@ -75,14 +75,20 @@ public class HttpUtils {
 
 	/**
 	 * Create a text response with known length.
+	 * 
+	 * @param status the HTTP status
+	 * @param mimeType the mime type of the response
+	 * @param response the response message 
+	 * 
+	 * @return The fixed length response object
 	 */
-	public static Response newFixedLengthResponse(IStatus status, String mimeType, String txt) {
-		if (txt == null) {
+	public static Response newFixedLengthResponse(IStatus status, String mimeType, String response) {
+		if (response == null) {
 			return newFixedLengthResponse(status, mimeType, new ByteArrayInputStream(new byte[0]), 0);
 		} else {
 			byte[] bytes;
 			try {
-				bytes = txt.getBytes("UTF-8");
+				bytes = response.getBytes("UTF-8");
 			} catch (UnsupportedEncodingException ueex) {
 				LOGGER.log(Level.SEVERE, "Encoding problem, responding nothing", ueex);
 				bytes = new byte[0];
