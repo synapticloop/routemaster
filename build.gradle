@@ -6,8 +6,8 @@ plugins {
 	id "com.jfrog.bintray" version "1.4"
 	id "maven"
 	id "maven-publish"
-	id 'org.ajoberstar.release-opinion' version '1.3.2'
 	id "com.github.johnrengelman.shadow" version "1.2.2"
+	id 'net.researchgate.release' version '2.3.1'
 }
 
 version = 'v1.1.1'
@@ -184,18 +184,25 @@ task(testMain, dependsOn: jar, type: JavaExec ) {
 }
 
 release {
-    /* Let's check that everything is committed */
-    doFirst {
-        if (!project.git.status().isEmpty()) {
-            throw new GradleException('You have uncommitted changes.')
-        }
-    }
+	failOnCommitNeeded = true
+	failOnPublishNeeded = true
+	failOnSnapshotDependencies = true
+	failOnUnversionedFiles = true
+	failOnUpdateNeeded = true
+	revertOnFail = true
+	preCommitText = ''
+	preTagCommitMessage = '[Gradle Release Plugin] - pre tag commit: '
+	tagCommitMessage = '[Gradle Release Plugin] - creating tag: '
+	newVersionCommitMessage = '[Gradle Release Plugin] - new version commit: '
+	tagTemplate = '${version}'
+	buildTasks = ['build']
+	scmAdapters = [
+		net.researchgate.release.GitAdapter
+	]
 
-    /* Ask user for a release version, suggesting some default variant. */
-    version = $project.release.version
-    tag = $project.release.version
-    commitMessage = { "Release $project.release.version" }
-
-    /* Tasks that needs to be performed during release. Will be done after tag step. */
-    dependsOn subprojects.findAll { it.name != 'util' }*.install
+	git {
+		requireBranch = 'master'
+		pushToRemote = 'origin'
+		pushToBranchPrefix = ''
+	}
 }
