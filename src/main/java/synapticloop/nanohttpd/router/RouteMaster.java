@@ -184,7 +184,7 @@ public class RouteMaster {
 
 		InputStream inputStream = RouteMaster.class.getResourceAsStream("/" + ROUTEMASTER_EXAMPLE_PROPERTIES);
 
-		FileHelper.writeFile(new File(ROUTEMASTER_EXAMPLE_PROPERTIES), inputStream);
+		FileHelper.writeFile(new File(ROUTEMASTER_EXAMPLE_PROPERTIES), inputStream, true);
 
 	}
 
@@ -298,7 +298,13 @@ public class RouteMaster {
 				}
 			}
 		}
-		return(HttpUtils.notFoundResponse(AsciiArt.ROUTEMASTER + "          " + message + ";\n\n       additionally, an over-ride " + status.toString() + " error page was not defined\n\n           in the configuration file, key 'option.error.404'."));
+
+		return(HttpUtils.notFoundResponse(AsciiArt.ROUTEMASTER + 
+				"          " + 
+				message + 
+				";\n\n       additionally, an over-ride " + 
+				status.toString() + 
+				" error page was not defined\n\n           in the configuration file, key 'option.error.404'."));
 	}
 
 	public static Response get404Response(File rootDir, IHTTPSession httpSession) { return(getErrorResponse(rootDir, httpSession, Response.Status.NOT_FOUND, "not found")); }

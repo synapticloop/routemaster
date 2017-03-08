@@ -3,11 +3,7 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry kind="src" path="src/main/html"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="output" path="build-eclipse"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6/"/>
+	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
 	<classpathentry kind="output" path="bin"/>
-	<classpathentry sourcepath="/Users/osmanj/.m2/repository/synapticloop/templar/v1.0.6/templar-v1.0.6-sources.jar" kind="lib" path="/Users/osmanj/.m2/repository/synapticloop/templar/v1.0.6/templar-v1.0.6.jar"/>
-	<classpathentry sourcepath="/Users/osmanj/.m2/repository/junit/junit/4.11/junit-4.11-sources.jar" kind="lib" path="/Users/osmanj/.m2/repository/junit/junit/4.11/junit-4.11.jar"/>
-	<classpathentry sourcepath="/Users/osmanj/.m2/repository/org/mockito/mockito-all/1.10.19/mockito-all-1.10.19-sources.jar" kind="lib" path="/Users/osmanj/.m2/repository/org/mockito/mockito-all/1.10.19/mockito-all-1.10.19.jar"/>
-	<classpathentry sourcepath="/Users/osmanj/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3-sources.jar" kind="lib" path="/Users/osmanj/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"/>
 </classpath>

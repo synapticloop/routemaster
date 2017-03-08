@@ -69,6 +69,7 @@ public class ClasspathFileServant extends StaticFileServant {
 		if(null == resourceAsStream) {
 			return(RouteMaster.get404Response(rootDir, httpSession));
 		}
+
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		try {
 			int read = resourceAsStream.read();

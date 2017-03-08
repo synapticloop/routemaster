@@ -40,10 +40,10 @@ public class FileHelper {
 		Properties properties = new Properties();
 
 		InputStream inputStream = null;
-		File mimetypesFile = new File("./" + propertiesFile);
-		if(mimetypesFile.exists() && mimetypesFile.canRead()) {
+		File loadFile = new File("./" + propertiesFile);
+		if(loadFile.exists() && loadFile.canRead()) {
 			try {
-				inputStream = new BufferedInputStream(new FileInputStream(mimetypesFile));
+				inputStream = new BufferedInputStream(new FileInputStream(loadFile));
 			} catch (FileNotFoundException fnfex) {
 				// do nothing - one doesn't exist
 			}
@@ -75,14 +75,25 @@ public class FileHelper {
 			SimpleLogger.logFatal("Could not find properties files: '" + propertiesFile + ", or " + examplePropertiesFile + " from the filesystem or classpath.");
 			return(null);
 		} else {
-			properties.load(inputStream);
 			// write out the file
-			writeFile(new File("./" + propertiesFile), inputStream);
+			inputStream.mark(Integer.MAX_VALUE);
+			properties.load(inputStream);
+			inputStream.reset();
+
+			// this will write out the file and then close the stream
+			writeFile(new File("./" + propertiesFile), inputStream, true);
 			return(properties);
 		}
 	}
 
-	public static void writeFile(File outputFile, InputStream inputStream) {
+	/**
+	 * Write out the contents of the stream to the file.
+	 * 
+	 * @param outputFile The output life to write to
+	 * @param inputStream the input stream to read from
+	 * @param closeStream whether to close the inputStream when done
+	 */
+	public static void writeFile(File outputFile, InputStream inputStream, boolean closeStream) {
 		BufferedReader bufferedReader = null;
 		BufferedWriter bufferedWriter = null;
 
@@ -100,13 +111,16 @@ public class FileHelper {
 		} catch (IOException ioex) {
 			LOGGER.log(Level.SEVERE, "Could not write to file '" + outputFile.getAbsolutePath() + "'.", ioex);
 		} finally {
-			if(null != bufferedWriter) {
-				try {
-					bufferedWriter.close();
-				} catch (IOException ioex) {
-					// do nothing
+			if(closeStream) {
+				if(null != bufferedWriter) {
+					try {
+						bufferedWriter.close();
+					} catch (IOException ioex) {
+						// do nothing
+					}
 				}
 			}
+
 			if(null != bufferedReader) {
 				try {
 					bufferedReader.close();

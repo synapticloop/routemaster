@@ -7,13 +7,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import fi.iki.elonen.NanoHTTPD;
-import fi.iki.elonen.NanoHTTPD.Response;
 import fi.iki.elonen.NanoHTTPD.Response.IStatus;
 
 public class HttpUtils {
-	private static final Logger LOGGER = Logger.getLogger(HttpUtils.class.getName());
 
-	private HttpUtils() {}
+	private static final Logger LOGGER = Logger.getLogger(HttpUtils.class.getName());
 
 	public static String cleanUri(String uri) {
 		return(uri.replaceAll("/\\.\\./", "/"));

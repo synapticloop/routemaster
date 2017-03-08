@@ -2,6 +2,7 @@ package synapticloop.nanohttpd.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD.CookieHandler;
@@ -48,5 +49,23 @@ public class ModifiableSession implements IHTTPSession {
 		// if it is, then we are about to go into an infinite loop.... best to stop
 		// now
 		return(!(httpSession instanceof ModifiableSession));
+	}
+
+	@Override
+	public Map<String, List<String>> getParameters() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getRemoteIpAddress() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getRemoteHostName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
