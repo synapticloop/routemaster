@@ -18,6 +18,8 @@ public class ModifiableSession implements IHTTPSession {
 
 	@Override
 	public void execute() throws IOException { httpSession.execute(); }
+
+	@SuppressWarnings("deprecation")
 	@Override
 	public Map<String, String> getParms() { return(httpSession.getParms()); }
 	@Override
@@ -52,20 +54,11 @@ public class ModifiableSession implements IHTTPSession {
 	}
 
 	@Override
-	public Map<String, List<String>> getParameters() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public Map<String, List<String>> getParameters() { return(httpSession.getParameters()); };
 
 	@Override
-	public String getRemoteIpAddress() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String getRemoteIpAddress() { return(httpSession.getRemoteIpAddress()); }
 
 	@Override
-	public String getRemoteHostName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public String getRemoteHostName() { return(httpSession.getRemoteHostName()); }
 }

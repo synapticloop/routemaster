@@ -14,6 +14,10 @@ import fi.iki.elonen.util.ServerRunner;
 
 public class RouteMasterServer extends NanoHTTPD {
 	private static final Logger LOGGER = Logger.getLogger(RouteMasterServer.class.getName());
+
+	private static final String DEFAULT_HOST = "127.0.0.1";
+	private static final int DEFAULT_PORT = 5474;
+
 	private final File rootDir;
 
 	private static final String LICENCE =
@@ -42,6 +46,14 @@ public class RouteMasterServer extends NanoHTTPD {
 			+ "(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n"
 			+ "OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.";
 
+	/**
+	 * Instantiate a new Route Master Server
+	 * 
+	 * @param host the host to bind to - by default localhost (127.0.0.1)
+	 * @param port The port to bind to - by default 5474
+	 * @param rootDir the root directory for serving up files - by default the current working directory (.)
+	 * @param quiet whether to suppress messages
+	 */
 	public RouteMasterServer(String host, int port, File rootDir, boolean quiet) {
 		super(host, port);
 		SimpleLogger.setShouldLog(!quiet);
@@ -60,9 +72,9 @@ public class RouteMasterServer extends NanoHTTPD {
 
 	public static void main(String[] args) {
 		// Defaults
-		int port = 5474;
+		int port = DEFAULT_PORT;
 
-		String host = "127.0.0.1";
+		String host = DEFAULT_HOST;
 		boolean quiet = false;
 		File rootDir = null;
 

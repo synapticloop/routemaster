@@ -68,8 +68,6 @@ public class RouteMaster {
 			StringTokenizer stringTokenizer = new StringTokenizer("/*", "/", false);
 			router = new Router("/*", stringTokenizer, UninitialisedServant.class.getCanonicalName());
 		}
-
-
 	}
 
 	private static void parseOptionsAndRoutes(Properties properties) {

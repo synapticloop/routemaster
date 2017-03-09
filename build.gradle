@@ -118,25 +118,6 @@ publishing {
 				}
 			}
 		}
-
-		SynapticloopAll(MavenPublication) {
-			from components.shadow
-			groupId 'synapticloop'
-			artifactId 'routemaster-templar'
-
-			artifact sourcesJar
-			artifact javadocJar
-
-
-			pom.withXml {
-				configurations.compile.resolvedConfiguration.firstLevelModuleDependencies.each { dep ->
-					asNode().dependencies[0].dependency.find {
-						it.artifactId[0].text() == dep.moduleName &&
-								it.groupId[0].text() == dep.moduleGroup
-					}.scope[0].value = 'compile'
-				}
-			}
-		}
 	}
 }
 
@@ -144,7 +125,7 @@ bintray {
 	user = System.getenv('BINTRAY_USER')
 	key = System.getenv('BINTRAY_PASSWORD')
 
-	publications = [ 'Synapticloop', 'SynapticloopAll' ]
+	publications = [ 'Synapticloop' ]
 
 	publish = true
 
