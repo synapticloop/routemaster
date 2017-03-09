@@ -1,22 +1,11 @@
 package synapticloop.nanohttpd.servant;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
-import synapticloop.nanohttpd.handler.Handler;
-import synapticloop.nanohttpd.router.Routable;
-import synapticloop.nanohttpd.router.RouteMaster;
 import synapticloop.nanohttpd.utils.HttpUtils;
-import synapticloop.nanohttpd.utils.MimeTypeMapper;
-import fi.iki.elonen.NanoHTTPD;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
-import fi.iki.elonen.NanoHTTPD.Response.IStatus;
-import fi.iki.elonen.NanoHTTPD.Response.Status;
 
 public class StaticFileListingServant extends StaticFileServant {
 	private static final Logger LOGGER = Logger.getLogger(StaticFileListingServant.class.getSimpleName());
@@ -65,6 +54,7 @@ public class StaticFileListingServant extends StaticFileServant {
 			String absoluteFileLink = uri +
 					listFile.getName() +
 					(listFile.isDirectory()? "/" : "");
+
 			String fileName = listFile.getName() +
 					(listFile.isDirectory()? "/" : "");
 
