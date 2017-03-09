@@ -1,0 +1,7 @@
+<p>
+	For the sample h2zero file, the directory and file layout that is generated would be as follows:
+</p>
+
+<ul class="directory">
+	<li>src/main/java/h2zero/sample/h2zero</li>
+</ul>

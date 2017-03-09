@@ -1,0 +1,89 @@
+<h3>Overview</h3>
+<p>
+	RouteMaster a simple WebServer and router for Java.
+</p>
+
+<h4>Servants</h4>
+
+<p>
+	Throughout this documentation we refer to the implementation classes as 
+	<code>Servant</code>s - which either implement the <code>Routable</code>, or 
+	<code>RestRoutable</code> interfaces.
+</p>
+
+<p>
+	All interfaces reside in the <code>synapticloop.nanohttpd.router</code> package.
+</p>
+
+<h4>Handlers</h4>
+
+<p>
+	Handlers allow you to extend the functionality of routemaster to provide additional 
+	parsers for specific functionality.  Included within this package is the <code>templar</code> 
+	handler <code>synapticloop.nanohttpd.handler.TemplarHandler</code>.  This can 
+	be added to the configuration easily:
+</p>
+
+{pre
+<pre><code># Now for some handlers - this is for the templar handle (bound to *.templar)
+
+handler.templar=synapticloop.nanohttpd.handler.TemplarHandler
+</code></pre>
+pre}
+
+<p>
+	you probably want to have a look at the <a href="quick-start.html">quick start section</a> 
+	to get up and running and understand the core framework.
+</p>
+
+<h4>Simple Router</h4>
+
+<p>
+	When you just need a simple router in java where you take care of all of the 
+	details.  Just implement the 
+	<code>synapticloop.nanohttpd.router.Routable</code> interface and over-ride 
+	the method(s) that you want to respond to.
+</p>
+
+<h4>REST-ful Router</h4>
+
+<p>
+	When you just need a simple RESTful router in java, just implement the 
+	<code>synapticloop.nanohttpd.router.RestRoutable</code> interface and over-ride 
+	the method(s) that you want to respond to.
+</p>
+
+<h4>Static File Listing Serving</h4>
+
+<p>
+	When you just want to serve up a directory listing from the root directory, 
+	there is a simple servant to do it for you.
+</p>
+
+<h4>Static File Serving</h4>
+
+<p>
+	When you just want to serve up static files from the file system, as simple 
+	as that.
+</p>
+
+<h4>Classpath file serving</h4>
+
+<p>
+	When you are delivering a complete jar file and all the resources are within 
+	the jar.
+</p>
+
+<h4>Caching Classpath file serving</h4>
+
+<p>
+	When you are delivering a complete jar file and all the resources are within 
+	the jar, for each resource that is delivered, this will be placed in the cache 
+	for speedier delivery to the client.
+</p>
+
+<p>
+	This of course comes with the trade-off of memory usage versus speed.
+</p>
+
+

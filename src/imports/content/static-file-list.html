@@ -1,0 +1,24 @@
+<h3>Static File List</h3>
+
+<p>
+	When you just want a simple web server that allows you to browse all of the files 
+	from the current directory.
+</p>
+
+<h4>Setup</h4>
+
+<p>
+	In the <code>routemaster.properties</code> file, simply add this line in:
+</p>
+
+<pre><code>route./*=synapticloop.nanohttpd.servant.StaticFileListingServant</code></pre>
+
+<p>
+	Start the server and you should see something along the following lines:
+</p>
+
+<img src="images/routemaster-file-list.png" />
+
+<p>
+	This is the simplest of ways to get a local webserver up and running.
+</p>

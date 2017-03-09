@@ -1,0 +1,90 @@
+<!doctype html><html><head><title>routemaster by synapticloop</title><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]--><link rel="stylesheet" href="assets/css/main.css" /><!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]--><script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script></head><body><div id="header"><h1 id="logo"><a href="http://synapticloop.github.io/">Synapticloop</a> :: <a href="index.html">routemaster</a></h1><nav id="nav"><ul><li><a href="#">Projects</a><ul><li><a href="https://synapticloop.github.io/h2zero/"><i class="icon fa-database"></i> h2zero</a></li><li><a href="https://github.com/synapticloop/backblaze-b2-java-api/"><i class="icon fa-puzzle-piece"></i> backblaze b2 java api</a></li><li><a href="https://synapticloop.github.io/templar/"><i class="icon fa-shield"></i> templar</a></li><li><a href="https://synapticloop.github.io/templar-gen/"><i class="icon fa-gears"></i> templar gen</a></li><li><a href="https://synapticloop.github.io/linode-api/"><i class="icon fa-puzzle-piece"></i> linode java api</a></li><li><a href="https://github.com/synapticloopltd/scaleway-java-api/"><i class="icon fa-puzzle-piece"></i> scaleway java api</a></li><li><a href="https://synapticloopltd.github.io/gradle-plugin-java-create/"><i class="icon fa-gears"></i> gradle plugin creator for java</a></li><li><a href="https://synapticloopltd.github.io/recipease/"><i class="icon fa-spoon"></i> recipease</a></li><li><a href="https://synapticloop.github.io/routemaster/"><i class="icon fa-bus"></i> routemaster</a></li></ul></li></ul></nav></div><section id="banner"><h2>Welcome to RouteMaster</h2><p>A simple router for the truly excellent NanoHTTPD</p></section><section id="main"><div class="container"><div class="row 200%"><div class="4u 12u$(medium)"><section id="sidebar"><section><h3>routemaster</h3><p>A simple WebServer with RESTful routes</p><hr /><ul><li><a href="index.html">Home</a></li><li><a href="quick-start.html">Quick Start</a></li><li><a href="configuration.html">Configuration</a></li><li><a href="routing.html">Routing</a><ul><li><a href="simple-routes.html">Simple routes</a></li><li><a href="restful-routes.html">RESTFul routes</a></li></ul></li><li><a href="static-file-list.html">Static file listing</a></li><li><a href="static-classpath.html">Static classpath resources</a></li><li><a href="static-file.html">Static resources</a></li><li><a href="handlers.html">Handlers</a></li></ul></section><hr /><section><h3>View this project on github</h3><footer><ul class="actions"><li><a href="https://github.com/synapticloop/routemaster" class="button small alt">GitHub Project</a></li></ul></footer></section><hr /><section><h3>templar-gen</h3><p>This project is maintained by <a href="https://github.com/synapticloop">synapticloop</a> and these pages were generated with <a href="https://github.com/synapticloop/templar-gen/">synapticloop templar-gen</a></p></section></section></div><div class="8u$ 12u$(medium) important(medium)"><section id="content"><h3>Configuration</h3><p>All configuration of the server is done through the <code>routemaster.properties</code> file, a copy of the example configuration is below.</p><pre><code>#
+# All lines that start with the '#' symbol will be ignored.
+#
+
+#
+# These are the current options that are available, namely the location of the
+# 404, and 500 error pages
+#
+option.error.500=/error/500.html
+option.error.404=/error/404.html
+
+#
+# What index files are registered - these are the files which will be search for
+# in the requested directory if no specific file is requested
+#
+option.indexfiles=index.html.templar,index.html,index.htm
+
+#
+# If you wish to define a route, start the property name with a 'route.' and it
+# will be bound to the defined path.
+#
+# routes __must__ extend
+#     synapticloop.nanohttpd.router.Routable
+
+route./*=synapticloop.nanohttpd.servant.ClasspathFileServant
+
+# This route will list all of the handlers
+route./handlers/=synapticloop.nanohttpd.example.servant.HandlerTemplarServant
+
+#
+# If you wish to define a restful route, start the property name with a 'rest.'
+# and it will be bound to the defined path and pass through any defined
+# parameters as a hashmap
+#
+# rest routes __must__ extend
+#     synapticloop.nanohttpd.router.RestRoutable
+
+rest./rest/%method%/=synapticloop.nanohttpd.example.servant.RouteMasterRestTemplarServant
+
+# This is a simple rest servant that shows the various http methods being called
+# with mapped and unmapped parameters.  Any parameters that form part of the
+# uri after the /%mapped%/ mapping will be passed through wholly as a string
+# of 'unmapped'
+#
+# e.g.:
+#  public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams)
+#
+# rest routes __must__ extend
+#     synapticloop.nanohttpd.router.RestRoutable
+
+rest./simple/%mapped%/=synapticloop.nanohttpd.example.servant.SimpleRestServant
+
+# This is a simple rest servant that lists the mimetypes that are registered
+# with no mapped or unmapped parameters.  Any parameters that form part of the
+# uri after the /%mapped%/ mapping will be passed through wholly as a string
+# of 'unmapped', however they will not be picked up.
+#
+# e.g.:
+#  public Response doGet(File rootDir, IHTTPSession httpSession, HashMap<String, String> restParams, String unmappedParams)
+#
+# rest routes __must__ extend
+#     synapticloop.nanohttpd.router.RestRoutable
+
+rest./mimetypes/=synapticloop.nanohttpd.example.servant.MimeTypesRestServant
+
+# Now for some handlers - this is for the templar handle (bound to *.templar)
+
+handler.templar=synapticloop.nanohttpd.handler.TemplarHandler
+
+</code></pre><h4>Options</h4><p>The options section adds in the locations of the error files using the key <code>option.error.&lt;http_status_code&gt;</code>.</p><h5>Error code files</h5><p>In the example properties file above, two error pages are defined:</p><pre><code>
+option.error.500=/error/500.html
+option.error.404=/error/404.html
+</code></pre><p>For any of the error codes that are returned by routemaster, if they are defined within this file, then the contents of the referenced files sill be returned.</p><p>The referenced locations for the file can reside wither within the classpath, or on the file system.</p><h5>index files</h5><p>The key:</p><pre><code>option.indexfiles=index.html,index.htm</code></pre><p>is a comma separated list of files that will be served if a directory is requested.  For example, when a user browses to the <code>http://localhost:5474/</code> page, the router will look first for a <code>index.html</code> file in the directory, then it will look for a <code>index.htm</code> file in the directory.</p><h4>Simple Routes</h4><p>All simple routes <strong>MUST</strong> start with a key of <code>route.</code></p><p>Simple routes do not have URL part parameters mapped and passed through to the underlying implementation.</p><p>for the key:</p><pre><code>route./*=synapticloop.nanohttpd.servant.StaticFileServant</code></pre><p>All routes that start with <code>/</code> will invoke the <code>StaticFileServant</code> which which serve up the routes.  See the <a href="routing.html">routing section</a> for information on how routemaster determines which class to invoke.</p><p>If you only wanted to map a route to the root directory of the site, then you could use the following:</p><pre><code>route./=synapticloop.nanohttpd.servant.StaticFileServant</code></pre><h4>RESTful Routes</h4><p>All RESTful routes <strong>MUST</strong> start with a key of <code>rest.</code></p><p>RESTful routes simplifies the coding of RESTful web servers by providing the boilerplate code for all methods.  By default any HTTP method that is not over-ridden will return a <code>405</code> method not allowed response code.</p><p>Additionally, the RESTful router allows mapping of parameters within the URL to specific variables, which are then passed through to the implementing class.</p><p>For the key:</p><pre><code>rest./simple/%mapped%/=synapticloop.nanohttpd.example.servant.SimpleRestServant</code></pre><p>The route is set as <code>/simple/%mapped%/</code>.  When a user GETs the URL the appropriate method is invoked.  E.g.:</p><ul><li><code>/simple/hello/</code> will invoke the <code>SimpleRestServant</code> and pass through a key value pair of <code>mapped:hello</code></li><li><code>/simple/goodbye/</code> will invoke the <code>SimpleRestServant</code> and pass through a key value pair of <code>mapped:goodbye</code></li><li><code></code></li></ul><p>The key of <code>mapped</code> is used for illustrative purposes only, and may be any value.  For example, you could define a route of:</p><pre><code>rest./user/%organisation%/%id_user%/=synapticloop.nanohttpd.example.servant.UserServant</code></pre><p>and when invoked through <code>http://localhost:5474/user/synapticloop/25/</code>, would invoke the <code>UserServant</code> class and pass through mapped parameters <code>organisation:synapticloop</code>, and <code>id_user:25</code></p><h4>Handlers</h4><p>To register handlers for the routemaster, the key must start with <code>handler</code> then the extension to which this should be bound.</p><pre><code>handler.templar=synapticloop.nanohttpd.handler.TemplarHandler</code></pre><blockquote><strong>NOTE</strong> You <strong>MUST</strong> have a route defined in order for the handler to work.</blockquote><pre><code>route./*=synapticloop.nanohttpd.servant.ClasspathFileServant
+
+handler.xyz=synapticloop.nanohttpd.example.handler.XyzHandler
+</code></pre></section></div></div></div></section><div id="footer"><div class="container"><div class="row 200% uniform"></div></div><div class="copyright">&copy; Synapticloop. All rights reserved.</div><div class="copyright">This page uses the <a href="https://pixelarity.com/gravity?ref=4951149295">Gravity</a> commercial template from <a href="https://pixelarity.com/?ref=4951149295">Pixelarity</a> which we thoroughly recommend.</div></div><script src="assets/js/jquery.min.js"></script><script src="assets/js/skel.min.js"></script><script src="assets/js/jquery.dropotron.min.js"></script><script src="assets/js/jquery.onvisible.min.js"></script><script src="assets/js/jquery.poptrox.min.js"></script><script src="assets/js/util.js"></script><!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]--><script src="assets/js/main.js"></script><script type="text/javascript">
+	var _paq = _paq || [];
+	_paq.push(['trackPageView']);
+	_paq.push(['enableLinkTracking']);
+	(function() {
+		var u="//piwik.synapticloop.com/";
+		_paq.push(['setTrackerUrl', u+'piwik.php']);
+		_paq.push(['setSiteId', 13]);
+		var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+		g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+	})();
+</script>
+<noscript><p><img src="//piwik.synapticloop.com/piwik.php?idsite=13" style="border:0;" alt="" /></p></noscript>
+<script src="javascripts/prettify.js" type="text/javascript" ></script>
+</body></html>

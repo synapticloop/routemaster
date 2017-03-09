@@ -1,0 +1,99 @@
+<h3>RESTful Routing</h3>
+
+<p>
+	RESTfule routing, binds to a specific path (or wildcard path) and <strong>MUST</strong> 
+	extend the <code>synapticloop.nanohttpd.router.RestRoutable</code> abstract class.
+</p>
+
+<p>
+	Additionally, RESTful routes also allow mapping of URI paths to parameters 
+	which are automatically bound and passed through
+</p>
+
+<h4>Instantiation</h4>
+
+<p>
+	All classes that extend <code>RestRoutable</code> will be automatically instantiated 
+	through the reading and parsing of the <code>routemaster.properties</code> file.  
+</p>
+
+{pre
+<pre><code>public RestRoutable(String routeContext, List&lt;String&gt; params) {
+	super(routeContext);
+	this.restParamNames = params;
+}
+</code></pre>
+pre}
+
+<h4>Params</h4>
+
+<p>
+	The params that are accepted by the <code>RestRouter</code> are always mapped 
+	to the name in the configuration file <code>%parameter_name%</code>.  For example 
+	the mapped route in the <code>SimpleRestServant</code>:
+</p>
+
+{pre
+<pre><code>rest./simple/%mapped%/=synapticloop.nanohttpd.example.servant.SimpleRestServant</code></pre>
+pre}
+
+<p>
+	With the key <code>mapped</code> - denoted by the <code>%mapped%</code> token 
+	in the URL.
+</p>
+
+<p>
+	When the URL <code>/simple/GET/</code> is invoked, then the <code>SimpleRestServant</code> 
+	<code>public Response serve(File rootDir, IHTTPSession httpSession)</code> is 
+	invoked which then goes through the parameters and maps them on key:value pairs. 
+	(e.g. <code>mapped:GET</code> the <code>mapped</code> key will return a value of 
+	<code>KEY</code>).
+</p>
+
+<h4>Methods</h4>
+
+<p>
+	This class invokes the method, depending on the HTTP verb that is requested.
+</p>
+
+{pre
+<pre><code>switch(httpSession.getMethod()) {
+case GET:
+	return(doGet(rootDir, httpSession, restParams, unmappedParams));
+case POST:
+	return(doPost(rootDir, httpSession, restParams, unmappedParams));
+case PUT:
+	return(doPut(rootDir, httpSession, restParams, unmappedParams));
+case DELETE:
+	return(doDelete(rootDir, httpSession, restParams, unmappedParams));
+case HEAD:
+	return(doHead(rootDir, httpSession, restParams, unmappedParams));
+case TRACE:
+	return(doTrace(rootDir, httpSession, restParams, unmappedParams));
+case PATCH:
+	return(doPatch(rootDir, httpSession, restParams, unmappedParams));
+case CONNECT:
+	return(doConnect(rootDir, httpSession, restParams, unmappedParams));
+case OPTIONS:
+	return(doOptions(rootDir, httpSession, restParams, unmappedParams));
+default:
+	return(HttpUtils.methodNotAllowedResponse());
+}
+</code></pre>
+pre}
+
+<p>
+	As an example the HTTP GET request will invoke the following method.
+</p>
+
+{pre
+<pre><code>public Response doGet(File rootDir, IHTTPSession httpSession, Map&lt;String, String^gt; restParams, String unmappedParams) {
+	return(HttpUtils.methodNotAllowedResponse());
+}</code></pre>
+pre}
+
+<p>
+	Unless over-ridden, all methods will return the <code>HttpUtils.methodNotAllowedResponse()</code>.
+</p>
+
+

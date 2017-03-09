@@ -1,0 +1,43 @@
+<!doctype html><html><head><title>routemaster by synapticloop</title><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]--><link rel="stylesheet" href="assets/css/main.css" /><!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]--><script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script></head><body><div id="header"><h1 id="logo"><a href="http://synapticloop.github.io/">Synapticloop</a> :: <a href="index.html">routemaster</a></h1><nav id="nav"><ul><li><a href="#">Projects</a><ul><li><a href="https://synapticloop.github.io/h2zero/"><i class="icon fa-database"></i> h2zero</a></li><li><a href="https://github.com/synapticloop/backblaze-b2-java-api/"><i class="icon fa-puzzle-piece"></i> backblaze b2 java api</a></li><li><a href="https://synapticloop.github.io/templar/"><i class="icon fa-shield"></i> templar</a></li><li><a href="https://synapticloop.github.io/templar-gen/"><i class="icon fa-gears"></i> templar gen</a></li><li><a href="https://synapticloop.github.io/linode-api/"><i class="icon fa-puzzle-piece"></i> linode java api</a></li><li><a href="https://github.com/synapticloopltd/scaleway-java-api/"><i class="icon fa-puzzle-piece"></i> scaleway java api</a></li><li><a href="https://synapticloopltd.github.io/gradle-plugin-java-create/"><i class="icon fa-gears"></i> gradle plugin creator for java</a></li><li><a href="https://synapticloopltd.github.io/recipease/"><i class="icon fa-spoon"></i> recipease</a></li><li><a href="https://synapticloop.github.io/routemaster/"><i class="icon fa-bus"></i> routemaster</a></li></ul></li></ul></nav></div><section id="banner"><h2>Welcome to RouteMaster</h2><p>A simple router for the truly excellent NanoHTTPD</p></section><section id="main"><div class="container"><div class="row 200%"><div class="4u 12u$(medium)"><section id="sidebar"><section><h3>routemaster</h3><p>A simple WebServer with RESTful routes</p><hr /><ul><li><a href="index.html">Home</a></li><li><a href="quick-start.html">Quick Start</a></li><li><a href="configuration.html">Configuration</a></li><li><a href="routing.html">Routing</a><ul><li><a href="simple-routes.html">Simple routes</a></li><li><a href="restful-routes.html">RESTFul routes</a></li></ul></li><li><a href="static-file-list.html">Static file listing</a></li><li><a href="static-classpath.html">Static classpath resources</a></li><li><a href="static-file.html">Static resources</a></li><li><a href="handlers.html">Handlers</a></li></ul></section><hr /><section><h3>View this project on github</h3><footer><ul class="actions"><li><a href="https://github.com/synapticloop/routemaster" class="button small alt">GitHub Project</a></li></ul></footer></section><hr /><section><h3>templar-gen</h3><p>This project is maintained by <a href="https://github.com/synapticloop">synapticloop</a> and these pages were generated with <a href="https://github.com/synapticloop/templar-gen/">synapticloop templar-gen</a></p></section></section></div><div class="8u$ 12u$(medium) important(medium)"><section id="content"><h3>RESTful Routing</h3><p>RESTfule routing, binds to a specific path (or wildcard path) and <strong>MUST</strong> extend the <code>synapticloop.nanohttpd.router.RestRoutable</code> abstract class.</p><p>Additionally, RESTful routes also allow mapping of URI paths to parameters which are automatically bound and passed through</p><h4>Instantiation</h4><p>All classes that extend <code>RestRoutable</code> will be automatically instantiated through the reading and parsing of the <code>routemaster.properties</code> file.  </p><pre><code>public RestRoutable(String routeContext, List&lt;String&gt; params) {
+	super(routeContext);
+	this.restParamNames = params;
+}
+</code></pre><h4>Params</h4><p>The params that are accepted by the <code>RestRouter</code> are always mapped to the name in the configuration file <code>%parameter_name%</code>.  For example the mapped route in the <code>SimpleRestServant</code>:</p><pre><code>rest./simple/%mapped%/=synapticloop.nanohttpd.example.servant.SimpleRestServant</code></pre><p>With the key <code>mapped</code> - denoted by the <code>%mapped%</code> token in the URL.</p><p>When the URL <code>/simple/GET/</code> is invoked, then the <code>SimpleRestServant</code> <code>public Response serve(File rootDir, IHTTPSession httpSession)</code> is invoked which then goes through the parameters and maps them on key:value pairs. (e.g. <code>mapped:GET</code> the <code>mapped</code> key will return a value of <code>KEY</code>).</p><h4>Methods</h4><p>This class invokes the method, depending on the HTTP verb that is requested.</p><pre><code>switch(httpSession.getMethod()) {
+case GET:
+	return(doGet(rootDir, httpSession, restParams, unmappedParams));
+case POST:
+	return(doPost(rootDir, httpSession, restParams, unmappedParams));
+case PUT:
+	return(doPut(rootDir, httpSession, restParams, unmappedParams));
+case DELETE:
+	return(doDelete(rootDir, httpSession, restParams, unmappedParams));
+case HEAD:
+	return(doHead(rootDir, httpSession, restParams, unmappedParams));
+case TRACE:
+	return(doTrace(rootDir, httpSession, restParams, unmappedParams));
+case PATCH:
+	return(doPatch(rootDir, httpSession, restParams, unmappedParams));
+case CONNECT:
+	return(doConnect(rootDir, httpSession, restParams, unmappedParams));
+case OPTIONS:
+	return(doOptions(rootDir, httpSession, restParams, unmappedParams));
+default:
+	return(HttpUtils.methodNotAllowedResponse());
+}
+</code></pre><p>As an example the HTTP GET request will invoke the following method.</p><pre><code>public Response doGet(File rootDir, IHTTPSession httpSession, Map&lt;String, String^gt; restParams, String unmappedParams) {
+	return(HttpUtils.methodNotAllowedResponse());
+}</code></pre><p>Unless over-ridden, all methods will return the <code>HttpUtils.methodNotAllowedResponse()</code>.</p></section></div></div></div></section><div id="footer"><div class="container"><div class="row 200% uniform"></div></div><div class="copyright">&copy; Synapticloop. All rights reserved.</div><div class="copyright">This page uses the <a href="https://pixelarity.com/gravity?ref=4951149295">Gravity</a> commercial template from <a href="https://pixelarity.com/?ref=4951149295">Pixelarity</a> which we thoroughly recommend.</div></div><script src="assets/js/jquery.min.js"></script><script src="assets/js/skel.min.js"></script><script src="assets/js/jquery.dropotron.min.js"></script><script src="assets/js/jquery.onvisible.min.js"></script><script src="assets/js/jquery.poptrox.min.js"></script><script src="assets/js/util.js"></script><!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]--><script src="assets/js/main.js"></script><script type="text/javascript">
+	var _paq = _paq || [];
+	_paq.push(['trackPageView']);
+	_paq.push(['enableLinkTracking']);
+	(function() {
+		var u="//piwik.synapticloop.com/";
+		_paq.push(['setTrackerUrl', u+'piwik.php']);
+		_paq.push(['setSiteId', 13]);
+		var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+		g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+	})();
+</script>
+<noscript><p><img src="//piwik.synapticloop.com/piwik.php?idsite=13" style="border:0;" alt="" /></p></noscript>
+<script src="javascripts/prettify.js" type="text/javascript" ></script>
+</body></html>

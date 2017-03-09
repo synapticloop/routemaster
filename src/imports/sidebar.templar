@@ -1,0 +1,22 @@
+<section id="sidebar">
+	<section>
+		<h3>routemaster</h3>
+		<p>A simple WebServer with RESTful routes</p>
+		<hr />
+		{import src/imports/sidebar-nav.templar}
+	</section>
+	<hr />
+	<section>
+		<h3>View this project on github</h3>
+		<footer>
+			<ul class="actions">
+				<li><a href="https://github.com/synapticloop/routemaster" class="button small alt">GitHub Project</a></li>
+			</ul>
+		</footer>
+	</section>
+	<hr />
+	<section>
+		<h3>templar-gen</h3>
+		<p>This project is maintained by <a href="https://github.com/synapticloop">synapticloop</a> and these pages were generated with <a href="https://github.com/synapticloop/templar-gen/">synapticloop templar-gen</a></p>
+	</section>
+</section>

@@ -1,0 +1,80 @@
+<h3>Quick Start</h3>
+
+<p>
+	Routemaster is broken into two parts:
+</p>
+
+
+<ol>
+	<li>The code, and</li>
+	<li>The configuration</li>
+</ol>
+
+<h4>the code</h4>
+
+<p>
+	To get started quickly, you need to run the following
+</p>
+
+{pre
+<pre><code>java -jar routemaster.jar
+</code></pre>
+pre}
+
+<p>
+	This will run the web server with the following defaults:
+</p>
+
+<dl>
+	<dt><strong>Port</strong></dt>
+	<dd>
+		The default port is set to <code>5474</code>, this can be over-ridden by 
+		passing a command line parameter of <code>--port</code> or <code>-p</code>
+	</dd>
+	<dt><strong>Host</strong></dt>
+	<dd>
+		The default host is <code>127.0.0.1</code> (i.e. <code>localhost</code>), 
+		this can be over-ridden by passing a command line parameter of 
+		<code>--host</code> or <code>-h</code>
+	</dd>
+	<dt><strong>Root Directory</strong></dt>
+	<dd>
+		The default directory from where the static content (if applicable) is served 
+		from is <code>.</code> (i.e. the current working directory from where the 
+		java command is run), this can be over-ridden by passing a command line 
+		parameter of <code>--dir</code> or <code>--d</code>.
+		</dd>
+</dl>
+
+<h4>The configuration</h4>
+
+<p>
+	To configure the routemaster web server, you will need to include a <code>routemaster.properties</code> 
+	file either in the root directory, or in root of the classpath.
+</p>
+
+<blockquote>
+	If you do not provide a <code>routemaster.properties</code> file, then the 
+	example file will be used from the jar.  <strong>routemaster will 
+	also write</strong> this file to the file system if it cannot find it with the 
+	classpath.  This provides a starting point in configuring the web server to 
+	get you up and running quickly.
+</blockquote>
+
+<p>
+	<strong><em>IMPORTANT NOTE:</em></strong>  The classpath <code>routemaster.properties</code> 
+	<strong>ALWAYS</strong> takes precedence over the file-system resource.
+</p>
+
+<h5>mimetypes.properties</h5>
+
+<p>
+	Default mimetype mappings are also included in the distribution, and if the 
+	<code>mimetypes.properties</code> file does not exist in the classpath, or 
+	the filesystem, one will be written out, and the default included resource 
+	will be used.
+</p>
+
+<p>
+	Now you should have a look at the <a href="configuration.html">Configuration section</a>.
+</p>

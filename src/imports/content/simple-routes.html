@@ -1,0 +1,45 @@
+<h3>Simple Routing</h3>
+
+<p>
+	Simple routing, binds to a specific path (or wildcard path) and <strong>MUST</strong> 
+	extend the <code>synapticloop.nanohttpd.router.Routable</code> abstract class.
+</p>
+
+<h4>Instantiation</h4>
+
+<p>
+	All classes that extend <code>Routable</code> will be automatically instantiated 
+	through the reading and parsing of the <code>routemaster.properties</code> file.
+</p>
+
+{pre
+<pre><code>public Routable(String routeContext) {
+	this.routeContext = routeContext;
+}
+</code></pre>
+pre}
+
+<h4>Methods</h4>
+
+<p>
+	This class has only one method:
+</p>
+
+<ul>
+	<li><code>public abstract Response serve(File rootDir, IHTTPSession httpSession);</code></li>
+</ul>
+
+<h4>serve</h4>
+
+<p>
+	This method is where the response is generated and returned.  There are 
+	static convenience methods in the <code>snapticloop.nanohttpd.utils.HttpUtils</code> 
+	to return various responses.
+</p>
+
+<p>
+	The file <a href="https://github.com/synapticloop/routemaster/blob/master/src/main/java/synapticloop/nanohttpd/servant/StaticFileListingServant.java">StaticFileListingServant.java</a> 
+	provides an example of how to utilise the <code>Routable</code> <code>serve</code> method.
+</p>
+
+

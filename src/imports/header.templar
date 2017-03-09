@@ -1,0 +1,11 @@
+<div id="header">
+	<h1 id="logo"><a href="http://synapticloop.github.io/">Synapticloop</a> :: <a href="index.html">routemaster</a></h1>
+	<nav id="nav">
+		{import ../synapticloop.github.io/src/includes/all-projects.html}
+	</nav>
+</div>
+
+<section id="banner">
+	<h2>Welcome to RouteMaster</h2>
+	<p>A simple router for the truly excellent NanoHTTPD</p>
+</section>

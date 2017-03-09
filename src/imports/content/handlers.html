@@ -1,0 +1,51 @@
+<h3>Handlers</h3>
+
+<p>
+	Handlers allow bindings from extensions to particular functionality.  The 
+	easiest way to understand this is to look at a very simple example.
+</p>
+
+<p>
+	The following code can be found in the <a href="src/main/java/synapticloop/nanohttpd/example/handler/XyzHandler.java">XyzHandler.java</a> 
+	class file.
+</p>
+
+<pre><code>
+{static src/main/java/synapticloop/nanohttpd/example/handler/XyzHandler.java}
+</code></pre>
+
+<p>
+	There are two methods that need to be over-written:
+</p>
+
+<ol>
+	<li><code>boolean canServeUri(String uri)</code></li>
+	<li><code>Response serveFile(File rootDir, String uri, Map headers, IHTTPSession session)</code></li>
+</ol>
+
+<h4>Can Serve URI?</h4>
+
+<p>
+	This simply returns whether this URI is able to serve the request, for this 
+	example, all URIs can be served by this Handler.  There may be some instances 
+	where a URI may not be able to be handled, despite the requested extension.
+</p>
+
+<h4>Serve the file</h4>
+
+<p>
+	This method returns a response object (either OK, INTERNAL SERVER ERROR, 
+	NOT FOUND etc.).  In the instance of the <code>XyzHandler</code> this will 
+	always return a string of the form:
+</p>
+
+<pre><code>XYZ handler - responded - is brought to you by the letter Y</code></pre>
+
+<p>
+	With a randomly assigned letter at the end.
+</p>
+
+<p>
+	For this handler, it will respond to any URI that ends with <code>.xzy</code>, 
+	whether or not a local file on the filesystem exists.
+</p>

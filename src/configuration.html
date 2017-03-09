@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+{import src/imports/head.templar}
+<body>
+
+{import src/imports/header.templar}
+
+<section id="main">
+	<div class="container">
+
+		<div class="row 200%">
+			<div class="4u 12u$(medium)">
+				{import src/imports/sidebar.templar}
+			</div>
+
+			<div class="8u$ 12u$(medium) important(medium)">
+
+				<section id="content">
+					{import src/imports/content/configuration.html}
+				</section>
+
+			</div>
+		</div>
+	</div>
+</section>
+
+{import ../synapticloop.github.io/src/includes/footer.html}
+
+{import src/imports/scripts.templar}
+</body>
+</html>

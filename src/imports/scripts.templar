@@ -1,0 +1,23 @@
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/skel.min.js"></script>
+<script src="assets/js/jquery.dropotron.min.js"></script>
+<script src="assets/js/jquery.onvisible.min.js"></script>
+<script src="assets/js/jquery.poptrox.min.js"></script>
+<script src="assets/js/util.js"></script>
+<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+<script src="assets/js/main.js"></script>
+
+<script type="text/javascript">{\n}
+{\t}var _paq = _paq || [];{\n}
+{\t}_paq.push(['trackPageView']);{\n}
+{\t}_paq.push(['enableLinkTracking']);{\n}
+{\t}(function() {{{\n}
+{\t}{\t}var u="//piwik.synapticloop.com/";{\n}
+{\t}{\t}_paq.push(['setTrackerUrl', u+'piwik.php']);{\n}
+{\t}{\t}_paq.push(['setSiteId', 13]);{\n}
+{\t}{\t}var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];{\n}
+{\t}{\t}g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);{\n}
+{\t}})();{\n}
+</script>{\n}
+<noscript><p><img src="//piwik.synapticloop.com/piwik.php?idsite=13" style="border:0;" alt="" /></p></noscript>{\n}
+<script src="javascripts/prettify.js" type="text/javascript" ></script>{\n}

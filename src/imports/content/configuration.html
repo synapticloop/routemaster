@@ -1,0 +1,153 @@
+<h3>Configuration</h3>
+
+<p>
+	All configuration of the server is done through the <code>routemaster.properties</code> 
+	file, a copy of the example configuration is below.
+</p>
+
+<pre><code>
+{static src/routemaster.properties}
+</code></pre>
+
+<h4>Options</h4>
+
+<p>
+	The options section adds in the locations of the error files using the key 
+	<code>option.error.&lt;http_status_code&gt;</code>.
+</p>
+
+<h5>Error code files</h5>
+
+<p>
+	In the example properties file above, two error pages are defined:
+</p>
+
+{pre
+<pre><code>
+option.error.500=/error/500.html
+option.error.404=/error/404.html
+</code></pre>
+pre}
+
+<p>
+	For any of the error codes that are returned by routemaster, if they are defined 
+	within this file, then the contents of the referenced files sill be returned.
+</p>
+
+<p>
+	The referenced locations for the file can reside wither within the classpath, or 
+	on the file system.
+</p>
+
+<h5>index files</h5>
+
+<p>
+	The key:
+</p>
+
+<pre><code>option.indexfiles=index.html,index.htm</code></pre>
+
+<p>
+	is a comma separated list of files that will be served if a directory is requested.  
+	For example, when a user browses to the <code>http://localhost:5474/</code> page, 
+	the router will look first for a <code>index.html</code> file in the directory, 
+	then it will look for a <code>index.htm</code> file in the directory.
+</p>
+
+<h4>Simple Routes</h4>
+
+<p>
+	All simple routes <strong>MUST</strong> start with a key of <code>route.</code>
+</p>
+
+<p>
+	Simple routes do not have URL part parameters mapped and passed through to the 
+	underlying implementation.
+</p>
+
+<p>
+	for the key:
+</p>
+
+<pre><code>route./*=synapticloop.nanohttpd.servant.StaticFileServant</code></pre>
+
+<p>
+	All routes that start with <code>/</code> will invoke the <code>StaticFileServant</code> which 
+	which serve up the routes.  See the <a href="routing.html">routing section</a> for information 
+	on how routemaster determines which class to invoke.
+</p>
+
+<p>
+	If you only wanted to map a route to the root directory of the site, then you 
+	could use the following:
+</p>
+
+<pre><code>route./=synapticloop.nanohttpd.servant.StaticFileServant</code></pre>
+
+<h4>RESTful Routes</h4>
+
+<p>
+	All RESTful routes <strong>MUST</strong> start with a key of <code>rest.</code>
+</p>
+
+<p>
+	RESTful routes simplifies the coding of RESTful web servers by providing the 
+	boilerplate code for all methods.  By default any HTTP method that is not 
+	over-ridden will return a <code>405</code> method not allowed response code.
+</p>
+
+<p>
+	Additionally, the RESTful router allows mapping of parameters within the URL to 
+	specific variables, which are then passed through to the implementing class.
+</p>
+
+<p>
+	For the key:
+</p>
+
+<pre><code>rest./simple/%mapped%/=synapticloop.nanohttpd.example.servant.SimpleRestServant</code></pre>
+
+<p>
+	The route is set as <code>/simple/%mapped%/</code>.  When a user GETs the URL 
+	the appropriate method is invoked.  E.g.:
+</p>
+
+<ul>
+	<li><code>/simple/hello/</code> will invoke the <code>SimpleRestServant</code> and pass through a key value pair of <code>mapped:hello</code></li>
+	<li><code>/simple/goodbye/</code> will invoke the <code>SimpleRestServant</code> and pass through a key value pair of <code>mapped:goodbye</code></li>
+	<li><code></code></li>
+</ul>
+
+<p>
+	The key of <code>mapped</code> is used for illustrative purposes only, and may 
+	be any value.  For example, you could define a route of:
+</p>
+
+<pre><code>rest./user/%organisation%/%id_user%/=synapticloop.nanohttpd.example.servant.UserServant</code></pre>
+
+<p>
+	and when invoked through <code>http://localhost:5474/user/synapticloop/25/</code>, would 
+	invoke the <code>UserServant</code> class and pass through mapped parameters 
+	<code>organisation:synapticloop</code>, and <code>id_user:25</code>
+</p>
+
+<h4>Handlers</h4>
+
+<p>
+	To register handlers for the routemaster, the key must start with <code>handler</code> 
+	then the extension to which this should be bound.
+</p>
+
+<pre><code>handler.templar=synapticloop.nanohttpd.handler.TemplarHandler</code></pre>
+
+<blockquote>
+	<strong>NOTE</strong> You <strong>MUST</strong> have a route defined in order 
+	for the handler to work.
+</blockquote>
+
+{pre
+<pre><code>route./*=synapticloop.nanohttpd.servant.ClasspathFileServant
+
+handler.xyz=synapticloop.nanohttpd.example.handler.XyzHandler
+</code></pre>
+pre}

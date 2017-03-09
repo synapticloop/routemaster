@@ -1,0 +1,92 @@
+<h3>Routing <em>(including handlers)</em></h3>
+
+<p>
+	To understand how the routing works, a quick introduction to the code flow is provided below:
+</p>
+
+<h4>code flow</h4>
+
+<ol>
+	<li>
+		<code>synapticloop.nanohttpd.RouteMasterServer</code> is instantiated and 
+		listens on the defined port (default 5474), and the defined host (default 
+		127.0.0.1).  All incoming requests then invoke the <code>RouteMaster.route</code> method.
+	</li>
+	<li>
+		<code>synapticloop.nanohttpd.router.RouteMaster.route(File rootDir, IHTTPSession httpSession)</code> 
+		is invoked for <em>EVERY</em> request.  This will determine which router should 
+		be invoked for the incoming request.  To determine which router to invoke, the 
+		following flow is followed:
+		<ol>
+			<li>If the route is cached, then the router is known and is invoked.</li>
+			<li>If the route is not cached, then the <code>synapticloop.nanohttpd.router.Router.route</code> method is 
+			invoked, which will return the assigned router</li>
+		</ol>
+	</li>
+	<li>
+		<code>synapticloop.nanohttpd.router.Router.route(IHTTPSession httpSession, StringTokenizer stringTokenizer)</code> 
+		is invoked to determine which router should handle the incoming request.  This 
+		will walk the URL path until a suitable router is found.
+	</li>
+	<li>
+		<code>serveResource(File rootDir, IHTTPSession httpSession)</code> depending 
+		on which router is found, this method is invoked, and depending on the functionality 
+		of the implementation, will depend on whether <code>Handler</code>s are then
+		invoked.
+	</li>
+	<li>
+		In the instance of the <code>synapticloop.nanohttpd.servant.ClasspathFileServant</code>, 
+		the handlers are then consulted as to whether they will be able to handle 
+		the request.  If so, the <code>Handler</code> will be invoked <em>before</em> 
+		the <code>Servant</code>.  Note that each implementation may work differently, 
+		and use the local file before invoking the <code>Handler</code>.
+	</li>
+</ol>
+
+<h4>Wildcard routes</h4>
+
+<p>
+	Wildcard routes allow you to bind a specific router to multiple URLs.  The simplest 
+	example is the:
+</p>
+
+<pre><code>route./*=synapticloop.nanohttpd.servant.StaticFileServant</code></pre>
+
+<p>
+	Which binds the root of the site (i.e. <code>/</code>) and all paths beyond it 
+	that are not bound to any other route.  Contrast this with the following:
+</p>
+
+<pre><code>route./=synapticloop.nanohttpd.servant.StaticFileServant</code></pre>
+
+<p>
+	Which only binds the root of the site to the <code>StaticFileServant</code> and 
+	no other roots.
+</p>
+
+<blockquote>
+	In fact, if you only wanted to spin up a static file web server, you could use 
+	the above route (<code>route./*=synapticloop.nanohttpd.servant.StaticFileServant</code>) 
+	and that is all that would be needed.
+</blockquote>
+
+<p>
+	To understand the different types of routers, have a look at the <a href="simple-routes.html">simple routes</a> and
+	<a href="restful-routes.html">RESTful routes</a> documentation.
+</p>
+
+<h4>Handlers</h4>
+
+<p>
+	Handlers are implementation specific and work on an extension basis, i.e. handlers 
+	are mapped to specific extensions.  If a file exists on either the filesystem 
+	or classpath which may either be served the <code>Servant</code> or <code>Handler</code>, 
+	then the precedence from a syanpticloop convention should use the <code>Handler</code> 
+	first.
+</p>
+
+<blockquote>
+	<strong>However</strong>: It must be noted that whilst synapticloop observes this 
+	convention, it is not a pre-requisite and other <code>Handler</code>s may use 
+	differing conventions and favour the local resource.
+</blockquote>
