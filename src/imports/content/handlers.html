@@ -61,3 +61,13 @@
 	For this handler, it will respond to any URI that ends with <code>.xzy</code>, 
 	whether or not a local file on the filesystem exists.
 </p>
+
+<h4>mime types</h4>
+
+<p>
+	Routemaster will automatically send through the mimetype if it is for a known type, 
+	when it comes to handlers, routemaster will use the extension <em>before</em> 
+	the registered handler extension.  For example: <code>index.html.templar</code> will 
+	return a mimetype of <code>text/html</code>, whilst <code>index.txt.templar</code> will 
+	return a mimetype of <code>text/plain</code>.
+</p>
