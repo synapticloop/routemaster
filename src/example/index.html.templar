@@ -1,0 +1,7 @@
+<!doctype html>
+<html>
+{static src/example/head.templar}
+<body>
+{static src/example/body.templar}
+</body>
+</html>

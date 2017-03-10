@@ -3,12 +3,34 @@
 	RouteMaster a simple WebServer and router for Java.
 </p>
 
+<p>
+	Routemaster is a library that can be included to extend nanoHTTPd with additional 
+	functionality to include simple and RESTful routes.  In itself it is not runnable, 
+	and requires at least the <code>org.nanohttpd:nanohttpd</code> library to be run.
+</p>
+
+<p>
+	There is an example jar which includes a complete runnable which can be found 
+	under the <code>routemaster-templar.jar</code> artefact in the 
+	<a href="https://github.com/synapticloop/routemaster/releases/">github releases</a> 
+	section.  This includes all components to run the server.
+</p>
+
+<p>
+	There are two major ideas that the documentation relies on.
+</p>
+
+<ol>
+	<li><strong>Servants</strong>, and</li>
+	<li><strong>Handlers</strong>
+</ol>
+
 <h4>Servants</h4>
 
 <p>
 	Throughout this documentation we refer to the implementation classes as 
-	<code>Servant</code>s - which either implement the <code>Routable</code>, or 
-	<code>RestRoutable</code> interfaces.
+	<code>Servant</code>s - which either extend the <code>Routable</code>, or 
+	<code>RestRoutable</code> abstract classes.
 </p>
 
 <p>

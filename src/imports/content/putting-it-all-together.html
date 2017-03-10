@@ -1,0 +1,333 @@
+<h3>Putting it all together</h3>
+
+<p>
+	To get started with your own Web Server based on routemaster, you need to do 
+	the following:
+</p>
+
+<h4>Step 1: The Dependencies</h4>
+
+<p>
+	In order to get started with routemaster, you will need to include the 
+	dependencies:
+</p>
+
+<ul>
+	<li><code>routemaster.jar</code>, this is the jar which resides in the <a href="https://bintray.com/synapticloop/maven/routemaster">Bintray Maven repository</a></li>
+</ul>
+
+<p>
+	By including the above dependency, the artefacts that this depends on (i.e. 
+	transitive dependencies) will also be retrieved.
+</p>
+
+<h4>Command line (i.e. all-in-one-jar)</h4>
+
+<p>
+	If you are delivering an all in one executable jar file, for optimal experience, 
+	in the <code>META-INF/MANIFEST.MF</code> file you may point the <code>Main-Class</code> 
+	to <code>synapticloop.nanohttpd.RouteMasterServer</code>
+</p>
+
+{pre
+<pre><code>Manifest-Version: 1.0
+Main-Class: synapticloop.nanohttpd.RouteMasterServer</code></pre>
+pre}
+
+<p>
+	<strong>AND</strong> include a <code>routemaster.properties</code> file that 
+	configures the routemaster to your specifications.
+</p>
+
+<p>
+	You may wish to invoke your own class as the main entry point, in which case 
+	you will need to do the following:
+</p>
+
+{pre
+<pre><code>public static void main(String[] args) {
+	// The following will read and parse the properties files and set up all of the routes
+	RouteMaster.initialise();
+
+	// set up the default bindings for ports and hosts
+	ServerRunner.executeInstance(new RouteMasterServer(host, port, rootDir, quiet));
+
+	// at this point the routemaster is up and running
+}
+</code></pre>
+pre}
+
+<h4>As part of a larger application</h4>
+
+<p>
+	As per the above, you <strong>MUST</strong> call the <code>RouteMaster.initialise();</code> 
+	and the <code>ServerRunner.executeInstance(new RouteMasterServer(host, port, rootDir, quiet));</code>.  
+	The <code>executeInstance</code> is a blocking call - so you will need to execute 
+	it in a separate thread if your application also performs other work.
+</p>
+
+<h4>Writing Servants</h4>
+
+<h5>Skip the boring</h5>
+
+<p>
+	Make full use of the in-built servants to stop duplication of effort, to serve 
+	up static resources from the filesystem use the <code>StaticFileServant</code>, 
+	and from the classpath, use either the <code>ClasspathFileServant</code>, or the 
+	<code>CachingClasspathFileServant</code>. These can be easily configured in the 
+	<code>routemaster.properties</code> file as follows:
+</p>
+
+{pre
+<pre><code>route./static/*=synapticloop.nanohttpd.servant.StaticFileServant
+</code></pre>
+pre}
+
+<p>or</p>
+
+{pre
+<pre><code>route./static/*=synapticloop.nanohttpd.servant.ClasspathFileServant
+</code></pre>
+pre}
+
+<p>or</p>
+
+{pre
+<pre><code>route./static/*=synapticloop.nanohttpd.servant.CachingClasspathFileServant
+</code></pre>
+pre}
+
+<h5>Writing your own</h5>
+
+<p>
+	Servants are the way to extend the functionality of the routemaster through 
+	Routing (either simple or RESTful).  Simple Servants are included to reduce the 
+	drudgery of writing your own servants to serve up static content, either from 
+	the filesystem or from the classpath.
+</p>
+
+<p>
+	In this example, we will use the a RESTful Servant that adds some functionality 
+	to routemaster.  We will create a simple <code>Servant</code> that extends 
+	<code>RestRoutable</code> that responds to either a GET or POST HTTP verb.  Let 
+	us create the <code>PostGetServant</code> - create a new class:
+</p>
+
+{pre
+<pre><code>package synapticloop.nanohttpd.example.servant;
+
+import java.util.List;
+
+import synapticloop.nanohttpd.router.RestRoutable;
+
+public class PostGetServant extends RestRoutable {
+
+	public PostGetServant(String routeContext, List&lt;String&gt; params) {
+		super(routeContext, params);
+	}
+}
+</code></pre>
+pre}
+
+<p>
+	Now we need to override the methods that we want to implement
+</p>
+
+
+{pre
+<pre><code>	@Override
+	public Response doGet(File rootDir, 
+			IHTTPSession httpSession, 
+			Map&lt;String, String&gt; restParams, 
+			String unmappedParams) {
+		return super.doGet(rootDir, httpSession, restParams, unmappedParams);
+	}
+
+	@Override
+	public Response doPost(File rootDir, 
+			IHTTPSession httpSession, 
+			Map&lt;String, String&gt; restParams,
+			String unmappedParams) {
+		return super.doPost(rootDir, httpSession, restParams, unmappedParams);
+	}
+</code></pre>
+pre}
+
+<p>
+	This is in itself does not provide any functionality, and just chains the call 
+	to <code>super</code> which will invoke <code>HttpUtils.methodNotAllowedResponse()</code>. 
+	So let's get started with investigating the <code>restParams</code> and 
+	<code>unmappedParams</code> for the <code>doGet()</code> method.
+</p>
+
+<p>
+	But first we need to update the <code>routemaster.properties</code> file to bind 
+	the new route.  This will be a simple one liner:
+</p>
+
+{pre
+<pre><code>rest./postget/%title%/=synapticloop.nanohttpd.example.servant.PostGetServant</code></pre>
+pre}
+
+<p>
+	Run the <code>RouteMasterServer</code> and in the console output you will see 
+	that your new routes have been mapped.
+</p>
+
+{pre
+<pre><code>[INFO]:  +--------------------------+----------------------------------------------------------------+
+[INFO]:  |  rest: /postget/%title/  | synapticloop.nanohttpd.example.servant.PostGetServant@76ed5528 |
+[INFO]:  |  rest: /postget/%title/* | synapticloop.nanohttpd.example.servant.PostGetServant@2c7b84de |
+[INFO]:  +--------------------------+----------------------------------------------------------------+
+</code></pre>
+pre}
+
+<p>
+	Let's add some functionality to write out the <em>mapped</em> <code>%title%</code> parameter:
+</p>
+
+{pre
+<pre><code>	@Override
+	public Response doGet(File rootDir, 
+			IHTTPSession httpSession, 
+			Map&lt;String, String&gt; restParams, 
+			String unmappedParams) {
+
+		return(HttpUtils.okResponse("text/html", restParams.get("title")));
+	}
+</code></pre>
+pre}
+
+<p>
+	Now when you hit the URL <a href="http://localhost:5474/postget/something/">http://localhost:5474/postget/something/</a>, 
+	the output will show <code>something</code>, similarly if you change the <code>something</code> 
+	to <code>something a little bit different</code> (i.e. <a href="http://localhost:5474/postget/something%20a%20little%20bit%20different/">http://localhost:5474/postget/something a little bit different/</a>) 
+	the mapped rest parameter will be output.
+</p>
+
+<p>
+	Similarly, if you change the post method:
+</p>
+
+{pre
+<pre><code>	@Override
+	public Response doPost(File rootDir, 
+			IHTTPSession httpSession, 
+			Map&lt;String, String&gt; restParams,
+			String unmappedParams) {
+
+		return(HttpUtils.okResponse("text/html", restParams.get("title")));
+	}
+</code></pre>
+pre}
+
+<p>
+	And test it with <code>curl -X POST http://localhost:5474/postget/something/</code>, 
+	you will get the output of <code>something</code>.
+</p>
+
+<p>
+	Going further with the other HTTP verbs: <code>curl -X DELETE http://localhost:5474/postget/something/</code>, 
+	you will get a <code>405 Method Not Allowed</code> response.
+</p>
+
+<p>
+	The final Servant is:
+</p>
+
+<pre><code>
+{static src/main/java/synapticloop/nanohttpd/example/servant/PostGetServant.java}
+</code></pre>
+
+<h4>Conclusion</h4>
+
+<p>
+	There really is not a lot more to routing and routemaster.  Generally, what is 
+	required is a templating engine to enable rapid development and give the ability 
+	to cut up a page.  To this end - you can include the templar templating engine:
+</p>
+
+<ul>
+	<li><code>templar.jar</code>, this is the jar which resides in the <a href="https://bintray.com/synapticloop/maven/templar">Bintray Maven repository</a></li>
+</ul>
+
+<h4>Templar</h4>
+
+<p>
+	For a very quick example of integrating the light-weight templating engine, add 
+	the following lines to the <code>routemaster.properties</code> file:
+</p>
+
+{pre
+<pre><code>route./*=synapticloop.nanohttpd.servant.StaticFileServant
+
+handler.templar=synapticloop.nanohttpd.handler.TemplarHandler
+</code></pre>
+pre}
+
+<p>
+	When the server is started you will see the handler registered for all files 
+	that match <code>*.templar</code>.
+</p>
+
+{pre
+<pre><code>[INFO]:  +--------------------------------------------------------------------+
+[INFO]:  | Handlers                                                           |
+[INFO]:  +-----------+--------------------------------------------------------+
+[INFO]:  | extension | handler class                                          |
+[INFO]:  +-----------+--------------------------------------------------------+
+[INFO]:  | templar   | synapticloop.nanohttpd.handler.TemplarHandler@24d46ca6 |
+[INFO]:  +-----------+--------------------------------------------------------+
+</code></pre>
+pre}
+
+<blockquote>
+	<strong>NOTE</strong> that you need to define a route before you can invoke any 
+	handlers.
+</blockquote>
+
+<p>
+	Three files have been created
+</p>
+
+<p><code>src/example/index.html.templar</code></p>
+
+<p>
+	The above contents just statically includes the following two files.
+</p>
+
+<p><code>src/example/head.templar</code></p>
+
+<p><code>src/example/body.templar</code></p>
+
+{pre
+<pre><code>
+{static src/example/head.templar}
+{static src/example/body.templar}
+</code></pre>
+pre}
+
+<p>
+	If you run the routemaster server and navigate to 
+	<a href="http://localhost:5474/src/example/index.html.templar">http://localhost:5474/src/example/index.html.templar</a> 
+	the templar handler will automatically parse and render the file.
+</p>
+
+<p>
+	If you also add in the <code>indexfiles</code> option to the <code>routemaster.properties</code> file 
+	you can just navigate to <a href="http://localhost:5474/src/example/">http://localhost:5474/src/example/</a> 
+	and the templar handler will serve up the file 
+	
+</p>
+{pre
+<pre><code>option.indexfiles=index.html.templar,index.html,index.htm</code></pre>
+pre}
+
+<h4>Debugging</h4>
+
+<p>
+	To debug what is going on, the best place to start the process is in the 
+	<code>synapticloop.nanohttpd.router.RouteMaster</code> file at the 
+	<code>private static Response routeInternal(File rootDir, IHTTPSession httpSession)</code> 
+	method.
+</p>
