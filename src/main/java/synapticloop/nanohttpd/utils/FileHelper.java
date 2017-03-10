@@ -94,9 +94,16 @@ public class FileHelper {
 			return(null);
 		} else {
 			// write out the file
-			inputStream.mark(Integer.MAX_VALUE);
 			properties.load(inputStream);
-			inputStream.reset();
+
+			try {
+				inputStream.close();
+			} catch(IOException ex) {
+				// do nothing
+			}
+
+			// we need to get the input stream again as mark()/reset() is not always supported
+			inputStream = FileHelper.class.getResourceAsStream("/" + examplePropertiesFile);
 
 			// this will write out the file and then close the stream
 			writeFile(new File("./" + propertiesFile), inputStream, true);
@@ -126,6 +133,7 @@ public class FileHelper {
 				bufferedWriter.write(System.getProperty("line.separator"));
 			}
 			bufferedWriter.flush();
+			LOGGER.info(String.format("Wrote out file '%s'", outputFile.getName()));
 		} catch (IOException ioex) {
 			LOGGER.log(Level.SEVERE, "Could not write to file '" + outputFile.getAbsolutePath() + "'.", ioex);
 		} finally {

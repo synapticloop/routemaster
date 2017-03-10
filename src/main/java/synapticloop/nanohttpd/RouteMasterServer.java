@@ -34,6 +34,10 @@ import fi.iki.elonen.util.ServerRunner;
 public class RouteMasterServer extends NanoHTTPD {
 	private static final Logger LOGGER = Logger.getLogger(RouteMasterServer.class.getName());
 
+	private static final String OPTION_QUIET = "quiet";
+	private static final String OPTION_PORT = "port";
+	private static final String OPTION_HOST = "host";
+
 	private static final String DEFAULT_HOST = "127.0.0.1";
 	private static final int DEFAULT_PORT = 5474;
 
@@ -126,9 +130,9 @@ public class RouteMasterServer extends NanoHTTPD {
 			rootDir = new File(".").getAbsoluteFile();
 		}
 
-		options.put("host", host);
-		options.put("port", Integer.toString(port));
-		options.put("quiet", String.valueOf(quiet));
+		options.put(OPTION_HOST, host);
+		options.put(OPTION_PORT, Integer.toString(port));
+		options.put(OPTION_QUIET, String.valueOf(quiet));
 		StringBuilder sb = new StringBuilder();
 		try {
 			sb.append(rootDir.getCanonicalPath());

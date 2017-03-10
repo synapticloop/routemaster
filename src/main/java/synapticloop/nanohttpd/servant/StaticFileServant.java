@@ -43,6 +43,8 @@ public class StaticFileServant extends Routable {
 
 	@Override
 	public Response serve(File rootDir, IHTTPSession httpSession) {
+		boolean indexFileRequested = false;
+
 		String uri = HttpUtils.cleanUri(httpSession.getUri());
 		File file = new File(rootDir.getAbsolutePath() + uri);
 		if(!file.exists()) {
@@ -50,6 +52,7 @@ public class StaticFileServant extends Routable {
 			File indexFile = getIndexFile(rootDir, uri);
 			if(null != indexFile) {
 				file = indexFile;
+				indexFileRequested = true;
 			} else {
 				return(RouteMaster.get404Response(rootDir, httpSession));
 			}
@@ -64,6 +67,7 @@ public class StaticFileServant extends Routable {
 			File indexFile = getIndexFile(rootDir, uri);
 			if(null != indexFile) {
 				file = indexFile;
+				indexFileRequested = true;
 			}
 		}
 
@@ -76,8 +80,13 @@ public class StaticFileServant extends Routable {
 		Map<String, Handler> handlerCache = RouteMaster.getHandlerCache();
 		if(handlerCache.containsKey(extension)) {
 			Handler handler = handlerCache.get(extension);
-			if(handler.canServeUri(file.getName())) {
-				return(handler.serveFile(rootDir, uri, httpSession.getHeaders(), httpSession));
+			String fileName = file.getName();
+			if(handler.canServeUri(fileName)) {
+				if(indexFileRequested) {
+					return(handler.serveFile(rootDir, uri + fileName, httpSession.getHeaders(), httpSession));
+				} else {
+					return(handler.serveFile(rootDir, uri, httpSession.getHeaders(), httpSession));
+				}
 			}
 		}
 

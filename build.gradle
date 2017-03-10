@@ -41,8 +41,10 @@ dependencies {
 
 jar {
 	manifest {
-		attributes("Main-Class": "synapticloop.nanohttpd.RouteMasterServer",
-				"Implementation-Version": version)
+		attributes(
+			"Main-Class": "synapticloop.nanohttpd.RouteMasterServer",
+			"Implementation-Version": version
+		)
 
 	}
 }
@@ -50,7 +52,7 @@ jar {
 shadowJar {
 	classifier = ""
 	destinationDir = libsDir
-	baseName = 'routemaster-templar'
+	baseName = 'routemaster'
 	append('/src/main/html/templar/*')
 }
 

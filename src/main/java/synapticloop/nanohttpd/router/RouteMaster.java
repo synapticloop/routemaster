@@ -63,6 +63,10 @@ public class RouteMaster {
 
 	private RouteMaster() {}
 
+	/**
+	 * Initialise the RouteMaster by attempting to look for the routemaster.properties
+	 * in the classpath and on the file system.  
+	 */
 	public static void initialise() {
 		Properties properties = null;
 		boolean allOk = true;
