@@ -1,0 +1,17 @@
+<h3>Static File</h3>
+
+<p>
+	When you Want to server resources from the file system
+</p>
+
+<h4>Setup</h4>
+
+<p>
+	In the <code>routemaster.properties</code> file, simply add this line in:
+</p>
+
+<pre><code>route./*=synapticloop.nanohttpd.servant.StaticFileServant</code></pre>
+
+<p>
+	This will serve all files from the file system unless other routes are defined.
+</p>

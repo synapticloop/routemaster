@@ -1,0 +1,18 @@
+<h3>Static Classpath</h3>
+
+<p>
+	When you are delivering a complete jar file and you want to serve static assets 
+	from within the jar file.
+</p>
+
+<h4>Setup</h4>
+
+<p>
+	In the <code>routemaster.properties</code> file, simply add this line in:
+</p>
+
+<pre><code>route./*=synapticloop.nanohttpd.servant.ClasspathFileServant</code></pre>
+
+<p>
+	This will serve all files from the classpath unless other routes are defined.
+</p>

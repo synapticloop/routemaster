@@ -5,6 +5,18 @@
 	easiest way to understand this is to look at a very simple example.
 </p>
 
+<h4>Registration</h4>
+
+<p>
+	To register the handler - you will need to add the following to the <code>routemaster.properties</code> file.
+</p>
+
+<pre><code>handler.xyz=synapticloop.nanohttpd.example.handler.XyzHandler</code></pre>
+
+<blockquote><strong>NOTE</strong> that you <strong>MUST</strong> also have a route registered to be able to invoke any handler</blockquote>
+
+<h4>The code</h4>
+
 <p>
 	The following code can be found in the <a href="src/main/java/synapticloop/nanohttpd/example/handler/XyzHandler.java">XyzHandler.java</a> 
 	class file.
