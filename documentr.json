@@ -1,0 +1,31 @@
+{
+	"context": {
+	},
+	"templates": [
+		{ "type":"inbuilt", "value":"jvm-compatability" },
+		{ "type":"inbuilt", "value":"project-name" },
+		{ "type":"inbuilt", "value":"project-description" },
+
+		{ "type": "markup", "value": "\n\n# Table of Contents\n\n" },
+
+		{ "type": "toc", "value": "2" },
+		{ "type": "toclinks", "value": "true" },
+		{ "type": "toplink", "value": " <a name=\"#documentr_top\"></a>" },
+		{ "type": "tocbacktotop", "value": " <sup><sup>[top](documentr_top)</sup></sup>" },
+
+		{ "type":"file", "value":"src/docs/readme.md" },
+
+		{ "type":"inbuilt", "value":"gradle-build" },
+		{ "type":"inbuilt", "value":"gradle-test" },
+
+		{ "type":"inbuilt", "value":"publishing-github" },
+		{ "type":"inbuilt", "value":"publishing-bintray" },
+
+		{ "type":"inbuilt", "value":"dependencies" },
+
+		{ "type":"inbuilt", "value":"license-mit" },
+
+		{ "type":"inbuilt", "value":"attribution" }
+
+	]
+}
