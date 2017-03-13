@@ -19,6 +19,7 @@ package synapticloop.nanohttpd.handler;
  */
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Map;
 
 import synapticloop.nanohttpd.utils.HttpUtils;
@@ -29,6 +30,11 @@ import synapticloop.templar.exception.RenderException;
 import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 
+/**
+ * The Templar Handler responds to all requests that ends in '.templar' which 
+ * will then utilise the templar rendering engine to output the content.
+ *
+ */
 public class TemplarHandler extends Handler {
 	private static final String TEMPLAR_POSTFIX = ".templar";
 
@@ -47,8 +53,13 @@ public class TemplarHandler extends Handler {
 		}
 
 		try {
-			Parser parser = new Parser(new File(rootDir.getAbsolutePath() + uri));
-			return(HttpUtils.okResponse(mimeType, parser.render()));
+			// at this point, we are wither going to look at the classpath, or the root directory
+			Parser parser = getParser(rootDir, uri);
+			if(null != parser) {
+				return(HttpUtils.okResponse(mimeType, parser.render()));
+			} else {
+				return(HttpUtils.notFoundResponse(String.format("Could not locate the file '%s'", uri)));
+			}
 		} catch (ParseException pex) {
 			return(HttpUtils.internalServerErrorResponse(pex.getMessage()));
 		} catch (RenderException rex) {
@@ -56,14 +67,17 @@ public class TemplarHandler extends Handler {
 		}
 	}
 
-	private static String getMimeType(String uri) {
-		String[] split = uri.split("\\.");
-		int length = split.length;
-
-		if(length > 2) {
-			// the last one is .templar
-			// the second last one is the mime type we need to lookup
-			return(MimeTypeMapper.getMimeTypes().get(split[length -2]));
+	private Parser getParser(File rootDir, String uri) throws ParseException {
+		// always look at the fileSystem first
+		File rootFile = new File(rootDir.getAbsolutePath() + uri);
+		if(null != rootFile && rootFile.exists() && rootFile.canRead()) {
+			return(new Parser(rootFile));
+		} else {
+			// try and grab it from the classpath
+			InputStream inputStream = this.getClass().getResourceAsStream(uri);
+			if(null != inputStream) {
+				return(new Parser(inputStream));
+			}
 		}
 		return(null);
 	}

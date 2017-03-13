@@ -1,11 +1,14 @@
 plugins {
 	id 'java'
 	id 'eclipse'
+	id "maven"
+	id "maven-publish"
+
 	id 'net.saliman.cobertura' version '2.2.6'
 	id "org.sonarqube" version "1.0"
 	id "com.jfrog.bintray" version "1.4"
-	id "maven"
-	id "maven-publish"
+	id 'co.riiid.gradle' version '0.4.2'
+
 	id "com.github.johnrengelman.shadow" version "1.2.4"
 
 	id "synapticloop.copyrightr" version "1.1.2"
@@ -50,10 +53,9 @@ jar {
 }
 
 shadowJar {
-	classifier = ""
+	classifier = "example"
 	destinationDir = libsDir
 	baseName = 'routemaster'
-	append('/src/main/html/templar/*')
 }
 
 
@@ -72,20 +74,6 @@ test {
 ant.version = version
 ant.buildDir = buildDir
 
-task zip << {
-	ant.zip(destfile: '${buildDir}/libs/routemaster-example-${version}.zip') {
-		fileset(dir: 'src/main/html') {
-			include(name: '**/*.*')
-		}
-
-		fileset(dir: '${buildDir}/libs/') {
-			include(name: 'routemaster-templar-${version}.jar')
-		}
-	}
-}
-
-zip.mustRunAfter shadowJar
-
 def javaApiUrl = 'http://docs.oracle.com/javase/1.7.0/docs/api/'
 def groovyApiUrl = 'http://groovy.codehaus.org/gapi/'
 
@@ -103,6 +91,31 @@ task sourcesJar(type: Jar) {
 	from sourceSets.main.allSource
 	classifier = 'sources'
 }
+
+/*
+ * Create the example server
+ */
+
+task copyRoutemasterDotProperties(type: Copy) {
+	from('src/main/resources/')
+	into('build/resources/main')
+	include('routemaster.example.templar.properties')
+	rename {
+		filenName -> "routemaster.properties"
+	}
+}
+
+task copyExampleResourcesProperties(type: Copy) {
+	from('src/main/html/')
+	into('build/resources/main/')
+}
+
+task (example).dependsOn([ 'copyRoutemasterDotProperties', 'copyExampleResourcesProperties', 'shadowJar' ])
+
+
+/*
+ * Publishing to various sources
+ */
 
 publishing {
 	publications {
@@ -126,6 +139,19 @@ publishing {
 	}
 }
 
+github {
+	owner = group
+	repo = archivesBaseName
+	if(System.getenv('GITHUB_TOKEN')) {
+		token = System.getenv('GITHUB_TOKEN')
+	}
+	tagName = version
+	name = version
+	assets = [
+		'build/libs/' + archivesBaseName + '-' + version + '.jar',
+	]
+}
+
 bintray {
 	user = System.getenv('BINTRAY_USER')
 	key = System.getenv('BINTRAY_PASSWORD')
@@ -142,8 +168,3 @@ bintray {
 }
 
 task(dist).dependsOn( [ 'clean', 'shadowJar', 'cobertura', 'jar', 'javadoc' ] )
-
-task(testMain, dependsOn: jar, type: JavaExec ) {
-	main = 'synapticloop.h2zero.Main'
-	classpath = sourceSets.main.runtimeClasspath
-}
