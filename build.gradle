@@ -192,6 +192,8 @@ github {
 	name = version
 	assets = [
 		'build/libs/' + archivesBaseName + '-' + version + '.jar',
+		'build/libs/' + archivesBaseName + '-' + version + '-example.jar',
+		'build/libs/' + archivesBaseName + '-' + version + '-server.jar',
 	]
 }
 
