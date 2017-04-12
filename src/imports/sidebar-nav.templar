@@ -8,6 +8,13 @@
 			<li><a href="restful-routes.html">RESTFul routes</a></li>
 		</ul>
 	</li>
+
+	<li><a href="modules.html">Modules</a>
+		<ul>
+			<li><a href="modules-coding.html">Module coding and lists</a></li>
+		</ul>
+	</li>
+
 	<li>Built-in servants
 		<ul>
 			<li><a href="static-file-list.html">Static file listing</a></li>

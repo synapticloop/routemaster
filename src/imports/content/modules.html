@@ -1,0 +1,70 @@
+<h3>Modules <em>(including handlers)</em></h3>
+
+<p>
+	Modules are an easy way to extend <code>routemaster</code> in a modular fashion 
+	without having to compile and deploy everything together.
+</p>
+
+<p>
+	In this way you may develop specific routes, features and handlers and package 
+	them into small binaries that can then be distributed easily.
+</p>
+
+<h4>The routemaster (server edition)</h4>
+
+<p>
+	Routemaster now comes in a <code>server</code> edition which is the lightest-
+	weight version and contains no registered:
+</p>
+
+<ul>
+	<li>options</li>
+	<li>handlers</li>
+	<li>routes (RESTful or otherwise)</li>
+</ul>
+
+<p>
+	Whilst this will still work as a web server, this will need to be extended by 
+	using modules.
+</p>
+
+<p>
+	The server version can be downloaded from the <a href="https://github.com/synapticloop/routemaster/releases">GitHub releases</a> 
+	page.  The jar that you are looking for is the one with the <code>server</code> 
+	classifier (e.g. <code>routemaster-2.1.0-server.jar</code>).
+</p>
+
+<h3>Setting up the server</h3>
+
+<h4>Step 1: Download the jar file</h4>
+
+<p>
+	Download the jar file.
+</p>
+
+<h4>Step 2: create a modules directory</h4>
+
+<p>
+	In the same directory as the downloaded file (in fact it needs to be in the same 
+	directory from which you run the routemaster server) create a directory named 
+	<code>modules</code>.
+</p>
+
+<h4>Step 3: Use the modules</h4>
+
+<p>
+	In this directory - place any of the modules that you want to use.
+</p>
+
+<h4>Step 4: Start the server</h4>
+
+<p>
+	Start the server with the command (for example)
+</p>
+
+<pre><code>java -jar routemaster-2.1.0-server.jar</code></pre>
+
+<p>
+	The modules will then be loaded and registered for use
+</p>
+

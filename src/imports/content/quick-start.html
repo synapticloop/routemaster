@@ -1,27 +1,46 @@
 <h3>Quick Start</h3>
 
+<h4>Example</h4>
+
+<p>
+	For those that wish to kick the tyres (so to speak) of routemaster, the easiest 
+	way to see what the routemaster is capable of, is to download the example jar 
+	and run it up.  The example jar can be found in the: 
+	<a href="https://github.com/synapticloop/routemaster/releases">github releases</a> 
+	directory <em>(look for the <code>routemaster-&lt;version&gt;-example.jar</code>)</em> 
+	file and download it.
+</p>
+
+<p>
+	Now simply run:
+</p>
+
+<pre><code>java -jar routemaster-&lt;version&gt;-example.jar</code></pre>
+
+<p>
+	And browse to <a href="http://localhost:5474/">http://localhost:5474/</a> to 
+	see the site up and running.
+</p>
+
+<p>
+	This example jar also includes the <a href="https://stynapticloop.github.io/templar/">templar templating</a> 
+	language to do server side includes.  This makes it easier to cut up your HTML 
+	pages into snippets and import them before rendering the code.
+</p>
+
+<h4>Code and Configuration</h4>
+
 <p>
 	Routemaster is broken into two parts:
 </p>
 
 
 <ol>
-	<li>The code, and</li>
+	<li>The command line options, and</li>
 	<li>The configuration</li>
 </ol>
 
-<h4>the code</h4>
-
-<p>
-	To get started quickly, you need to run the following
-</p>
-
-{pre
-<pre><code>java -jar routemaster-templar.jar
-</code></pre>
-pre}
-
-<blockquote><strong>NOTE</strong> that the above will have a version classifier at the end of the file name (i.e. <code>routemaster-templar-2.0.0.jar</code>)</blockquote>
+<h4>Command line options</h4>
 
 <p>
 	This will run the web server with the following defaults:
@@ -47,8 +66,6 @@ pre}
 		parameter of <code>--dir</code> or <code>--d</code>.
 		</dd>
 </dl>
-
-<h4>The configuration</h4>
 
 <p>
 	To configure the routemaster web server, you will need to include a <code>routemaster.properties</code> 
@@ -79,4 +96,8 @@ pre}
 
 <p>
 	Now you should have a look at the <a href="configuration.html">Configuration section</a>.
+</p>
+
+<p>
+	Or if you want to skip ahead - then read the <a href="putting-it-all-together-section.html">Putting it all Together section</a>.
 </p>
