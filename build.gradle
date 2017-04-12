@@ -30,12 +30,18 @@ repositories {
 	jcenter()
 }
 
+configurations {
+	server
+}
+
 dependencies {
 	runtime 'synapticloop:templar:1.4.2'
 	runtime 'org.nanohttpd:nanohttpd:2.3.1'
 
 	compile 'synapticloop:templar:1.4.2'
 	compile 'org.nanohttpd:nanohttpd:2.3.1'
+
+	server 'org.nanohttpd:nanohttpd:2.3.1'
 
 	testCompile 'junit:junit:4.11'
 	testCompile 'org.mockito:mockito-all:1.10.19'
@@ -48,7 +54,6 @@ jar {
 			"Main-Class": "synapticloop.nanohttpd.RouteMasterServer",
 			"Implementation-Version": version
 		)
-
 	}
 }
 
@@ -56,9 +61,47 @@ shadowJar {
 	classifier = "example"
 	destinationDir = libsDir
 	baseName = 'routemaster'
+	from sourceSets.main.output
+	configurations = [project.configurations.runtime]
 }
 
+task shadowJarServer(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+	classifier = "server"
+	destinationDir = libsDir
+	baseName = 'routemaster'
 
+	manifest {
+		attributes(
+			"Main-Class": "synapticloop.nanohttpd.RouteMasterServer",
+			"Implementation-Version": version
+		)
+	}
+
+	from sourceSets.main.output
+	configurations = [project.configurations.server]
+	exclude(
+		'META-INF/INDEX.LIST', 
+		'META-INF/*.SF', 
+		'META-INF/*.DSA', 
+		'META-INF/*.RSA',
+		'*.html',
+		'/error/*',
+		'/static/*',
+		'/templar/*',
+		'/*.templar'
+	)
+}
+
+task copyRoutemasterServerDotProperties(type: Copy) {
+	from('src/main/resources/')
+	into('build/resources/main')
+	include('routemaster.server.properties')
+	rename {
+		fileName -> "routemaster.properties"
+	}
+}
+
+task (server).dependsOn([ 'build', 'copyRoutemasterServerDotProperties', 'shadowJarServer' ])
 
 cobertura {
 	coverageFormats = [ 'html', 'xml']
@@ -101,7 +144,7 @@ task copyRoutemasterDotProperties(type: Copy) {
 	into('build/resources/main')
 	include('routemaster.example.templar.properties')
 	rename {
-		filenName -> "routemaster.properties"
+		fileName -> "routemaster.properties"
 	}
 }
 
@@ -167,4 +210,13 @@ bintray {
 
 }
 
-task(dist).dependsOn( [ 'clean', 'shadowJar', 'cobertura', 'jar', 'javadoc' ] )
+task example.mustRunAfter('build')
+task server.mustRunAfter('example')
+
+task(dist).dependsOn(
+	[ 
+		'build',
+		'example',
+		'server'
+		]
+	)

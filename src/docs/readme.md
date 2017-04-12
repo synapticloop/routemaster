@@ -10,6 +10,18 @@ See [https://synapticloop.github.io/routemaster/](https://synapticloop.github.io
 
 Yes, you can now do some server side includes, using the synapticloop templar templating language!
 
+# Now with Modules
+
+To make it quicker and easier to get started with routemaster, we added in module 
+functionality so that it can be easily extended.
+
+### Instructions:
+
+Download the `routemaster-<version>-server.jar`  from the [github releases directory](https://github.com/synapticloop/routemaster/releases) *(which contains all of the dependencies that are required)*, download modules that you require and place them in the `modules` directory from where you launched the routemaster server.  
+
+These will be automatically registered and ready to go.
+
+
 ## Options
 
 Following the NanoHTTPD, you may pass in the following options

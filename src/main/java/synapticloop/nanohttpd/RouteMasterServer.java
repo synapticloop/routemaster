@@ -114,7 +114,7 @@ public class RouteMasterServer extends NanoHTTPD {
 		options.put("home", sb.toString());
 		SimpleLogger.logTable(options, "RouteMaster options", "option", "value");
 
-		RouteMaster.initialise();
+		RouteMaster.initialise(rootDir);
 		System.out.println("\n\n" + AsciiArt.ROUTEMASTER);
 		System.out.print(AsciiArt.ROUTEMASTER_STARTED);
 		System.out.print(AsciiArt.LINE);

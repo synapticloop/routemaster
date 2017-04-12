@@ -20,9 +20,15 @@ package synapticloop.nanohttpd.router;
 
 import static synapticloop.nanohttpd.utils.SimpleLogger.*;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -32,6 +38,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import synapticloop.nanohttpd.handler.Handler;
 import synapticloop.nanohttpd.servant.UninitialisedServant;
@@ -44,6 +52,13 @@ import fi.iki.elonen.NanoHTTPD.IHTTPSession;
 import fi.iki.elonen.NanoHTTPD.Response;
 import fi.iki.elonen.NanoHTTPD.Response.Status;
 
+/**
+ * This class acts as the registration point for all routes, handlers, modules 
+ * and configuration to run the sever.
+ * 
+ * @author synapticloop
+ *
+ */
 public class RouteMaster {
 	private static final String ROUTEMASTER_PROPERTIES = "routemaster.properties";
 	private static final String ROUTEMASTER_EXAMPLE_PROPERTIES = "routemaster.example.properties";
@@ -58,16 +73,22 @@ public class RouteMaster {
 	private static Map<Integer, String> errorPageCache = new ConcurrentHashMap<Integer, String>();
 	private static Map<String, Routable> routerCache = new ConcurrentHashMap<String, Routable>();
 	private static Map<String, Handler> handlerCache = new ConcurrentHashMap<String, Handler>();
+	private static Set<String> modules = new HashSet<String>();
 
 	private static boolean initialised = false;
+	private static File rootDir;
 
 	private RouteMaster() {}
 
 	/**
 	 * Initialise the RouteMaster by attempting to look for the routemaster.properties
-	 * in the classpath and on the file system.  
+	 * in the classpath and on the file system.
+	 *   
+	 * @param rootDir the root directory from which content should be sourced
 	 */
-	public static void initialise() {
+	public static void initialise(File rootDir) {
+		RouteMaster.rootDir = rootDir;
+
 		Properties properties = null;
 		boolean allOk = true;
 
@@ -84,12 +105,100 @@ public class RouteMaster {
 		}
 
 		if(allOk) {
+			// at this point we want to load any modules that we find, and at them to the 
+			// properties file
+			loadModules(properties);
+
 			parseOptionsAndRoutes(properties);
 			initialised = true;
 		} else {
 			StringTokenizer stringTokenizer = new StringTokenizer("/*", "/", false);
 			router = new Router("/*", stringTokenizer, UninitialisedServant.class.getCanonicalName());
 		}
+	}
+
+	private static void loadModules(Properties properties) {
+		// look in the modules directory
+		File modulesDirectory = new File(rootDir.getAbsolutePath() + "/modules/");
+		if(modulesDirectory.exists() && modulesDirectory.isDirectory() && modulesDirectory.canRead()) {
+			String[] moduleList = modulesDirectory.list(new FilenameFilter() {
+
+				@Override
+				public boolean accept(File dir, String name) {
+					return(name.endsWith(".jar"));
+				}
+			});
+
+			int length = moduleList.length;
+
+			if(length == 0) {
+				logInfo("No modules found, continuing...");
+			} else {
+				logInfo("Scanning '" + length + "' jar files for modules");
+				URLClassLoader classLoader = (URLClassLoader)ClassLoader.getSystemClassLoader();
+				Method method = null;
+				try {
+					method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+				} catch (Exception ex) {
+					logFatal("Could not load any modules, exception message was: " + ex.getMessage());
+				}
+
+				method.setAccessible(true);
+				for (String module : moduleList) {
+					logInfo("Found potential module in file '" + module + "'.");
+
+					File file = new File(rootDir + "/modules/" + module);
+					try {
+						JarFile jarFile = new JarFile(file);
+						ZipEntry zipEntry = jarFile.getEntry("routemaster.properties");
+						if(null != zipEntry) {
+							URL url = file.toURI().toURL();
+							method.invoke(classLoader, url);
+							// assuming that the above works - read the properties from the 
+							// jar file
+							readProperties(properties, jarFile, zipEntry);
+							if(!modules.contains(module)) {
+								modules.add(module);
+							}
+						} else {
+							logWarn("Could not find '/routemaster.properties' in file '" + module + "'.");
+						}
+
+						jarFile.close();
+					} catch (Exception ex) {
+						logFatal("Could not load modules message was: " + ex.getMessage());
+					}
+				}
+			}
+		}
+	}
+
+	private static void readProperties(Properties properties, JarFile jarFile, ZipEntry zipEntry) throws IOException {
+		InputStream input = jarFile.getInputStream(zipEntry);
+		InputStreamReader isr = new InputStreamReader(input);
+		BufferedReader reader = new BufferedReader(isr);
+		String line;
+		while ((line = reader.readLine()) != null) {
+			String trimmed = line.trim();
+
+			if(trimmed.length() != 0) {
+				if(trimmed.startsWith("#")) {
+					continue;
+				}
+
+				String[] split = line.split("=", 2);
+				if(split.length == 2) {
+					String key = split[0].trim();
+					String value = split[1].trim();
+					if(properties.containsKey(key)) {
+						logWarn("Routemaster already has a property with key '" + key + "', over-writing...");
+					}
+					properties.setProperty(key, value);
+					logInfo("Adding property key '" + key + "', value '" + value + "'");
+				}
+			}
+		}
+		reader.close();
 	}
 
 	private static void parseOptionsAndRoutes(Properties properties) {
@@ -177,8 +286,9 @@ public class RouteMaster {
 
 		if(null != router) {
 			logTable(router.getRouters(), "registered routes", "route", "routable class");
-			router.getRouters();
 		}
+
+		logTable(new ArrayList<String>(modules), "loaded modules");
 
 		if(indexFiles.isEmpty()) {
 			// default welcomeFiles

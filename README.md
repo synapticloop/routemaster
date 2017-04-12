@@ -29,8 +29,9 @@
  - [routemaster](#documentr_heading_0)
  - [Table of Contents](#documentr_heading_1)
  - [Now with Templar templating!](#documentr_heading_2)
-   - [Options](#documentr_heading_3)
-   - [As an aside](#documentr_heading_4)
+ - [Now with Modules](#documentr_heading_3)
+   - [Options](#documentr_heading_5)
+   - [As an aside](#documentr_heading_6)
 
 
 # RouteMaster
@@ -52,6 +53,21 @@ Yes, you can now do some server side includes, using the synapticloop templar te
 
 
 <a name="documentr_heading_3"></a>
+
+# Now with Modules <sup><sup>[top](documentr_top)</sup></sup>
+
+To make it quicker and easier to get started with routemaster, we added in module 
+functionality so that it can be easily extended.
+
+### Step 1:
+
+Download the `routemaster-<version>-server.jar`  from the [https://github.com/synapticloop/routemaster/releases](github releases directory) 
+which contains all of the dependencies that are required
+
+
+
+
+<a name="documentr_heading_5"></a>
 
 ## Options <sup><sup>[top](documentr_top)</sup></sup>
 
@@ -75,7 +91,7 @@ Following the NanoHTTPD, you may pass in the following options
 
 
 
-<a name="documentr_heading_4"></a>
+<a name="documentr_heading_6"></a>
 
 ## As an aside <sup><sup>[top](documentr_top)</sup></sup>
 
@@ -277,6 +293,11 @@ You will also need to download the following dependencies:
 ### runtime dependencies
 
   - `synapticloop:templar:1.4.2`: (It may be available on one of: [bintray](https://bintray.com/synapticloop/maven/templar/1.4.2/view#files/synapticloop/templar/1.4.2) [mvn central](http://search.maven.org/#artifactdetails|synapticloop|templar|1.4.2|jar))
+  - `org.nanohttpd:nanohttpd:2.3.1`: (It may be available on one of: [bintray](https://bintray.com/org.nanohttpd/maven/nanohttpd/2.3.1/view#files/org.nanohttpd/nanohttpd/2.3.1) [mvn central](http://search.maven.org/#artifactdetails|org.nanohttpd|nanohttpd|2.3.1|jar))
+
+
+### server dependencies
+
   - `org.nanohttpd:nanohttpd:2.3.1`: (It may be available on one of: [bintray](https://bintray.com/org.nanohttpd/maven/nanohttpd/2.3.1/view#files/org.nanohttpd/nanohttpd/2.3.1) [mvn central](http://search.maven.org/#artifactdetails|org.nanohttpd|nanohttpd|2.3.1|jar))
 
 
