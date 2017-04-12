@@ -59,10 +59,15 @@ Yes, you can now do some server side includes, using the synapticloop templar te
 To make it quicker and easier to get started with routemaster, we added in module 
 functionality so that it can be easily extended.
 
-### Step 1:
+### Instructions:
 
-Download the `routemaster-<version>-server.jar`  from the [https://github.com/synapticloop/routemaster/releases](github releases directory) 
-which contains all of the dependencies that are required
+Download the `routemaster-<version>-server.jar`  from the [github releases directory](https://github.com/synapticloop/routemaster/releases) *(which contains all of the dependencies that are required)*, download modules that you require and place them in the `modules` directory from where you launched the routemaster server.  
+
+These will be automatically registered and ready to go.
+
+For an example module with everything you need to build and deploy, see [https://github.com/synapticloop/routemaster-module-example](https://github.com/synapticloop/routemaster-module-example).
+
+
 
 
 
@@ -235,9 +240,9 @@ repositories {
 
 
 dependencies {
-	runtime(group: 'synapticloop', name: 'routemaster', version: '2.0.0', ext: 'jar')
+	runtime(group: 'synapticloop', name: 'routemaster', version: '2.1.0', ext: 'jar')
 
-	compile(group: 'synapticloop', name: 'routemaster', version: '2.0.0', ext: 'jar')
+	compile(group: 'synapticloop', name: 'routemaster', version: '2.1.0', ext: 'jar')
 }
 
 
@@ -249,9 +254,9 @@ or, more simply for versions of gradle greater than 2.1
 
 
 dependencies {
-	runtime 'synapticloop:routemaster:2.0.0'
+	runtime 'synapticloop:routemaster:2.1.0'
 
-	compile 'synapticloop:routemaster:2.0.0'
+	compile 'synapticloop:routemaster:2.1.0'
 }
 
 
@@ -265,7 +270,7 @@ dependencies {
 <dependency>
 	<groupId>synapticloop</groupId>
 	<artifactId>routemaster</artifactId>
-	<version>2.0.0</version>
+	<version>2.1.0</version>
 	<type>jar</type>
 </dependency>
 

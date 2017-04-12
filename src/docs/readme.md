@@ -21,6 +21,10 @@ Download the `routemaster-<version>-server.jar`  from the [github releases direc
 
 These will be automatically registered and ready to go.
 
+For an example module with everything you need to build and deploy, see [https://github.com/synapticloop/routemaster-module-example](https://github.com/synapticloop/routemaster-module-example).
+
+
+
 
 ## Options
 
