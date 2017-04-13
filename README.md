@@ -240,9 +240,9 @@ repositories {
 
 
 dependencies {
-	runtime(group: 'synapticloop', name: 'routemaster', version: '2.1.0', ext: 'jar')
+	runtime(group: 'synapticloop', name: 'routemaster', version: '2.2.0', ext: 'jar')
 
-	compile(group: 'synapticloop', name: 'routemaster', version: '2.1.0', ext: 'jar')
+	compile(group: 'synapticloop', name: 'routemaster', version: '2.2.0', ext: 'jar')
 }
 
 
@@ -254,9 +254,9 @@ or, more simply for versions of gradle greater than 2.1
 
 
 dependencies {
-	runtime 'synapticloop:routemaster:2.1.0'
+	runtime 'synapticloop:routemaster:2.2.0'
 
-	compile 'synapticloop:routemaster:2.1.0'
+	compile 'synapticloop:routemaster:2.2.0'
 }
 
 
@@ -270,7 +270,7 @@ dependencies {
 <dependency>
 	<groupId>synapticloop</groupId>
 	<artifactId>routemaster</artifactId>
-	<version>2.1.0</version>
+	<version>2.2.0</version>
 	<type>jar</type>
 </dependency>
 

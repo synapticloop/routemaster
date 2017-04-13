@@ -15,7 +15,7 @@ plugins {
 	id "synapticloop.documentr" version "2.9.0"
 }
 
-version = '2.1.0'
+version = '2.2.0'
 
 group = 'synapticloop'
 archivesBaseName = 'routemaster'
@@ -55,6 +55,17 @@ jar {
 			"Implementation-Version": version
 		)
 	}
+	exclude(
+		'META-INF/INDEX.LIST', 
+		'META-INF/*.SF', 
+		'META-INF/*.DSA', 
+		'META-INF/*.RSA',
+		'*.html',
+		'/error/*',
+		'/static/*',
+		'/templar/*',
+		'/*.templar'
+	)
 }
 
 shadowJar {
@@ -193,7 +204,7 @@ github {
 	assets = [
 		'build/libs/' + archivesBaseName + '-' + version + '.jar',
 		'build/libs/' + archivesBaseName + '-' + version + '-example.jar',
-		'build/libs/' + archivesBaseName + '-' + version + '-server.jar',
+		'build/libs/' + archivesBaseName + '-' + version + '-server.jar'
 	]
 }
 
@@ -215,10 +226,4 @@ bintray {
 task example.mustRunAfter('build')
 task server.mustRunAfter('example')
 
-task(dist).dependsOn(
-	[ 
-		'build',
-		'example',
-		'server'
-		]
-	)
+build.finalizedBy(['example', 'server'])
