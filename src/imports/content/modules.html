@@ -68,3 +68,52 @@
 	The modules will then be loaded and registered for use
 </p>
 
+<h3>Configuring modules</h3>
+
+<p>
+	By default, routemaster modules have in-built configuration options in the deployed 
+	module - they all must have a <code>routemaster.properties</code> file in the root 
+	of the jar file - which is named the same as the module's jar name - for the 
+	example module, this would be named <code>routemaster-module-example.properties</code>. 
+	This indicates to routemaster that this is a module to be loaded - all other jar 
+	files will be ignored.
+</p>
+
+<p>
+	That being said, you may over-ride the options that are the defaults by providing 
+	a separate file which is the name of the module appended with <code>.properties</code>.
+	For example:
+</p>
+
+<pre><code>routemaster-module-example-1.0.0.jar</code></pre>
+
+<p>
+	Can have its properties over-ridden by providing a 
+</p>
+
+<pre><code>routemaster-module-example.properties</code></pre>
+
+<p>
+	file in the <code>modules/</code> directory (i.e. the same directory that the 
+	module jar file resides).
+</p>
+
+<h4>Configuration priority</h4>
+
+<ol>
+	<li>
+		The default <code>routemaster.properties</code> will be loaded first - this 
+		may be either in the directory that the routemaster server was started from, 
+		or within the root of the routemaster jar (if it exists).
+	</li>
+	<li>
+		The module properties are then checked next (i.e. <code>module_name.properties</code>) 
+		if they exist, then the <code>routemaster.properties</code> within the module 
+		jar file is not checked.
+	</li>
+	<li>
+		Finally, the <code>module_name.properties</code> within the module 
+		jar file is checked and loaded. <strong>NOTE</strong> that if the above properties 
+		file is found, then the properties file within the module jar is not checked.
+	</li>
+</ol>
