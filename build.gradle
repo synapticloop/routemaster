@@ -15,7 +15,7 @@ plugins {
 	id "synapticloop.documentr" version "2.9.0"
 }
 
-version = '2.2.0'
+version = '2.2.1'
 
 group = 'synapticloop'
 archivesBaseName = 'routemaster'

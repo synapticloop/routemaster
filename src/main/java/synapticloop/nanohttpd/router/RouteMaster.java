@@ -22,6 +22,7 @@ import static synapticloop.nanohttpd.utils.SimpleLogger.*;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +33,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -39,6 +41,8 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 
 import synapticloop.nanohttpd.handler.Handler;
@@ -117,6 +121,11 @@ public class RouteMaster {
 		}
 	}
 
+	/**
+	 * Dynamically load any modules that exist within the 'modules' directory
+	 * 
+	 * @param properties the properties from the default routemaster.properties
+	 */
 	private static void loadModules(Properties properties) {
 		// look in the modules directory
 		File modulesDirectory = new File(rootDir.getAbsolutePath() + "/modules/");
@@ -141,6 +150,7 @@ public class RouteMaster {
 					method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
 				} catch (Exception ex) {
 					logFatal("Could not load any modules, exception message was: " + ex.getMessage());
+					return;
 				}
 
 				method.setAccessible(true);
@@ -148,32 +158,68 @@ public class RouteMaster {
 					logInfo("Found potential module in file '" + module + "'.");
 
 					File file = new File(rootDir + "/modules/" + module);
-					try {
-						JarFile jarFile = new JarFile(file);
-						ZipEntry zipEntry = jarFile.getEntry("routemaster.properties");
-						if(null != zipEntry) {
-							URL url = file.toURI().toURL();
-							method.invoke(classLoader, url);
-							// assuming that the above works - read the properties from the 
-							// jar file
-							readProperties(properties, jarFile, zipEntry);
-							if(!modules.contains(module)) {
-								modules.add(module);
-							}
-						} else {
-							logWarn("Could not find '/routemaster.properties' in file '" + module + "'.");
-						}
 
-						jarFile.close();
-					} catch (Exception ex) {
-						logFatal("Could not load modules message was: " + ex.getMessage());
+					// try and find the <module>-<version>.jar.properties file which will
+					// over-ride the routemaster.properties entry in the jar file
+
+					boolean loadedOverrideProperties = false;
+
+					String moduleName = getModuleName(module);
+					File overridePropertiesFile = new File(rootDir + "/modules/" + moduleName + ".properties");
+					if(overridePropertiesFile.exists() && overridePropertiesFile.canRead()) {
+						logInfo("[ " + module + " ] Found an over-ride  .properties file '" + moduleName + ".properties'.");
+						try {
+							Properties mergeProperties = new Properties();
+							mergeProperties.load(new FileReader(overridePropertiesFile));
+							Iterator<Object> iterator = mergeProperties.keySet().iterator();
+							while (iterator.hasNext()) {
+								String key = (String) iterator.next();
+								if(properties.containsKey(key)) {
+									logWarn("[ " + module + " ] Routemaster already has a property with key '" + key + "', over-writing...");
+								}
+
+								String value = mergeProperties.getProperty(key);
+								properties.setProperty(key, value);
+
+								logInfo("[ " + module + " ] Adding property key '" + key + "', value '" + value + "'");
+							}
+							loadedOverrideProperties = true;
+						} catch (IOException ex) {
+							logFatal("Could not load modules message was: " + ex.getMessage());
+						}
+					} 
+
+					try {
+							JarFile jarFile = new JarFile(file);
+							ZipEntry zipEntry = jarFile.getEntry(moduleName + ".properties");
+							if(null != zipEntry) {
+								URL url = file.toURI().toURL();
+								method.invoke(classLoader, url);
+
+								if(!loadedOverrideProperties) { 
+									// assuming that the above works - read the properties from the 
+									// jar file
+									readProperties(module, properties, jarFile, zipEntry);
+								}
+
+								if(!modules.contains(module)) {
+									modules.add(module);
+								}
+
+							} else {
+								logWarn("[ " + module + " ] Could not find '/" + moduleName + ".properties' in file '" + module + "'.");
+							}
+	
+							jarFile.close();
+						} catch (Exception ex) {
+							logFatal("Could not load modules message was: " + ex.getMessage());
+						}
 					}
-				}
 			}
 		}
 	}
 
-	private static void readProperties(Properties properties, JarFile jarFile, ZipEntry zipEntry) throws IOException {
+	private static void readProperties(String module, Properties properties, JarFile jarFile, ZipEntry zipEntry) throws IOException {
 		InputStream input = jarFile.getInputStream(zipEntry);
 		InputStreamReader isr = new InputStreamReader(input);
 		BufferedReader reader = new BufferedReader(isr);
@@ -191,14 +237,26 @@ public class RouteMaster {
 					String key = split[0].trim();
 					String value = split[1].trim();
 					if(properties.containsKey(key)) {
-						logWarn("Routemaster already has a property with key '" + key + "', over-writing...");
+						logWarn("[ " + module + " ] Routemaster already has a property with key '" + key + "', over-writing...");
 					}
+
 					properties.setProperty(key, value);
-					logInfo("Adding property key '" + key + "', value '" + value + "'");
+					logInfo("[ " + module + " ] Adding property key '" + key + "', value '" + value + "'");
 				}
 			}
 		}
 		reader.close();
+	}
+
+	private static String getModuleName(String module) {
+		Pattern r = Pattern.compile("(.*)-\\d+\\.\\d+.*\\.jar");
+		Matcher m = r.matcher(module);
+		if(m.matches()) {
+			return(m.group(1));
+		}
+
+		int lastIndexOf = module.lastIndexOf(".");
+		return(module.substring(0, lastIndexOf));
 	}
 
 	private static void parseOptionsAndRoutes(Properties properties) {
@@ -469,4 +527,11 @@ public class RouteMaster {
 	 * @return the handler cache
 	 */
 	public static Map<String, Handler> getHandlerCache() { return (handlerCache); }
+	
+	/**
+	 * Get the set of modules that have been registered with the routemaster
+	 * 
+	 * @return the set of modules that have been registered
+	 */
+	public static Set<String> getModules() { return(modules); }
 }
