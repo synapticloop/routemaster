@@ -118,7 +118,8 @@ public class Router {
 	 * 
 	 * @param httpSession The user's session
 	 * @param stringTokenizer the stringTokenizer for the route paths
-	 * @return the Routable that responds to this uri
+	 * 
+	 * @return the Routable that responds to this URI
 	 */
 	public Routable route(IHTTPSession httpSession, StringTokenizer stringTokenizer) {
 		if(stringTokenizer.hasMoreTokens()) {

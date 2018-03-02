@@ -33,7 +33,11 @@ public class HttpUtils {
 	private static final Logger LOGGER = Logger.getLogger(HttpUtils.class.getName());
 
 	public static String cleanUri(String uri) {
-		return(uri.replaceAll("/\\.\\./", "/"));
+		if(null == uri) {
+			return(null);
+		}
+
+		return(uri.replaceAll("/\\.\\./", "/").replaceAll("//", "/"));
 	}
 
 	private static Response defaultTextResponse(IStatus status) { return(newFixedLengthResponse(status, NanoHTTPD.MIME_PLAINTEXT, status.getDescription())); }

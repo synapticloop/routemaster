@@ -44,6 +44,7 @@ public class StaticFileServant extends Routable {
 	@Override
 	public Response serve(File rootDir, IHTTPSession httpSession) {
 		boolean indexFileRequested = false;
+		Map<String, Handler> handlerCache = RouteMaster.getHandlerCache();
 
 		String uri = HttpUtils.cleanUri(httpSession.getUri());
 		File file = new File(rootDir.getAbsolutePath() + uri);
@@ -54,6 +55,22 @@ public class StaticFileServant extends Routable {
 				file = indexFile;
 				indexFileRequested = true;
 			} else {
+				// maybe this can be handled by a handler... (it may be a virtual file)
+				int lastIndexOf = uri.lastIndexOf(".");
+				String extension = uri.substring(lastIndexOf + 1);
+				if(handlerCache.containsKey(extension)) {
+					Handler handler = handlerCache.get(extension);
+					String fileName = file.getName();
+					if(handler.canServeUri(fileName)) {
+						if(indexFileRequested) {
+							return(handler.serveFile(rootDir, uri + fileName, httpSession.getHeaders(), httpSession));
+						} else {
+							return(handler.serveFile(rootDir, uri, httpSession.getHeaders(), httpSession));
+						}
+					}
+				}
+
+				// at this point we cannot handle the response
 				return(RouteMaster.get404Response(rootDir, httpSession));
 			}
 		}
@@ -77,7 +94,6 @@ public class StaticFileServant extends Routable {
 		int lastIndexOf = absolutePath.lastIndexOf(".");
 		String extension = absolutePath.substring(lastIndexOf + 1);
 
-		Map<String, Handler> handlerCache = RouteMaster.getHandlerCache();
 		if(handlerCache.containsKey(extension)) {
 			Handler handler = handlerCache.get(extension);
 			String fileName = file.getName();
@@ -169,6 +185,7 @@ public class StaticFileServant extends Routable {
 							return (int) dataLen;
 						}
 					};
+
 					long skip = fis.skip(startFrom);
 					if(skip != startFrom) {
 						LOGGER.severe("Tried to skip: " + startFrom + " bytes, but actualy skipped: " + skip + " bytes");
@@ -180,9 +197,9 @@ public class StaticFileServant extends Routable {
 					res.addHeader("ETag", etag);
 				}
 			} else {
-				if (etag.equals(header.get("if-none-match")))
+				if (etag.equals(header.get("if-none-match"))) {
 					res = HttpUtils.notModifiedResponse(mimeType, "");
-				else {
+				} else {
 					res = HttpUtils.okResponse(mimeType, new FileInputStream(file), file.length());
 					res.addHeader("Accept-Ranges", "bytes");
 					res.addHeader("Content-Length", "" + Long.toString(fileLen));

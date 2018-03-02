@@ -28,10 +28,10 @@
 
  - [routemaster](#documentr_heading_0)
  - [Table of Contents](#documentr_heading_1)
- - [Now with Templar templating!](#documentr_heading_2)
- - [Now with Modules](#documentr_heading_3)
-   - [Options](#documentr_heading_5)
-   - [As an aside](#documentr_heading_6)
+ - [Templating with Templar templating language](#documentr_heading_2)
+ - [Module support](#documentr_heading_3)
+   - [Options](#documentr_heading_6)
+   - [As an aside](#documentr_heading_7)
 
 
 # RouteMaster
@@ -46,15 +46,25 @@ See [https://synapticloop.github.io/routemaster/](https://synapticloop.github.io
 
 <a name="documentr_heading_2"></a>
 
-# Now with Templar templating! <sup><sup>[top](documentr_top)</sup></sup>
+# Templating with `Templar` templating language <sup><sup>[top](documentr_top)</sup></sup>
 
 Yes, you can now do some server side includes, using the synapticloop templar templating language!
+
+A quick example is:
+
+
+
+```
+{import src/main/html/templar-handler.snippet}
+```
+
+
 
 
 
 <a name="documentr_heading_3"></a>
 
-# Now with Modules <sup><sup>[top](documentr_top)</sup></sup>
+# Module support <sup><sup>[top](documentr_top)</sup></sup>
 
 To make it quicker and easier to get started with routemaster, we added in module 
 functionality so that it can be easily extended.
@@ -67,12 +77,18 @@ These will be automatically registered and ready to go.
 
 For an example module with everything you need to build and deploy, see [https://github.com/synapticloop/routemaster-module-example](https://github.com/synapticloop/routemaster-module-example).
 
+### Some of the available modules
+
+**Thumbnailer** [routemaster-module-thumbnailer](https://github.com/synapticloop/routemaster-module-thumbnailer) automatically generate thumbnails of images on the fly.
+
+**Templar Handler** [routemaster-module-templar-handler](https://github.com/synapticloop/routemaster-module-templar-handler) add templar templating language handling to the routemaster server.
+
+**Static file lister** [routemaster-module-static-file-lister](https://github.com/synapticloop/routemaster-module-static-file-lister) add in static file listing and navigation.
 
 
 
 
-
-<a name="documentr_heading_5"></a>
+<a name="documentr_heading_6"></a>
 
 ## Options <sup><sup>[top](documentr_top)</sup></sup>
 
@@ -96,7 +112,7 @@ Following the NanoHTTPD, you may pass in the following options
 
 
 
-<a name="documentr_heading_6"></a>
+<a name="documentr_heading_7"></a>
 
 ## As an aside <sup><sup>[top](documentr_top)</sup></sup>
 
@@ -240,9 +256,9 @@ repositories {
 
 
 dependencies {
-	runtime(group: 'synapticloop', name: 'routemaster', version: '2.2.1', ext: 'jar')
+	runtime(group: 'synapticloop', name: 'routemaster', version: '2.3.0', ext: 'jar')
 
-	compile(group: 'synapticloop', name: 'routemaster', version: '2.2.1', ext: 'jar')
+	compile(group: 'synapticloop', name: 'routemaster', version: '2.3.0', ext: 'jar')
 }
 
 
@@ -254,9 +270,9 @@ or, more simply for versions of gradle greater than 2.1
 
 
 dependencies {
-	runtime 'synapticloop:routemaster:2.2.1'
+	runtime 'synapticloop:routemaster:2.3.0'
 
-	compile 'synapticloop:routemaster:2.2.1'
+	compile 'synapticloop:routemaster:2.3.0'
 }
 
 
@@ -270,7 +286,7 @@ dependencies {
 <dependency>
 	<groupId>synapticloop</groupId>
 	<artifactId>routemaster</artifactId>
-	<version>2.2.1</version>
+	<version>2.3.0</version>
 	<type>jar</type>
 </dependency>
 

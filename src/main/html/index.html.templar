@@ -1,52 +1,13 @@
 <!doctype html>
 <html lang="en">
-<head>
-	<title>RouteMaster</title>
-	<link rel="stylesheet" href="/static/css/reset.css" />
-	<link rel="stylesheet" href="/static/css/style.css" />
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-	<link rel="shortcut icon" type="image/png" href="/static/images/routemaster.png" />
-	<link rel="icon" href="/static/images/routemaster.png" type="image/png" />
-</head>
+
+{import classpath:/include/head.templar}
+
 <body>
 <div id="main">
 	<h1>RouteMaster <em>(nanoHTTPD edition)</em><br /><em>(now with templar templating engine)</em></h1>
 
-	<pre>
-{pre
-                                    ....OND8OOOOOO88DDN=...         
-                                  ..D8OZ$$$$$$$$$77777777$OD.       
-                                  .D888OOOOZZZZZ$$77IIIIII7$8.      
-                                  ~II??+++====~~~~~::::::::~+.      
-                                  ??++===~~:::,,,,..........:.      
-                                 .I?++==~~~:::,,,,..........:.      
-                                 .I+=======:::::::,,::::::::=.      
-                               . .888888OOOZZZZZZZ$ZZZZZZZZZ8~      
-                                  8OZ88OOOOZZZZ$$$???+++??I=$I      
-                                 .NO$8OOOOZZZZ$$$$I??++??II=7$      
-                                 .NZ$88NNNND88OZ$7I=~~=+III=78      
-                                 .NZ$8ZM8$78OI?I+??=~==+III=7N      
-                                 .NOZ88MNNDD88OZIII===+?III+7N..    
-                               ...N8Z8OOOOOZZZZ$$$I???+??II+7M.     
-                              ..,.7??????$Z$?I????ZZZ?????????~,..  
-                              .?8.7?+++====+~~~~~~:::::::~~~=+??=   
-                              .?O.7I??+++===:::::,,,,,.,,,::=???+   
-                             ..88.7??????===::::,,,,.....,:,=?8I..  
-                             . . .7??I??+==+::::,,,,.....,:,=?...   
-                               . .7??????===~~::,,,..,..,,:,=?..    
-                                 .MM????+===~:::,,,..,...,:,=?..    
-                                 .ND888M++==::::,,,......,:,=?..    
-                                ..ND88OOOO$8::::,,,,.....,,:=?..    
-                                ..ND88OOOZZZZ$+NDDO888DDDDDDDM.     
-                                ..ND+M~OOOZZZZ$$$$+N88OOO~D?DM.     
-                                ..ND?=OOOOZZZZZZ$$7II?IMN~OZ8M      
-                                ..NDD8:OOOZZZ$$Z$7$7II??I,$MMM.     
-                                ..MMMMMMMMMMMMMMMMMMMMMMMMMMMN.     
-                                  .MMMMMM.............MMMOMM,.      
-                             .:+$8NMMMMMMMMMMMMMMMMMMMMMMMMMMN8$?~,.
-
-pre}
-</pre>
+	{import classpath:/include/routemaster-ascii.templar}
 
 	<p><strong>Congratulations!!</strong> - The Route Master Server is up and running!</p>
 
@@ -69,6 +30,12 @@ pre}
 	<p>Below is an list of all of the handlers and the registered file type extension.</p>
 
 	<div id="handlers">
+	</div>
+
+	<h2>Registered Modules</h2>
+	<p>Below is an list of all of the modules that are registered.</p>
+
+	<div id="modules">
 	</div>
 
 	<h2>Cache</h2>
@@ -134,6 +101,12 @@ pre}
 			url: "/handlers/"
 		}).done(function(data) {
 			$("#handlers").append(data);
+		});
+
+		$.ajax({
+			url: "/modules/"
+		}).done(function(data) {
+			$("#modules").append(data);
 		});
 
 		$.ajax({

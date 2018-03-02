@@ -69,6 +69,13 @@
 	<div id="handlers">
 	</div>
 
+	<h2>Registered Modules</h2>
+	<p>Below is an list of all of the modules that are registered.</p>
+
+	<div id="modules">
+	</div>
+
+
 	<h2>Cache</h2>
 	<p>Below is an list of all of the cached resources and the <span class="code">Routable</span> that is responsible for serving them up.</p>
 
@@ -131,6 +138,12 @@
 			url: "/handlers/"
 		}).done(function(data) {
 			$("#handlers").append(data);
+		});
+
+		$.ajax({
+			url: "/modules/"
+		}).done(function(data) {
+			$("#modules").append(data);
 		});
 
 		$.ajax({

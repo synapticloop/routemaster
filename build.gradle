@@ -15,7 +15,7 @@ plugins {
 	id "synapticloop.documentr" version "2.9.0"
 }
 
-version = '2.2.1'
+version = '2.3.0'
 
 group = 'synapticloop'
 archivesBaseName = 'routemaster'
@@ -220,7 +220,6 @@ bintray {
 		repo = 'maven'
 		name = 'routemaster'
 	}
-
 }
 
 task example.mustRunAfter('build')

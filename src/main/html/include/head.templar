@@ -1,0 +1,8 @@
+<head>
+	<title>RouteMaster</title>
+	<link rel="stylesheet" href="/static/css/reset.css" />
+	<link rel="stylesheet" href="/static/css/style.css" />
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<link rel="shortcut icon" type="image/png" href="/static/images/routemaster.png" />
+	<link rel="icon" href="/static/images/routemaster.png" type="image/png" />
+</head>
