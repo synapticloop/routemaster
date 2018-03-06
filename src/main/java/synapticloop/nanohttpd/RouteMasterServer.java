@@ -76,7 +76,6 @@ public class RouteMasterServer extends NanoHTTPD {
 
 		HashMap<String, String> options = new HashMap<String, String>();
 
-
 		// Parse command-line, with short and long versions of the options.
 		for (int i = 0; i < args.length; ++i) {
 			if ("-h".equalsIgnoreCase(args[i]) || "-host".equalsIgnoreCase(args[i])) {
@@ -108,7 +107,7 @@ public class RouteMasterServer extends NanoHTTPD {
 		try {
 			sb.append(rootDir.getCanonicalPath());
 		} catch (IOException ioex) {
-			LOGGER.log(Level.SEVERE, "Could not get the path for the root directory - results may vary...", ioex);
+			SimpleLogger.logFatal("Could not get the path for the root directory - results may vary...");
 		}
 
 		options.put("home", sb.toString());

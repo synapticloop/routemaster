@@ -73,6 +73,11 @@ public class HttpUtils {
 	public static Response forbiddenResponse(String mimeType, String content) { return(newFixedLengthResponse(Response.Status.FORBIDDEN, mimeType, content)); }
 	public static Response forbiddenResponse(String mimeType, InputStream content, long totalBytes) { return(newFixedLengthResponse(Response.Status.FORBIDDEN, mimeType, content, totalBytes)); }
 
+	public static Response badRequestResponse() { return(defaultTextResponse(Response.Status.BAD_REQUEST)); }
+	public static Response badRequestResponse(String content) { return(defaultTextResponse(Response.Status.BAD_REQUEST, content)); }
+	public static Response badRequestResponse(String mimeType, String content) { return(newFixedLengthResponse(Response.Status.BAD_REQUEST, mimeType, content)); }
+	public static Response badRequestResponse(String mimeType, InputStream content, long totalBytes) { return(newFixedLengthResponse(Response.Status.BAD_REQUEST, mimeType, content, totalBytes)); }
+
 	public static Response notModifiedResponse() { return(defaultTextResponse(Response.Status.NOT_MODIFIED)); }
 	public static Response notModifiedResponse(String content) { return(defaultTextResponse(Response.Status.NOT_MODIFIED, content)); }
 	public static Response notModifiedResponse(String mimeType, String content) { return(newFixedLengthResponse(Response.Status.NOT_MODIFIED, mimeType, content)); }

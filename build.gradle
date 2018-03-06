@@ -4,16 +4,18 @@ plugins {
 	id "maven"
 	id "maven-publish"
 
-	id 'net.saliman.cobertura' version '2.2.6'
-	id "org.sonarqube" version "1.0"
-	id "com.jfrog.bintray" version "1.4"
+	id "com.github.ben-manes.versions" version "0.17.0"
+	id 'net.saliman.cobertura' version '2.5.4'
+	id "com.jfrog.bintray" version "1.8.0"
 	id 'co.riiid.gradle' version '0.4.2'
 
-	id "com.github.johnrengelman.shadow" version "1.2.4"
+	id "com.github.johnrengelman.shadow" version "2.0.2"
 
 	id "synapticloop.copyrightr" version "1.1.2"
 	id "synapticloop.documentr" version "2.9.0"
 }
+
+apply plugin: 'com.github.johnrengelman.shadow'
 
 version = '2.3.0'
 
@@ -43,9 +45,9 @@ dependencies {
 
 	server 'org.nanohttpd:nanohttpd:2.3.1'
 
-	testCompile 'junit:junit:4.11'
+	testCompile 'junit:junit:4.12'
 	testCompile 'org.mockito:mockito-all:1.10.19'
-	testCompile 'synapticloop:templar:1.4.2'
+	testCompile 'synapticloop:templar:1.4.4'
 }
 
 jar {
@@ -77,9 +79,9 @@ shadowJar {
 }
 
 task shadowJarServer(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
-	classifier = "server"
+	classifier = ""
 	destinationDir = libsDir
-	baseName = 'routemaster'
+	baseName = 'routemaster-server'
 
 	manifest {
 		attributes(
@@ -99,7 +101,8 @@ task shadowJarServer(type: com.github.jengelman.gradle.plugins.shadow.tasks.Shad
 		'/error/*',
 		'/static/*',
 		'/templar/*',
-		'/*.templar'
+		'/*.templar',
+		'/routemaster.properties'
 	)
 }
 
@@ -188,6 +191,20 @@ publishing {
 								it.groupId[0].text() == dep.moduleGroup
 					}.scope[0].value = 'compile'
 				}
+			}
+		}
+
+		SynapticloopServer(MavenPublication) {
+			artifact 'build/libs/routemaster-server-' + version + '.jar'
+			artifactId 'routemaster-server'
+			artifact sourcesJar
+			artifact javadocJar
+
+			pom.withXml {
+				def dependency = asNode().appendNode('dependencies').appendNode('dependency')
+				dependency.appendNode('groupId', 'synapticloop')
+				dependency.appendNode('artifactId', 'routemaster-server')
+				dependency.appendNode('version', version)
 			}
 		}
 	}

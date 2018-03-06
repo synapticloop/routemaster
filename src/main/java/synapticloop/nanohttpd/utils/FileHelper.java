@@ -33,7 +33,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class FileHelper {
-	private static final Logger LOGGER = Logger.getLogger(FileHelper.class.getSimpleName());
 
 	private FileHelper() {}
 
@@ -58,7 +57,8 @@ public class FileHelper {
 		Properties properties = new Properties();
 
 		InputStream inputStream = null;
-		File loadFile = new File("./" + propertiesFile);
+		File outputFile = new File("./" + propertiesFile);
+		File loadFile = outputFile;
 		if(loadFile.exists() && loadFile.canRead()) {
 			try {
 				inputStream = new BufferedInputStream(new FileInputStream(loadFile));
@@ -106,7 +106,8 @@ public class FileHelper {
 			inputStream = FileHelper.class.getResourceAsStream("/" + examplePropertiesFile);
 
 			// this will write out the file and then close the stream
-			writeFile(new File("./" + propertiesFile), inputStream, true);
+			writeFile(outputFile, inputStream, true);
+			SimpleLogger.logInfo("Wrote out the example properties file to : '" + outputFile.getAbsolutePath() + "'.");
 			return(properties);
 		}
 	}
@@ -133,9 +134,9 @@ public class FileHelper {
 				bufferedWriter.write(System.getProperty("line.separator"));
 			}
 			bufferedWriter.flush();
-			LOGGER.info(String.format("Wrote out file '%s'", outputFile.getName()));
+			SimpleLogger.logInfo(String.format("Wrote out file '%s'", outputFile.getName()));
 		} catch (IOException ioex) {
-			LOGGER.log(Level.SEVERE, "Could not write to file '" + outputFile.getAbsolutePath() + "'.", ioex);
+			SimpleLogger.logFatal("Could not write to file '" + outputFile.getAbsolutePath() + "'.", ioex);
 		} finally {
 			if(closeStream) {
 				if(null != bufferedWriter) {
