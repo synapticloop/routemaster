@@ -132,7 +132,6 @@ ant.version = version
 ant.buildDir = buildDir
 
 tasks.withType(Javadoc) {
-	options.links(javaApiUrl, groovyApiUrl)
 	exclude '**/fi/**'
 }
 
