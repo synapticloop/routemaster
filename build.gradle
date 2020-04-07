@@ -4,15 +4,15 @@ plugins {
 	id "maven"
 	id "maven-publish"
 
-	id "com.github.ben-manes.versions" version "0.17.0"
-	id 'net.saliman.cobertura' version '2.5.4'
-	id "com.jfrog.bintray" version "1.8.0"
+	id "com.github.ben-manes.versions" version "0.28.0"
+//	id 'net.saliman.cobertura' version '2.5.4'
+	id "com.jfrog.bintray" version "1.8.5"
 	id 'co.riiid.gradle' version '0.4.2'
 
-	id "com.github.johnrengelman.shadow" version "2.0.2"
+	id "com.github.johnrengelman.shadow" version "5.2.0"
 
 	id "synapticloop.copyrightr" version "1.1.2"
-	id "synapticloop.documentr" version "2.9.0"
+	id "synapticloop.documentr" version "3.1.0"
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -23,8 +23,8 @@ group = 'synapticloop'
 archivesBaseName = 'routemaster'
 description = """lightweight web server with RESTful routing"""
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.9
+targetCompatibility = 1.9
 
 repositories {
 	mavenLocal()
@@ -45,9 +45,9 @@ dependencies {
 
 	server 'org.nanohttpd:nanohttpd:2.3.1'
 
-	testCompile 'junit:junit:4.12'
-	testCompile 'org.mockito:mockito-all:1.10.19'
-	testCompile 'synapticloop:templar:1.4.4'
+	testCompile 'junit:junit:4.13'
+	testCompile 'org.mockito:mockito-all:2.0.2-beta'
+	testCompile 'synapticloop:templar:1.5.0'
 }
 
 jar {
@@ -116,10 +116,10 @@ task copyRoutemasterServerDotProperties(type: Copy) {
 }
 
 task (server).dependsOn([ 'build', 'copyRoutemasterServerDotProperties', 'shadowJarServer' ])
-
+/*
 cobertura {
 	coverageFormats = [ 'html', 'xml']
-}
+}*/
 
 test {
 	include '**/*Test.class' 
@@ -239,7 +239,7 @@ bintray {
 	}
 }
 
-task example.mustRunAfter('build')
-task server.mustRunAfter('example')
+//task example.mustRunAfter('build')
+//task server.mustRunAfter('example')
 
-build.finalizedBy(['example', 'server'])
+build.finalizedBy([ 'example', 'server' ])
