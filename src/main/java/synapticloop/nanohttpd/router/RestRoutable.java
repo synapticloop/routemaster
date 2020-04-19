@@ -1,7 +1,7 @@
 package synapticloop.nanohttpd.router;
 
 /*
- * Copyright (c) 2013-2017 synapticloop.
+ * Copyright (c) 2013-2020 synapticloop.
  * 
  * All rights reserved.
  *
@@ -47,6 +47,11 @@ public abstract class RestRoutable extends Routable {
 	@Override
 	public Response serve(File rootDir, IHTTPSession httpSession) {
 		String uri = httpSession.getUri();
+
+		if(uri.length() < routeContext.length()) {
+			// this means that we are probably missing a trailing '/'
+			uri = uri + "/";
+		}
 
 		String routeUriParams = uri.substring(routeContext.length());
 

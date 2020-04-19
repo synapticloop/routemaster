@@ -1,7 +1,7 @@
 package synapticloop.nanohttpd.router;
 
 /*
- * Copyright (c) 2013-2017 synapticloop.
+ * Copyright (c) 2013-2020 synapticloop.
  * 
  * All rights reserved.
  *
@@ -65,7 +65,9 @@ import fi.iki.elonen.NanoHTTPD.Response.Status;
  */
 public class RouteMaster {
 	private static final String ROUTEMASTER_PROPERTIES = "routemaster.properties";
+	private static final String ROUTEMASTER_JSON = "routemaster.json";
 	private static final String ROUTEMASTER_EXAMPLE_PROPERTIES = "routemaster.example.properties";
+	private static final String ROUTEMASTER_EXAMPLE_JSON = "routemaster.example.json";
 
 	private static final String PROPERTY_PREFIX_REST = "rest.";
 	private static final String PROPERTY_PREFIX_ROUTE = "route.";
@@ -99,12 +101,22 @@ public class RouteMaster {
 		try {
 			properties = FileHelper.confirmPropertiesFileDefault(ROUTEMASTER_PROPERTIES, ROUTEMASTER_EXAMPLE_PROPERTIES);
 		} catch (IOException ioex) {
-			logNoRoutemasterProperties();
+			try {
+				logNoRoutemasterProperties();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			allOk = false;
 		}
 
 		if(null == properties) {
-			logNoRoutemasterProperties();
+			try {
+				logNoRoutemasterProperties();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			allOk = false;
 		}
 
@@ -304,7 +316,7 @@ public class RouteMaster {
 
 				// now clean up the route
 				String temp = stringBuilder.toString();
-				if(subKey.endsWith("/") && !temp.endsWith("/")) { stringBuilder.append("/"); }
+				if(!temp.endsWith("/")) { stringBuilder.append("/"); }
 				// need to make sure that the rest router always picks up wildcards
 				if(!subKey.endsWith("*")) { stringBuilder.append("*"); }
 
@@ -365,14 +377,23 @@ public class RouteMaster {
 		logInfo(RouteMaster.class.getSimpleName() + " initialised.");
 	}
 
-	private static void logNoRoutemasterProperties() {
+	private static void logNoRoutemasterProperties() throws IOException {
+//		logFatal("Could not load the '" + ROUTEMASTER_JSON + "' file, ignoring...");
+//		logFatal("(Consequently this is going to be a pretty boring experience!");
+//		logFatal("but we did write out an example file for you - '" + ROUTEMASTER_EXAMPLE_JSON + "')");
+//		logFatal("NOTE: the '" + ROUTEMASTER_EXAMPLE_JSON + "' takes precedence)");
+//		InputStream inputStream = RouteMaster.class.getResourceAsStream("/" + ROUTEMASTER_EXAMPLE_JSON);
+//
+//		FileHelper.writeFile(new File(ROUTEMASTER_EXAMPLE_JSON), inputStream, true);
+//		inputStream.close();
+
 		logFatal("Could not load the '" + ROUTEMASTER_PROPERTIES + "' file, ignoring...");
 		logFatal("(Consequently this is going to be a pretty boring experience!");
 		logFatal("but we did write out an example file for you - '" + ROUTEMASTER_EXAMPLE_PROPERTIES + "')");
 
 		InputStream inputStream = RouteMaster.class.getResourceAsStream("/" + ROUTEMASTER_EXAMPLE_PROPERTIES);
-
 		FileHelper.writeFile(new File(ROUTEMASTER_EXAMPLE_PROPERTIES), inputStream, true);
+		inputStream.close();
 
 	}
 

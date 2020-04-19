@@ -103,7 +103,7 @@ import fi.iki.elonen.NanoHTTPD.Response.Status;
  * <p/>
  * NanoHTTPD
  * <p>
- * Copyright (c) 2012-2013 by Paul S. Hawke, 2001,2005-2013 by Jarno Elonen,
+ * Copyright (c) 2012-2013 by Paul S. Hawke, 2001,2005-2020 by Jarno Elonen,
  * 2010 by Konstantinos Togias
  * </p>
  * <p/>

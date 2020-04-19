@@ -17,7 +17,7 @@ plugins {
 
 apply plugin: 'com.github.johnrengelman.shadow'
 
-version = '2.4.0'
+version = '2.4.3'
 
 group = 'synapticloop'
 archivesBaseName = 'routemaster'
@@ -37,10 +37,9 @@ configurations {
 }
 
 dependencies {
-	runtime 'synapticloop:templar:1.4.2'
-
 	compile 'synapticloop:templar:1.4.2'
-
+	compile 'org.json:json:20190722'
+	
 	testCompile 'junit:junit:4.13'
 	testCompile 'org.mockito:mockito-all:2.0.2-beta'
 	testCompile 'synapticloop:templar:1.5.0'
@@ -233,5 +232,9 @@ bintray {
 
 //task example.mustRunAfter('build')
 //task server.mustRunAfter('example')
+
+copyrightr {
+	dryRun = false
+}
 
 build.finalizedBy([ 'example', 'server' ])

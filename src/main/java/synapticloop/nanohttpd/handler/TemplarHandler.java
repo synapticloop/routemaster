@@ -1,7 +1,7 @@
 package synapticloop.nanohttpd.handler;
 
 /*
- * Copyright (c) 2013-2017 synapticloop.
+ * Copyright (c) 2013-2020 synapticloop.
  * 
  * All rights reserved.
  *
